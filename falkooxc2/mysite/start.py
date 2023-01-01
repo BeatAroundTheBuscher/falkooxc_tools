@@ -65,7 +65,7 @@ def ajax_spritecomb():
             fh.write(base64.b64decode(files[x]["cont"].split(",")[1]))
     resfn=directory_name+os.sep+secure_filename(data["name"]+'.png')
     combinesprites(directory_name+os.sep+"*.*",int(data['nrcols']),resfn)
-    res["resimg"]="data:image/png;base64,{0}".format(str(base64.encodestring(open(resfn, "rb").read()) , "utf8").replace("\n", ""))
+    res["resimg"]="data:image/png;base64,{0}".format(str(base64.encodebytes(open(resfn, "rb").read()) , "utf8").replace("\n", ""))
     shutil.rmtree(directory_name,ignore_errors=True)
     return jsonify(res)
 
@@ -85,7 +85,7 @@ def ajax_spritepalette():
             ifn=directory_name+os.sep+fn
             resfn=directory_name+os.sep+"res_"+fn+".png"
     paletteop(ifn,resfn,data["op"])    
-    res["resimg"]="data:image/png;base64,{0}".format(str(base64.encodestring(open(resfn, "rb").read()) , "utf8").replace("\n", ""))
+    res["resimg"]="data:image/png;base64,{0}".format(str(base64.encodebytes(open(resfn, "rb").read()) , "utf8").replace("\n", ""))
     shutil.rmtree(directory_name,ignore_errors=True)
     return jsonify(res)
 
@@ -114,16 +114,16 @@ def ajax_spriteconvert():
         raise Exception("no res file")
     else:
         if data.get("op",{}).get("out","UNKNOWNMODE")=="PNG":
-            ret="data:image/png;base64,{0}".format(str(base64.encodestring(open(resfile, "rb").read()) , "utf8").replace("\n", ""))            
+            ret="data:image/png;base64,{0}".format(str(base64.encodebytes(open(resfile, "rb").read()) , "utf8").replace("\n", ""))            
         else:
-            ret="data:application/octet-stream;base64,{0}".format(str(base64.encodestring(open(resfile, "rb").read()) , "utf8").replace("\n", ""))
+            ret="data:application/octet-stream;base64,{0}".format(str(base64.encodebytes(open(resfile, "rb").read()) , "utf8").replace("\n", ""))
             
     res["resdata"]=ret
     res["out"]=data.get("op",{}).get("out","UNKNOWNMODE")
 
     #resfn=directory_name+os.sep+secure_filename(data["name"]+'.png')
     #combinesprites(directory_name+os.sep+"*.*",int(data['nrcols']),resfn)
-    #res["resimg"]="data:image/png;base64,{0}".format(str(base64.encodestring(open(resfn, "rb").read()) , "utf8").replace("\n", ""))
+    #res["resimg"]="data:image/png;base64,{0}".format(str(base64.encodebytes(open(resfn, "rb").read()) , "utf8").replace("\n", ""))
     
     shutil.rmtree(directory_name,ignore_errors=True)
     return jsonify(res)
@@ -146,8 +146,8 @@ def ajax_hwpbuild():
     splitspriteimg(resfn,"{0}_images_{1:0>4d}_.png")    
     #makeimages(dtype=1,spritepath="{0}_images_*_.png".format(resfn),baseimg=staticpath+"static/img/hwp/cut.png",rescomb=tmpfn,drout=int(data.get("drawrout",5) ))        
     makeimages(dtype=0,spritepath="{0}_images_*_.png".format(resfn),baseimg=staticpath+"static/img/hwp/cut.png",rescomb=anifn,drout=int(data.get("drawrout",5) ))    
-    res["resimg"]="data:image/png;base64,{0}".format(str(base64.encodestring(open(resfn, "rb").read()) , "utf8").replace("\n", ""))    
-    res["aniimg"]="data:image/png;base64,{0}".format(str(base64.encodestring(open(anifn, "rb").read()) , "utf8").replace("\n", ""))    
+    res["resimg"]="data:image/png;base64,{0}".format(str(base64.encodebytes(open(resfn, "rb").read()) , "utf8").replace("\n", ""))    
+    res["aniimg"]="data:image/png;base64,{0}".format(str(base64.encodebytes(open(anifn, "rb").read()) , "utf8").replace("\n", ""))    
     res["size"]=getsize(resfn)
     shutil.rmtree(directory_name,ignore_errors=True)
     return jsonify(res)
