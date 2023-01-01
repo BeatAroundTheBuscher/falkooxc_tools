@@ -1,5 +1,5 @@
 from modules.config import staticpath, basepasswd, showtraceback
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 import os
 #import functools
 import traceback

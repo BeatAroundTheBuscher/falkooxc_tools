@@ -1,6 +1,6 @@
 from PIL import Image
 import glob, math, itertools, copy, re , os, struct, zipfile
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 #from config import 
 from modules.config import staticpath
 from functools import partial

@@ -48,7 +48,7 @@ def treerules():
 from flask import request, jsonify
 import tempfile, os, shutil
 import base64
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 from modules.sprites import combinesprites
 
 
