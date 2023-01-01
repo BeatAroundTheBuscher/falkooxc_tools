@@ -1,0 +1,129 @@
+{% extends "layout.html" %}
+{% from 'modalaceedit.html' import modal_ace_edit_head  %}
+{% from 'modalaceedit.html' import modal_ace_edit_body  %}
+{% from 'modalaceedit.html' import modal_ace_edit_button  %}
+{% from 'modalaceedit.html' import modal_ace_edit_jsfooter %}
+{%
+
+
+  set yamleditors={
+  "rulfile":{
+    "textidstring":"yamlrulfile",
+    "varstring":"rulfilestring",
+    "modalidstring":"modalrulfileid",
+    "title":"Set Modfile",
+    "editorvar":"editorrulfile",
+    "buttontext":"Open rulfile",
+    "buttonidstring":"yamlrulfilebuttonid",
+    "contentid":"rulfiletext"
+    },
+  "exprulfile":{
+    "textidstring":"yamlexprulfile",
+    "varstring":"exprulfilestring",
+    "modalidstring":"modalexprulfileid",
+    "title":"Output File",
+    "editorvar":"editorexprulfile",
+    "buttontext":"See Output",
+    "buttonidstring":"yamlexprulfilebuttonid",
+    "contentid":"exprulfiletext"
+    }
+  }
+  
+
+
+%}
+{% block title %}Rulfile Beutify{% endblock %}
+{% block head %}
+{{ modal_ace_edit_head(yamleditors) }}
+{% endblock %}
+
+{% block content %}
+{% for acekey in yamleditors %}
+  {{ modal_ace_edit_body(yamleditors[acekey]) }}
+{% endfor %}
+<textarea id="rulfiletext" style="display:none">{please: copy/paste , your: [rulfile: here]}</textarea>
+<textarea id="exprulfiletext" style="display:none"></textarea>
+<div class="container"> 
+    <div class="row">
+        <div class="col-sm-12">                    
+            <h3>Reformat Rulfile</h3>
+        <div>
+        <div class="col-sm-12">                    
+            <h4>First Step</h4>
+            <p>import your rulfile</p>
+            upload  
+            {{ modal_ace_edit_button(yamleditors["rulfile"]) }}
+        </div>
+        <div class="col-sm-12" style="margin-top:15px;">                    
+            <h4>Second Step</h4>
+            <p>(Select your Base)</p>
+            <select id="baseeselect">
+                {% for fn in fns %}
+                <option>{{ fn }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-12" style="margin-top:15px;">                    
+            <h4>Third Step</h4>
+            <p>Click</p>
+            <button id="rulreformat" type="button"  class="btn btn-primary"  style="margin-left:15px;" ><span class="glyphicon glyphicon-play"> Reformat</span></button> 
+        </div>
+        <div class="col-sm-12" style="margin-top:15px;">                    
+            <h4>Result</h4>
+            <p>Download/see result</p>
+            download/{{ modal_ace_edit_button(yamleditors["exprulfile"]) }}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+    
+
+{% block jsfooter %}
+{# <script>    #}
+
+$("#rulreformat").on("click",function(){
+    $("#rulreformat").prop('disabled', true)
+    $("#yamlexprulfilebuttonid").prop('disabled', true)
+    $("#yamlexprulfilebuttonid").removeClass("btn-danger")
+    $("#rulreformat span").removeClass("glyphicon-play")
+    $("#rulreformat span").addClass("glyphicon-cog")
+    $.ajax({
+                    url:'/_rulformat',
+                    type: "POST",
+                    contentType:"application/json",
+                    dataType:"json",
+                    data: JSON.stringify({
+        rulfile: rulfilestring,
+        basename: $("#baseeselect").val()
+
+
+      })
+         
+      }).done(function(data) {        
+        editorexprulfile.setValue(data.resrul); 
+        exprulfilestring=editorexprulfile.getValue();
+        $("#rulreformat").prop('disabled', false)
+        $("#yamlexprulfilebuttonid").prop('disabled', false)
+        $("#rulreformat span").removeClass("glyphicon-cog")
+        $("#rulreformat span").addClass("glyphicon-play")
+      }).fail(function(){
+        $("#rulreformat").prop('disabled', false)        
+        $("#yamlexprulfilebuttonid").addClass("btn-danger")
+
+        $("#rulreformat span").removeClass("glyphicon-cog")
+        $("#rulreformat span").addClass("glyphicon-play")
+
+      })
+  
+})
+
+
+{{ modal_ace_edit_jsfooter(yamleditors) }}
+{# </script>    #}
+{% endblock %}
+{% block help %}
+help
+{% endblock %}

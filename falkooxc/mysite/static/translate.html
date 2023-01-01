@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="EN">
+	<head>
+	<style>
+		html,body {
+			height: 99%;
+			width: 99%;
+		}
+	</style>
+<meta charset="UTF-8" />
+
+<script src="FileSaver.js"></script>
+<script src="http://handsontable.com/lib/jquery.min.js"></script>
+<script src="http://handsontable.com/dist/jquery.handsontable.full.js"></script>
+<link rel="stylesheet" media="screen" href="http://handsontable.com/dist/jquery.handsontable.full.css">
+<link rel="stylesheet" media="screen" href="http://handsontable.com/demo/css/samples.css">
+
+<style type="text/css">
+body {background: white; margin: 20px;}
+h2 {margin: 20px 0;}
+#example table {
+table-layout: fixed;
+}
+#example td {
+max-width: 80px;
+}
+  #example th, #example td {
+       max-width: 80px;
+       min-width: 30px;
+  }
+  
+  
+  .pagination {
+        padding: 2px 0;
+        margin: 2px;
+    }
+.pagination a {
+            border: 1px solid grey;   
+            padding: 2px 5px;
+        } 
+</style>
+	
+	<script src="js-yaml.min.js"></script>
+
+		<script type="text/javascript">
+var languages;
+function firstColRenderer(instance, td, row, col, prop, value, cellProperties) {
+  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  td.style.fontWeight = 'bold';
+  td.style.color = 'green';
+  td.style.background = '#CEC';
+}
+var unsafeHtmlRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+
+  td.innerHTML = value;
+  return td;
+};
+function firstRowRenderer(instance, td, row, col, prop, value, cellProperties) {
+  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  td.style.fontWeight = 'bold';
+  
+  td.style.background = 'lightgrey';
+}
+
+function exportcol(colid){
+    d=$(example).handsontable('getData');    
+	res={};
+	res["extraStrings"]=[];
+	fn="noidea.rul";
+	for (i=1;i< d[0].length ;i++){
+		if (i==colid || colid==0){
+			fn="translate_"+unbreakstring(d[0][i])+".rul";
+			tmp={type:unbreakstring(d[0][i]),strings:{}}
+			for (w =1;w<d.length;w++){
+				tmp["strings"][d[w][0]]=unbreakstring(d[w][i]);
+			}
+			res["extraStrings"].push(tmp);
+		}
+	}
+	if (colid==0) fn="translate_all.rul";
+	var blob = new Blob([jsyaml.safeDump (res)], {
+    type: "text/plain;charset=utf-8;",
+});
+saveAs(blob, fn);
+	//download("test.rul",jsyaml.safeDump (res));
+	//console.log(jsyaml.safeDump (res));
+}
+function init() {
+
+
+    //Check File API support
+    if (window.File && window.FileList && window.FileReader) {
+        var filesInput = document.getElementById("uploadfile");
+
+        filesInput.addEventListener("change", function(event) {
+
+            var files = event.target.files; //FileList object
+            var output = document.getElementById("importtext");
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                //Only plain text
+                //console.log(file.type);
+                //if (!file.type.match('plain')) continue;
+
+                var picReader = new FileReader();
+
+                picReader.addEventListener("load", function(event) {
+
+                    var textFile = event.target;
+
+                    var div = document.createElement("div");
+//console.log(textFile.result);
+                    div.innerText = textFile.result;
+
+                    //output.insertBefore(div, null);
+					output.innerHTML=textFile.result;
+					
+
+                });
+
+                //Read the text file
+               picReader.readAsText(file);
+                //console.log(picReader.readAsText(file));
+            }
+
+        });
+
+	document.getElementById("importtext").style.display="none";
+	document.getElementById("uploadfile").style.display="inline";
+
+		}
+    else {
+		document.getElementById("importtext").style.display="inline";
+		document.getElementById("uploadfile").style.display="none";
+        console.log("Your browser does not support File API");
+    }
+  
+}
+  
+function search(){
+    var hot = $(example).handsontable('getInstance');
+  console.log($(search_field).val());
+      var queryResult = hot.search.query($(search_field).val());
+  
+      console.log(queryResult);
+  
+     hot.render();
+}
+function breakstring(str){
+	newwords=str.split(' ');
+	newstring="";
+	nl=0;
+	for (nw=0; nw<newwords.length;nw++){
+		newstring+=newwords[nw];
+		nl+=newwords[nw].length
+		if (nw<newwords.length-1){
+			if (nl>document.getElementById("wordwrapvalue").value){
+				nl=0;
+				newstring+="\n";
+			}else{
+				newstring+=" ";
+			}
+		}
+	}
+	return newstring;
+}
+function unbreakstring(str){
+	if (str)return str.split("\n").join(" ");
+	else return "";
+}
+
+function importrul (){
+	var doc = jsyaml.load(document.getElementById('importtext').value);
+	var prelanguages=[];
+	var words=[];
+	//var lpos=new Object();
+	var wordmap={}
+	for (var l = 0 ; l<doc["extraStrings"].length; l++)
+	{
+			//console.log(doc["extraStrings"][l],);
+		prelanguages.push(doc["extraStrings"][l]["type"])
+		//lpos[doc["extraStrings"][l]["type"]]=l;
+		wordmap[doc["extraStrings"][l]["type"]]={};
+		for (var key in doc["extraStrings"][l]["strings"]) {
+			if (words.indexOf(key)==-1)words.push(key);
+			wordmap[doc["extraStrings"][l]["type"]][key]=doc["extraStrings"][l]["strings"][key];
+		}
+	}
+	words.sort();
+	languages=[""];
+	if (prelanguages.indexOf("en-US")!=-1){
+		languages.push("en-US");
+		prelanguages.splice(prelanguages.indexOf("en-US"),1);
+	}
+	if (prelanguages.indexOf("en-GB")!=-1){
+		languages.push("en-GB");
+		prelanguages.splice(prelanguages.indexOf("en-GB"),1);
+	}
+	prelanguages.sort();
+	for (pl=0;pl<prelanguages.length;pl++) 
+		languages.push(prelanguages[pl]);	
+	console.log(languages,words);
+  var data = [
+//    ["", "Maserati", "Mazda", "Mercedes", "Mini", "Mitsubishi"],
+//    ["2009", 0, 2941, 4303, 354, 5814],
+//    ["2010", 5, 2905, 2867, 412, 5284],
+//    ["20\n\n11", 4, 2517, 4822, 552, 6127],
+//    ["20\n12", 2, 2422, 5399, 776, "41\n\n\n51 fd dgfh gfh gfh fgh gfh gfh gf"]
+  ];
+  
+for (w=-1;w<words.length;w++){
+   tmp=[];
+	for (l=0;l<languages.length;l++) {				
+		if (w<0){
+			if (w==-3){
+				txt = "<button style='padding:1px;line-height:17px;' onclick='exportcol("+l+");return false;' >";
+				switch (l) {
+				case 0:
+					txt+="export all";
+				default:
+					txt+="export";
+				}
+				tmp.push(txt+"</button>");
+			}else{
+				tmp.push(languages[l]);
+			}
+		}else{
+			if (l==0){
+				tmp.push(words[w]);
+			}else{
+				
+				if (typeof wordmap[languages[l]] != 'undefined' && typeof wordmap[languages[l]][words[w]] != 'undefined')
+					tmp.push(breakstring(wordmap[languages[l]][words[w]]));
+				else
+					tmp.push("");
+			}
+		}
+	}
+   data.push(tmp)
+}  
+console.log(data);
+  $('#example').handsontable({
+     
+    data: data,
+    minSpareRows: 0,
+        minRows: 2,
+  minCols: 2,
+      search:true,
+  rowHeaders: false,
+  colHeaders: true,
+  //colWidths: [55, 80, 80, 80, 80, 80, 80],
+     //colHeaders: ['EmployeeNo','EmployeeName','Department','Designation','','2'],
+     //rowHeaders: ['EmploeNo','EmployName','Departnt','Desation','2'],
+  //rowHeights: [50, 40, 100],
+  manualColumnResize: true,
+  manualRowResize: true,
+  manualHeaderResize: true,      
+      beforeRemoveCol: function (e){return e>0;},
+      beforeRemoveRow: function (e){return (e>0 && document.getElementById("allowrowdelete").checked);},
+      cells: function (row, col, prop) {
+    var cellProperties = {};
+    if (col === 0 ) {
+        cellProperties.readOnly = true; //make cell read-only if it is first row or the text reads 'readOnly'
+    }
+     if (row==-10 ){
+      cellProperties.renderer = unsafeHtmlRenderer; //uses function directly
+	  cellProperties.readOnly = true;
+    }
+     if (row==0 ){
+      cellProperties.renderer = firstRowRenderer; //uses function directly
+    }
+    //f (col==0){
+     //ellProperties.renderer = firstColRenderer; //uses function directly
+ // }
+    return cellProperties;
+  },
+      colHeaders: function (col) {
+          var txt = "<button style='padding:1px;line-height:17px;' onclick='exportcol("+col+");return false;' >"
+    switch (col) {
+      case 0:
+        return txt+="export all";
+
+      default:
+        txt+="export column";
+    
+    }
+    return txt+"</button>";
+  },
+    contextMenu: true
+  });
+
+}
+function options(){
+	document.getElementById("allowrowdelete").style.display="inline";
+	document.getElementById("allowrowdeletetxt").style.display="inline";
+	document.getElementById("wordwrapvalue").style.display="inline";
+	document.getElementById("wordwrapvaluetxt").style.display="inline";
+
+}
+//-----------------------------------------
+ 
+
+		</script>
+	</head>
+	<body onload="init();">
+	<input type=file  style="display:inline;" id="uploadfile" />upload rul</br>
+	<button  id="import" onclick="importrul();return false;" />import</button> <button  id="import" onclick="options();return false;" />options</button><input style="display:none;"  type="checkbox" id="allowrowdelete" ><span style="display:none;" id="allowrowdeletetxt">allow row delete</span><input style="display:none;" value="50" id="wordwrapvalue" ><span style="display:none;" id="wordwrapvaluetxt">#letter wrap</span>
+	<textarea  style="display:none;" id="importtext"  />filled this manually and click import</textarea><hr/>
+search: <input id="search_field" placeholder="Search" onkeyup="search();return false;" type="search">
+<div class="handsontable" id="example"></div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+   
+
+	</body>
+</html>

@@ -1,0 +1,288 @@
+#- rulfile -> import/open/baserul (load/save export,) ; import zip; options yamloptions; importbase=> choose name or set name, base.rul, lang.yaml, add.rul schema.yaml
+#import
+#rulfile: import/open/baserul load/save export
+#resources: files local/folder
+#--
+#check
+#syntax: tab, intend, yaml error, pure schema, copyright
+#references: schema: references, fileids, ..
+#gamelogic: corpses and stuff
+#language: lang check
+#binary: images/sounds 
+
+checklist:
+  - name: Syntax check
+    desc: In the first part we tests yaml validity and oxc specific syntax problems in the rulfile
+    ops:
+      - func: tabs
+        execpos: puretext
+      # - func: indentation
+      #   execpos: puretext
+      #   params: {space:2}
+      # - func: forbiddenwords
+      #   execpos: puretext
+      #   params:
+      #     words:
+      #       - "__internal_line_number__" #trick to make easy goto line solution shouldn be a propety in normal rul
+      #       - "__internal_donotmerge__" #internal name to distinguish the merge and no merge terrains (oxcT_makenomerge)
+      #       - "__internal_hasnotypestring__" #internaly used should not be in text
+      #       - "__xtrasprdel__" #internaly used while merging extrsprites
+      #       - "__internal_PREPoutput__" #internaly used for reordering of properties
+      - func: uniqdict #double hashmaptest
+        execpos: puretext
+      - func: yamlload      
+        execpos: predelete
+      - func: checkdelete #test for multiple delete of same thing, delete and include, delete nonexisting
+        execpos: predelete
+      - func: uniqlist #type/name uniqness
+  - name: Data type check
+    desc: Tests all the datatypes of the rulfile
+    ops: 
+      - func: schema
+
+  - name: References
+    desc: Here we verify that all internal references are linking to existing objects
+    ignoreerror:
+      categ: [schema-data]
+      name: []
+    ops:
+      - func: schema
+        params:
+          extendvalidator:
+            - oxcrefFileIdOneK
+            - oxcValue
+            - oxcKey
+            - oxcArmorInv
+#            - oxcrefFileId
+      - func: oxcautoreference
+
+  - name: Textcheck
+    desc: Indentation and other text problems mostly not source of an error if yaml import itself works
+    ops:
+      - func: indentation
+        execpos: puretext
+        params: {space:2}
+      - func: forbiddenwords
+        execpos: puretext
+        params:
+          words:
+            - "__internal_line_number__" #trick to make easy goto line solution shouldn be a propety in normal rul
+            - "__internal_donotmerge__" #internal name to distinguish the merge and no merge terrains (oxcT_makenomerge)
+            - "__internal_hasnotypestring__" #internaly used should not be in text
+            - "__xtrasprdel__" #internaly used while merging extrsprites
+            - "__internal_PREPoutput__" #internaly used for reordering of properties
+
+  - name: Language
+    desc: "Here we test for languge strings, missing ones, unused ones,.."
+    ignoreerror:
+      categ: [schema-data]
+      name: []
+    ops:
+      # - func: missinglang
+      #   params:
+      #     langs: [en-US, en-GB]
+      - func: schema
+        params:
+          extendvalidator:
+            - oxcMissingstrings
+          langs: [en-US, en-GB]
+      - func: langmissesstring
+
+  - name: Game logic
+    desc: The goal in that checklist are logical errors that help fix complex relationship dependencies #lik whats needed to allow live alien capture
+    ignoreerror:
+      categ: []
+      name: [unusedterrainblocks]
+    ops:
+      #- func: corpses
+      #- func: livealiencapture
+      - func: aliendeployment
+      - func: mapscriptcheck
+
+  - name: Info
+    desc: Here you can see a bunch of "warnings" that are more like "hints" for modders 
+    ops:
+      #- func: corpses
+      #- func: livealiencapture
+      - func: listorder
+
+
+
+#   - name: Binary Data
+#     desc: this check needs you to upload a zipfile of your modfolder so we can check for problems in path and binary data like map/terrain/image/sounds
+#     needs: [zipfile]
+#     ops:
+#       - func: spritesheettestfilenameuniformity
+#       - func: filepathcasetest
+#       - func: spritesheetsize
+#       - func: palettecheck
+#       - func: missingfileid
+#       - func: nospecfile
+#       - func: nonasciicharinpath
+#       - func: filextension not allowed
+cols:
+  error: "#FF8080"
+  warning: lightyellow
+  datatype: "#FBFBEB"
+  none: white
+edata:
+  schema-data:
+    _level: datatype
+    "$ref":
+      _desc: "no description defined"
+    "additionalItems":
+      _desc: "no description defined"
+    "additionalProperties":
+      _desc: "no description defined"
+    "allOf":
+      _desc: "no description defined"
+    "anyOf":
+      _desc: "no description defined"
+    "dependencies":
+      _desc: "no description defined"
+    "enum":
+      _desc: "no description defined"
+    "format":
+      _desc: "no description defined"
+    "items":
+      _desc: "no description defined"
+    "maxItems":
+      _desc: "no description defined"
+    "maxLength":
+      _desc: "no description defined"
+    "maxProperties":
+      _desc: "no description defined"
+    "maximum":
+      _desc: "no description defined"
+    "minItems":
+      _desc: "no description defined"
+    "minLength":
+      _desc: "no description defined"
+    "minProperties":
+      _desc: "no description defined"
+    "minimum":
+      _desc: "no description defined"
+    "multipleOf":
+      _desc: "no description defined"
+    "not":
+      _desc: "no description defined"
+    "oneOf":
+      _desc: "no description defined"
+    "pattern":
+      _desc: "no description defined"
+    "patternProperties":
+      _desc: "no description defined"
+    "properties":
+      _desc: "no description defined"
+    "required":
+      _desc: "no description defined"
+    "type":
+      _desc: "no description defined"
+    "uniqueItems":
+      _desc: "no description defined"
+  config:
+    validatormissing:
+      _level: warning
+      _desc: "no description defined"
+    funcmissing:
+      _level: warning
+      _desc: "no description defined"
+  checksfailed:
+    _level: error
+    yamlload:
+      _desc: "no description defined"
+    datahandledelete:
+      _desc: "no description defined"
+    datamergedata:
+      _desc: "no description defined"
+    makelists:
+      _desc: "no description defined"
+    errorfilter:
+      _desc: "no description defined"
+  runfailed:
+    _desc: "no description defined"
+    _level: error
+  syntax:
+    tabs:
+      _desc: "no description defined"
+      _level: error
+    indentation:
+      _desc: "no description defined"
+    forbiddenwords:
+      _desc: "no description defined"
+    yamlload:
+      _desc: "no description defined"
+      _level: error
+    uniqdict:
+      _desc: "no description defined"
+      _level: warning
+    negativekey:
+      _desc: "no description defined"
+  delete:
+    amountproperties:
+      _desc: "no description defined"
+    amounttarget:
+      _desc: "no description defined"
+    multipledeletion:
+      _desc: "no description defined"
+    deleteexisting:
+      _desc: "no description defined"
+  semantic:
+    multiplelistelems:
+      _desc: "no description defined"
+      _level: warning
+    oxcautoreference:
+      _desc: "no description defined"
+      _level: warning    
+    langmissesstring:
+      _desc: "no description defined"
+    aliendeployment:
+      _desc: "no description defined"
+      _level: error
+  info:
+    listorder:
+      _desc: "no description defined"
+  mapscriptcheck:
+    conditionzero:
+      _desc: "no description defined"
+    conditionmissref:
+      _desc: "no description defined"
+    nonuniquelabel:
+      _desc: "no description defined"
+    rectsize:
+      _desc: "no description defined"
+    blockandgroup:
+      _desc: "no description defined"
+    unusedterrain:
+      _desc: "no description defined"
+    unusedscripts:
+      _desc: "no description defined"
+    craftufoafteraddblocks:
+      _desc: "no description defined"
+    blockinfoarray:
+      _desc: "no description defined"
+    unusedparameter:
+      _desc: "no description defined"
+    mcdsetwrong:
+      _desc: "no description defined"
+    nonfittingblock:
+      _desc: "no description defined"
+    nonfittinggroup:
+      _desc: "no description defined"
+    unusedterrainblocks:
+      _desc: "no description defined"
+  schema-oxc:
+    oxcGL_refFileId:
+      _desc: "no description defined"
+    oxcGL_checkKey:
+      _desc: "no description defined"
+      _level: warning
+    oxcGL_lookupVal:
+      _desc: "no description defined"
+      _level: warning
+    oxcGL_checkFileId:
+      _desc: "no description defined"
+    oxcGL_lookupArmorInv:
+      _desc: "no description defined"
+    ocxlang:
+      _desc: "no description defined"

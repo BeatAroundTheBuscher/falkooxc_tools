@@ -1,0 +1,1303 @@
+{% extends "layout.html" %}
+{% from 'modalaceedit.html' import modal_ace_edit_head  %}
+{% from 'modalaceedit.html' import modal_ace_edit_body  %}
+{% from 'modalaceedit.html' import modal_ace_edit_button  %}
+{% from 'modalaceedit.html' import modal_ace_edit_jsfooter %}
+{%
+
+
+  set yamleditors={
+  "options":{
+    "textidstring":"yamloptions",
+    "varstring":"optionsstring",
+    "modalidstring":"modaloptionsid",
+    "title":"Set Mod Check Options",
+    "editorvar":"editoroptions",
+    "buttontext":"Open options",
+    "buttonidstring":"yamloptionsbuttonid",
+    "contentid":"optionstext"
+    },
+  "rulfile":{
+    "textidstring":"yamlrulfile",
+    "varstring":"rulfilestring",
+    "modalidstring":"modalrulfileid",
+    "title":"Set Modfile",
+    "editorvar":"editorrulfile",
+    "buttontext":"Open rulfile",
+    "buttonidstring":"yamlrulfilebuttonid",
+    "contentid":"rulfiletext"
+    },
+  "basefile":{
+    "textidstring":"yamlbasefile",
+    "varstring":"basefilestring",
+    "modalidstring":"modalbasefileid",
+    "title":"Set Base File",
+    "editorvar":"editorbasefile",
+    "buttontext":"Open basefile",
+    "buttonidstring":"yamlbasefilebuttonid",
+    "contentid":"basefiletext"
+    },
+  "addfile":{
+    "textidstring":"yamladdfile",
+    "varstring":"addfilestring",
+    "modalidstring":"modaladdfileid",
+    "title":"Add data to Basefile",
+    "editorvar":"editoraddfile",
+    "buttontext":"Open addfile",
+    "buttonidstring":"yamladdfilebuttonid",
+    "contentid":"addfiletext"
+    },
+  "schemafile":{
+    "textidstring":"yamlschemafile",
+    "varstring":"schemafilestring",
+    "modalidstring":"modalschemafileid",
+    "title":"Set Schema",
+    "editorvar":"editorschemafile",
+    "buttontext":"Open schemafile",
+    "buttonidstring":"yamlschemafilebuttonid",
+    "contentid":"schemafiletext"
+    },
+  "langfile":{
+    "textidstring":"yamllangfile",
+    "varstring":"langfilestring",
+    "modalidstring":"modallangfileid",
+    "title":"Set Languagefile",
+    "editorvar":"editorlangfile",
+    "buttontext":"Open langfile",
+    "buttonidstring":"yamllangfilebuttonid",
+    "contentid":"langfiletext"
+    },
+  "exportfile":{
+    "textidstring":"yamlexportfile",
+    "varstring":"exportfilestring",
+    "modalidstring":"modalexportfileid",
+    "title":"Export Modfile",
+    "editorvar":"editorexportfile",
+    "buttontext":"Open exportfile",
+    "buttonidstring":"yamlexportfilebuttonid",
+    "contentid":"exportfiletext"
+    }
+  }
+
+
+%}
+{% block title %}Rulfile checker{% endblock %}
+{% block head %}
+{{ modal_ace_edit_head(yamleditors) }}
+<script src="/static/lib/js-yaml.min.js"></script>
+<script type="text/javascript"  src="/static/js/dropzone.js"></script>
+<script type="text/javascript">
+var rules;
+var active="Start";
+
+var results={}
+var odoc={}
+var jumpline=-1;
+var viewall=false;
+
+var starttitle="Modtester"
+var startdesc="here you can check and merge your mods"
+var spandefault='class="badge hidden pull-right" style="position: relative;top: 10px;"'
+
+var files={};
+var readers={};
+var fileorder=1;
+var ncateg="Start"
+var activeid=""
+
+var modtitle=""
+
+
+</script>
+<style type="text/css">
+#dropzone {
+    //background-color:red;
+    border:solid red;
+    font-size: 200%;
+    text-align: center;
+    vertical-align: middle;
+    min-height:120px;
+    line-height: 120px;
+    margin-bottom: 25px;
+
+  }
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+#errorlist td {
+    padding: 5px 2px;
+}
+td.errorcateg {
+    border: solid 1px gray;
+    white-space:nowrap;
+}
+td.errorname {
+    border: solid 1px gray;
+    white-space:nowrap;    
+}
+td.errorshowdesc {
+    border: solid 1px gray;
+    white-space:nowrap;    
+}
+td.errorline {
+    border: solid 1px gray;
+    white-space:nowrap;    
+}
+td.errortext {
+    border: solid 1px gray;
+    //white-space:pre-line;
+}
+    
+
+/*
+#wrapper.toggled {
+    padding-left: 250px;
+}
+*/
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-top: -25px;
+    margin-left: -250px;
+    overflow-y: auto;
+    background: #f8f8f8;
+    border-color: #e7e7e7;
+    color: #777;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+/*
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+*/
+#page-content-wrapper {
+    width: 100%;
+    padding: 15px;
+}
+/*
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+*/
+/* Sidebar Styles */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #777;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    color: #111;
+    background: rgba(255,255,255,0.2);
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #111;
+    background: none;
+}
+
+/*@media(min-width:768px) {*/
+    #wrapper {
+        padding-left: 250px;
+    }
+/*
+    #wrapper.toggled {
+        padding-left: 0;
+    }
+*/
+    #sidebar-wrapper {
+        width: 250px;
+    }
+/*
+    #wrapper.toggled #sidebar-wrapper {
+        width: 0;
+    }
+*/
+    #page-content-wrapper {
+        padding: 20px;
+    }
+/*
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+    */
+/*}*/
+
+.sidebar-active {
+    font-weight: bold;    
+    color: #111 !important;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+{% for acekey in yamleditors %}
+  {{ modal_ace_edit_body(yamleditors[acekey]) }}
+{% endfor %}
+<textarea id="optionstext" style="display:none">
+{% include 'ruloptions.yaml' %}
+</textarea>
+<textarea id="rulfiletext" style="display:none">
+
+terrains:
+  - name: UBASE
+
+    mapDataSets:
+      - BLANKS
+      - U_BASE
+      - U_WALL02
+      - U_PODS
+      - BRAIN
+    largeBlockLimit: 3
+    mapBlocks:
+      - name: UBASE_00
+        width: 20
+        length: 20
+        type: 7
+        items:
+          STR_ALIEN_DATA_SLATE:
+            - [6, 6, 1, "fails"]
+      - name: UBASE_01
+        width: "20"
+        length: 20
+
+
+invs:
+  - id: STR_GROUND
+    x: 0
+    y: 152
+    type: 2
+    costs:
+      STR_BACK_PACK: 20
+      STR_BELT: 12
+      STR_LEFT_HAND: 8
+      STR_LEFT_LEG: 10
+      STR_LEFT_SHOULDER: 12
+      STR_LEFT_SHOULDE: 12
+      STR_RIGHT_HAND: 8
+      STR_RIGHT_LEG: 10
+      STR_RIGHT_SHOULDER: 12
+countries:
+  - delete: STR_USA
+  - delete: STR_GERMANY
+  - delete: STR_GERMANY
+  
+items:
+  - type: STR_STINGRAY_LAUNCHER
+    size: 0.8
+    size: 0.9
+    bulletSprite: 20
+    handSprite: 317
+  - type: STR_STINGRA.-Y_LAUNCHER
+    size: 0.8
+    handSprite: 319
+
+  - type: STR_COMBAT_ARMOR
+    size: 0.8
+    costBuy: 50000
+    costSell: 35000
+    listOrder: 10499
+  - type: STR_CORPSE_COMBAT_ARMOR
+    name: STR_CORPSE
+    weight: 24
+    bigSprite: 164
+    floorSprite: 277
+    invWidth: 2
+    invHeight: 3
+    armor: 30
+    recover: false
+armors:
+  - type: STR_COMBAT_ARMOR_UC
+    spriteSheet: XCOM_4.PC
+    spriteInv: MAN_4
+    corpseItem: STR_CORPSE_COMBAT_ARMOR
+    storeItem: STR_COMBAT_ARMOR
+    loftemps: 3
+    frontArmor: 30
+    sideArmor: 30
+    rearArmor: 20
+    underArmor: 20
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.8
+      - 1.0
+      - 1.0
+      - 1.0
+      - 0.9
+      - 1.0
+      - 1.1
+      - 1.0
+ufopaedia:
+  - uid: STR_COMBAT_ARMOR_UC
+  - id: STR_COMBAT_ARMOR_UC
+    type_id: 5
+    section: STR_WEAPONS_AND_EQUIPMENT
+    listOrder: 1699
+extraSprites:
+  - type: MAN_4F0.SPK
+    singleImage: true
+    files:
+      0: Resources/CombatArmor/Inventory/man_4f0.gif
+  - type: MAN_4F1.SPK
+    singleImage: true
+    files:
+      0: Resources/CombatArmor/Inventory/man_4f1.gif
+  - type: MAN_4F2.SPK
+    singleImage: true
+    files:
+      0: Resources/CombatArmor/Inventory/man_4f2.gif
+  - type: MAN_4F3.SPK
+    singleImage: true
+    files:
+      0: Resources/CombatArmor/Inventory/man_4f3.gif
+  - type: MAN_4M0.SPK
+    singleImage: true
+    files:
+      0: Resources/CombatArmor/Inventory/man_4m0.gif
+  - type: MAN_4M1.SPK
+    singleImage: true
+    files:
+      0: Resources/CombatArmor/Inventory/man_4m1.gif
+  - type: MAN_4M2.SPK
+    singleImage: true
+    files:
+      0: Resources/CombatArmor/Inventory/man_4m2.gif
+  - type: MAN_4M3.SPK
+    singleImage: true
+    files:
+      0: Resources/CombatArmor/Inventory/man_4m3.gif
+  - type: XCOM_4.PCK
+    width: 32
+    height: 40
+    files:
+      0: Resources/CombatArmor/XCOM_4/
+  - type: BIGOBS.PCK
+    files:
+      64: Resources/CombatArmor/BIGOBS/Kevlar_Inventory_Corpse.gif
+  - type: FLOOROB.PCK
+    files:
+      77: Resources/CombatArmor/FLOOROB/Kevlar_Corpse.gif
+extraStrings:
+  - type: en-US
+    strings:
+      STR_COMBAT_ARMOR: Combat Armor
+      STR_COMBAT_ARMOR_UC: COMBAT ARMOR
+  - type: en-GB
+    strings:
+      STR_COMBAT_ARMOR: Combat Armour
+      STR_COMBAT_ARMOR_UC: COMBAT ARMOUR
+
+</textarea>
+
+{% for opt in ["basefile","addfile","schemafile","langfile"] %}
+<textarea id="{{yamleditors[opt]["contentid"]}}" style="display:none">
+</textarea>
+{% endfor %}
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <!--<div id="sidebar-menutoggle">Open Menu</div>//-->
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand" >
+                <a  href="#">Start</a>
+            </li>
+        </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid" >
+            <nav class="navbar navbar-default" role="navigation" id="subnavbar">
+                <ul class="nav navbar-nav">
+                    <li class="navbar-brand">Modtester</li>
+                    <li class="active" id="show-onefile"><a href="#">OneFile</a></li>
+                    <li id="show-multifile"><a href="#">multiple Files</a></li>
+                    <li>
+                        <form class="navbar-form navbar-left" role="search">
+                            <div class="form-group">
+                                <select style="margin-top:7px;" id="baseeselect">
+                                    {% for fn in fns %}
+                                    <option>{{ fn }}</option>
+                                    {% endfor %}
+                                </select>
+                        </form>
+                    </li>
+                    <li id="show-options"><a href="#">Options</a></li>
+                </ul>
+            </nav>
+            <div class="row collapse" id="ruluploadrow">
+                <div class="col-sm-1"> </div>
+                <div class="col-sm-9">             
+                    <form action="/file-upload"  data-bg-text="text" id="dropzone">Drop files here or Click to upload multiple rulfiles</form>
+                </div>
+                <div class="col-sm-2"> <!--            
+    {{ modal_ace_edit_button(yamleditors["options"]) }}<br />
+    <button type="button"  data-toggle="modal" data-target="#sptransformer" class="btn btn-success sp-download" style="margin-top:15px;" >Add new transform</button>    <br/>
+    <button type="button"   class="btn btn-success sp-showimages" style="margin-top:15px;" ><span class="glyphicon glyphicon-eye-open">  Show images</span></button>  
+    //-->
+                </div>
+            </div>
+            <div class="row collapse ">
+                <div class="col-sm-12">                                 
+                    <div id="imgout" class="dropzone-previews"></div>
+                </div>
+            </div>
+            <div class="row rul-row collapse " style="border-top: solid lightgrey" id="rulrowtemplate">
+                <div class="col-sm-2 rul-badges">
+                    <span class="badge  alert-warning">untested</span>
+                </div>
+                <div class="col-sm-10 rul-show  rul-conv">     
+                    <div class="input-group">                             
+                        <button type="button" class="btn btn-primary rul-test"  style="margin-left:5px;" ><span class="glyphicon glyphicon-play"> Test</span></button>
+                        <button type="button" class="btn btn-success rul-open" style="margin-left:15px;" ><span class="glyphicon glyphicon-folder-open"> Open</span></button>
+                        name: <input type="text" class="rul-rename" value="TEMPLATE">.rul
+                        <!--<button type="button" class="btn btn-primary rul-download" style="margin-left:5px;" disabled="disabled" ><span class="glyphicon glyphicon-download-alt"> Download</span></button>//-->
+                        <button type="button" class="btn btn-primary rul-up" style="margin-left:15px;"  ><span class="glyphicon glyphicon-chevron-up"> </span></button>
+                        <button type="button" class="btn btn-primary rul-down" style="margin-left:5px;"  ><span class="glyphicon glyphicon-chevron-down"> </span></button>
+                        <button type="button" class="btn btn-primary rul-merge" style="margin-left:5px;"  ><span class="glyphicon glyphicon-compressed"> Merge</span></button>
+                        <button type="button" class="btn btn-warning rul-delete" style="margin-left:15px;"><span class="glyphicon glyphicon-remove"> Delete</span></button>
+                    </div>
+                </div>
+            </div>
+            <div id="rul-rows" class="collapse"></div>            
+            <div id="rultest" class="row collapse in">
+                <div class="col-lg-12">                    
+                    <h3>this is the testpage</h3>                    
+                    <p>foobar</p>
+                    <!--<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>//-->
+                </div>
+            </div>
+            <div id="rulstart" class="row collapse in">
+                <div class="col-lg-12">                                        
+                    <div class="controls form-inline">
+                        {{ modal_ace_edit_button(yamleditors["rulfile"]) }}
+                        <button id="testbutton" type="button"  class="btn btn-primary oxctestbutton" ><span class="glyphicon glyphicon-play"> Test</span></button> 
+                        <button class="btn " id="viewallerrors"  onclick="viewall=!viewall;reseterrview();">View all errors</button>
+
+                    </div>
+
+                    <!--<div>
+                    <button class="btn" data-toggle="collapse" data-target="#options">View options</button>
+                    </div>//-->
+                </div>
+            </div> 
+
+            <div id="options" class="row collapse in">
+                <div class="col-lg-12">                                        
+                    <h4>Modcheck Options</h4>
+                    <div class="input-group">
+                        {{ modal_ace_edit_button(yamleditors["options"]) }}
+                        <button type="button"  class="btn " id="baseeditbutton" style="margin-left:15px;" >Show Base Edit Options</button>
+                    </div>
+                    <div id="editfs" class="collapse">
+                    <h4>BaseEdit Options</h4>
+                        <h4>set a new Base</h4>
+                        name:<input id="basesavename" />
+                        pwd:<input type="password" id="basesavepasswd" /><br ><br >
+                        {{ modal_ace_edit_button(yamleditors["basefile"]) }}
+                        {{ modal_ace_edit_button(yamleditors["addfile"]) }}
+                        {{ modal_ace_edit_button(yamleditors["schemafile"]) }}
+                        {{ modal_ace_edit_button(yamleditors["langfile"]) }}    
+                        <button type="button"  class="btn btn-success" id="basesavebutton" style="margin-left:15px;" >Save</button>  
+                    </div>        
+                    <h4>Merge Options</h4>
+                    <div class="controls form-inline">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input name="checkboxes" disabled="disabled" id="enable-mergereformat" value="0" checked="cheecked" type="checkbox">
+                                </span>
+                                <button type="button" id="enable-mergereformatbutton" title="Reformats the merged output" class="btn btn-default btn-warning" >Reformat</button>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input name="checkboxes" disabled="disabled" id="enable-mergedeletesrc" value="0" checked="cheecked" type="checkbox">
+                                </span>
+                                <button type="button" id="enable-mergedeletesrcbutton" title="Delete the source Rulsets" class="btn btn-default btn-warning" >Delete</button>
+                            </div>
+                            <div class="input-group" title="The Number thats added to merged extraSprite/sounds" >
+                                <span  class="input-group-addon">Modindex</span>
+                                <input  id="mergemodindex" size="6"  value="1000">
+                            </div>
+                            <div class="input-group" title="The Modindex is increased by that number after each merge operation">
+                                <span class="input-group-addon">Modindex-increase</span>
+                                <input  id="mergemodinc" size="6" value="1000">
+                            </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row" id="rulerrorlist">
+                <div class="col-lg-12">                 
+                    <div id="errorlist" class="collapse" style="padding:5px; border-color:black; border-width: 1px; border-style: none ; width:95%;height:80%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+
+
+
+{% endblock %}
+
+    
+
+{% block jsfooter %}
+{# <script>    #}
+$(document ).on('click','#enable-mergedeletesrcbutton' ,function() {
+togglebutton("enable-mergedeletesrc","Delete","Keep it");
+});
+$(document ).on('click','#enable-mergereformatbutton' ,function() {
+togglebutton("enable-mergereformat","Reformat","No Format");
+});
+
+function togglebutton(string,s1,s2){
+    $("#"+string).prop('checked',!  $("#"+string).prop('checked'));
+    
+    if ($("#"+string).prop('checked')){
+        $("#"+string+"button").addClass( "btn-warning" );   
+        $("#"+string+"button").html( s1);       
+    }else{
+        $("#"+string+"button").removeClass( "btn-warning" );    
+        $("#"+string+"button").html( s2);
+    }
+    
+}
+
+function settext(idstring){
+    rulfilestring=files[idstring]["fobj"][0]["cont"]
+    editorrulfile.setValue(rulfilestring)
+    modtitle=""
+    if (idstring!="the-default-rul"){
+        modtitle=" - "+$("#"+idstring+" input.rul-rename").val()
+    }
+}
+function resetview(){
+    $("#ruluploadrow").removeClass("in")
+    $("#rul-rows").removeClass("in")
+    $("#rulstart").removeClass("in")
+    $("#rultest").removeClass("in")
+    $("#options").removeClass("in")
+    $("#rulerrorlist").removeClass("in")
+    $("#errorlist").removeClass("in")
+    if (active=="Start" && ncateg=="Start"){
+        $("#rulstart").addClass("in")
+        $("#rultest").addClass("in")
+        $("#rulerrorlist").addClass("in")
+        if (viewall) $("#errorlist").addClass("in")
+    }else if (active =="Start" && ncateg=="__Multi"){       
+        $("#ruluploadrow").addClass("in")
+        $("#rul-rows").addClass("in")
+    }else if (ncateg=="__Options"){       
+        $("#options").addClass("in")
+    }else{
+        $("#rulstart").addClass("in")
+        $("#rultest").addClass("in")
+        $("#rulerrorlist").addClass("in")        
+        $("#errorlist").addClass("in")
+    }
+
+}
+
+$("#show-onefile").on("click",function(){    
+    $("#subnavbar li").removeClass("active")
+    $("#show-onefile").addClass("active")
+    active="Start"
+    ncateg="Start"
+    modtitle=""
+    resetview()
+    showerrors()
+    reseterrview()
+    $("#sidebar-wrapper").find("li").removeClass("sidebar-active")
+    $("#sidebar-wrapper").find("li a").removeClass("sidebar-active")
+    $("#sidebar-wrapper li.sidebar-brand").addClass("sidebar-active")
+
+})
+$("#show-multifile").on("click",function(){    
+    $("#subnavbar li").removeClass("active")
+    $("#show-multifile").addClass("active")
+    active="Start"
+    ncateg="__Multi"
+    resetview()
+})
+$("#show-options").on("click",function(){  
+    $("#subnavbar li").removeClass("active")
+    $("#show-options").addClass("active")  
+    active="__Options"
+    ncateg="__Options"
+    resetview()
+})
+function resetbadges(idstring){
+    badgelist=files[idstring]["badges"]
+    bhtml=$("#"+idstring+" div.rul-badges")
+    bhtml.html("")
+    for (x in badgelist){                
+        elem=$("#sidebar-wrapper li[opnumber="+badgelist[x]["opn"]+"] span")
+        snode=$("<span "+spandefault+"></span>")
+        snode.removeClass("pull-right")
+        snode.attr("title",x)
+        snode.attr("click-opn",badgelist[x]["opn"])
+        snode.attr("click-id",idstring)
+        snode.attr("click-categ",x)
+        snode.tooltip()
+        elem.text(badgelist[x]["nr"])
+        snode.text(badgelist[x]["nr"])
+        elem.addClass("hidden")
+        snode.addClass("hidden")
+        if (badgelist[x]["nr"]!=""){
+            elem.removeClass("hidden")
+            snode.removeClass("hidden")
+        }
+        elem.removeClass("alert-success").removeClass("alert-danger")
+        snode.removeClass("alert-success").removeClass("alert-danger")
+        if (badgelist[x]["nr"]==0){
+            elem.addClass("alert-success")
+            snode.addClass("alert-success")
+            elem.removeClass("hidden")
+            snode.removeClass("hidden")
+
+        }else{
+            elem.addClass("alert-danger")
+            snode.addClass("alert-danger")
+        }
+        if (idstring!="the-default-rul"){
+            bhtml.append(snode)
+        }
+    }
+    if (idstring!="the-default-rul"){
+        $("#"+idstring+" div.rul-badges span").click(function(evt){    
+            activeid=$(evt.target).attr("click-id")
+            settext(activeid)
+            active=$(evt.target).attr("click-categ")
+            $("#sidebar-wrapper").find("li").removeClass("sidebar-active")
+            $("#sidebar-wrapper").find("li a").removeClass("sidebar-active")
+            $("#sidebar-wrapper li[opnumber="+$(evt.target).attr("click-opn")+"]").addClass("sidebar-active")
+            handleerrors(activeid)
+            resetbadges(activeid)
+            resetview()
+            showerrors()
+            reseterrview()
+        })
+    }
+}
+function makebadgelist(idstring){
+    badgelist={}
+    if (files[idstring]["errors"]==-1){
+        for (ei in odoc["checklist"]){      
+            badgelist[odoc["checklist"][ei]["name"]]={nr:"?!",opn:parseInt(ei)+1}
+        }
+    }else{
+        elist=["_all_"]
+        for (ei in odoc["checklist"]){
+            elist.push(odoc["checklist"][ei]["name"])      
+            badgelist[odoc["checklist"][ei]["name"]]={nr:0,opn:parseInt(ei)+1}
+        }
+
+        for (ei in elist){
+            ename=elist[ei]            
+            if (files[idstring]["errors"][ename].length>0){
+                for (eri in files[idstring]["errors"][ename]){
+                    if (ename!="_all_"){
+                        badgelist[ename]["nr"]++
+                    }else{
+                        for (x in badgelist){
+                            badgelist[x]["nr"]++                        
+                        }
+                    }
+                }
+            }
+        }                      
+    }
+    return badgelist
+}
+function handleerrors(idstring){
+    if (idstring in files){
+        badgelist=makebadgelist(idstring)
+        if (files[idstring]["errors"]==-1){
+            //handle FAIL
+
+            $("#errorlist").html("<h4>Test Failed</h4>")
+            // for (ei in odoc["checklist"]){            
+            //     badgelist[odoc["checklist"][ei]["name"]]={nr:"?!",opn:parseInt(ei)+1}
+            // }
+            // if (files[idstring].order>=0){
+            //     //reset badges
+            // }
+
+        }else{
+            // if (files[idstring].order>=0){
+                
+            // }
+            $("#viewallerrors").addClass("in")
+
+            h="<table  >"
+            elist=["_all_"]
+            
+            for (ei in odoc["checklist"]){
+                elist.push(odoc["checklist"][ei]["name"])
+                // badgelist[odoc["checklist"][ei]["name"]]={nr:0,opn:parseInt(ei)+1}
+            }
+            // console.log(badgelist)
+            rowcounter=0;
+            for (ei in elist){
+                ename=elist[ei]            
+       
+                
+                if (files[idstring]["errors"][ename].length>0){
+                    if (ename!="_all_"){
+                        h+="<tr  errop='"+ename+"' ><td colspan='5'><h4>"+ename+"</h4></td></tr>"
+                    }else{
+                        h+="<tr errop='"+ename+"'><td colspan='5'><h4>Program errors</h4></td></tr>"
+                    }
+                    for (eri in files[idstring]["errors"][ename]){
+                        // if (ename!="_all_"){
+                        //     badgelist[ename]["nr"]++
+                        // }else{
+                        //     for (x in badgelist){
+                        //         badgelist[x]["nr"]++                        
+                        //     }
+                        // }                    
+                        
+                        //h+="<div style='display: table-row;'>"
+                        er=files[idstring]["errors"][ename][eri]
+                        errdesc="No Description found in options"
+                        errcol=""
+                        edata={}
+                        edata["_desc"]="No Description found in options"
+                        edata["_level"]="none"
+                        for (ek in edata){
+                            if (odoc["edata"].hasOwnProperty(er[0])){                       
+                                if (odoc["edata"][er[0]].hasOwnProperty(ek)){
+                                    edata[ek]=odoc["edata"][er[0]][ek]
+                                }
+                                if (odoc["edata"][er[0]].hasOwnProperty(er[1])){
+
+                                    if (odoc["edata"][er[0]][er[1]].hasOwnProperty(ek)){
+                                        edata[ek]=odoc["edata"][er[0]][er[1]][ek]
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                        h+="<tr id='datarow"+rowcounter+"' errop='"+ename+"' errcat='"+er[0]+"' errname='"+er[1]+"' style='background: "+odoc["cols"][edata["_level"]]+"'>"
+                        //h+="<div style='display: table-cell;'>"+er[0]+"</div>"
+                        //h+="<div style='display: table-cell;'>"+er[1]+"</div>"
+                        //h+="<div style='display: table-cell;width:70%;'>"+er[2]+"</div>"
+                        //h+="<div style='display: table-cell;'>"+er[3]+"</div>"
+                        h+="<td class='errorcateg'>"+er[0]+"</td>"
+                        h+="<td class='errorname' >"+er[1]+"</td>"
+                        h+="<td class='errorshowdesc' ><button onclick='desctoggle("+rowcounter+")' class='glyphicon glyphicon-collapse-down pull-right'></button></td>"                    
+                        h+="<td class='errortext' ><div style='overflow: auto;max-height:65px;'>"+er[2]+"</div></td>"
+                         
+                        if (typeof er[3] === 'number' && er[3]%1 == 0){
+                            h+="<td class='errorline' > <button class='label label-info glyphicon glyphicon-pencil' title='"+er[4].replace(/[^A-Za-z 0-9 \.,]*/g, '')+"' onclick='openrul("+er[3]+");'> "+er[3]+"</button></td>"
+                        }else{
+                            h+="<td class='errorline' >"+er[3]+"</td>"
+                        }
+                        //h+="</div>"
+                        h+="</tr>"
+                        h+="<tr id='descrow"+rowcounter+"' style='display:none;' errop='"+ename+"' errcat='"+er[0]+"' errname='"+er[1]+"'>"
+                        h+="<td colspan='3' class='errordelete'><button onclick='deleteerr(\""+er[1]+"\")' class='label label-warning glyphicon glyphicon-remove'> Delete</button> this error type? </td>"
+                        h+="<td colspan='2' colspan='2' class='errordesc'>"+edata["_desc"]+"</td>"
+                        h+="</tr>"
+                        rowcounter++;
+                    }                                    
+                }else{
+                    //h+="<div style='display: table-row;'><div style='display: table-cell;width:100%;'>no errors!</div></div>"
+                    if (ename!="_all_"){
+                        h+="<tr  errop='"+ename+"'><td colspan='4'><h4>"+ename+"</h4></td></tr>"
+                        h+="<tr  errop='"+ename+"'><td colspan='4'><span class='glyphicon glyphicon-thumbs-up'> no errors!</span></td></tr>"
+                    }
+                }
+
+                
+                
+            }
+            h+="</table>"
+            $("#errorlist").html(h)            
+        }
+        files[idstring]["badges"]=badgelist
+        resetbadges(idstring)
+        showerrors()
+        reseterrview()        
+    }
+
+}
+
+$(".oxctestbutton").on("click",function(){
+    checkrul(activeid,"#testbutton","#testbutton span")
+})
+
+function checkrul(idstring,buttonstr, buttonspanstr){
+    $(buttonstr).prop('disabled', true)
+    $(buttonspanstr).removeClass("glyphicon-play")
+    $(buttonspanstr).addClass("glyphicon-cog")
+
+    //odoc = jsyaml.load(optionsstring);
+        
+    $.ajax({
+                    url:'/_rultest',
+                    type: "POST",
+                    contentType:"application/json",
+                    dataType:"json",
+                    data: JSON.stringify({
+        basename: $("#baseeselect").val(),
+        rulstring: files[activeid]["fobj"][0]["cont"],
+        allops: odoc["checklist"]
+  
+      })
+      }).done(new function(idstring,buttonstr, buttonspanstr){
+        return function(data) {
+            files[idstring]["errors"]=data["errors"]
+            $(buttonstr).prop('disabled', false)
+            $(buttonspanstr).removeClass("glyphicon-cog")
+            $(buttonspanstr).addClass("glyphicon-play")
+            //console.log(files[idstring]["errors"])
+            handleerrors(idstring)
+            }
+      }(idstring,buttonstr, buttonspanstr)).fail(new function(idstring,buttonstr, buttonspanstr){
+        return function() {
+            files[idstring]["errors"]=-1
+            $(buttonstr).prop('disabled', false)
+            $(buttonspanstr).removeClass("glyphicon-cog")
+            $(buttonspanstr).addClass("glyphicon-play")
+            handleerrors(idstring)
+        }
+      }(idstring,buttonstr, buttonspanstr));
+}
+function reseterrview(){    
+    if ("Start"!=active){        
+        $("#errorlist").addClass("in")
+        $("#errorlist tr").addClass("hidden")
+        $("#errorlist tr[errop='_all_']").removeClass("hidden")  
+        $("#errorlist tr[errop='"+active+"']").removeClass("hidden")
+        $("#viewallerrors").addClass("hidden")
+    }else{
+        $("#viewallerrors").removeClass("hidden")
+        if (!viewall){
+            $("#errorlist").removeClass("in")
+        }else{
+            $("#errorlist").addClass("in")
+            $("#errorlist tr").removeClass("hidden")
+        }        
+    }
+}
+function desctoggle(id){
+    $("#descrow"+id).toggle()
+    $("#datarow"+id+" td.errorshowdesc button").toggleClass("glyphicon-collapse-down")
+    $("#datarow"+id+" td.errorshowdesc button").toggleClass("glyphicon-collapse-up")
+}
+function deleteerr(funcname){
+    for (ei in elist){
+        ename=elist[ei]
+        dellist=[]     
+        nerr=[]
+
+        for (eri in files[activeid]["errors"][ename]){
+            er=files[activeid]["errors"][ename][eri]
+            if (er[1]!=funcname){
+                //dellist.push(eri)
+                nerr.push(er)
+            }
+        }
+        files[activeid]["errors"][ename]=nerr
+        // dellist.reverse(); 
+        // console.log(activeid,ename,dellist,files[activeid]["errors"][ename].length)
+        // for (eri in dellist){
+        //     delete files[activeid]["errors"][ename][eri]
+        // }
+        // console.log(activeid,ename,dellist,files[activeid]["errors"][ename].length)
+        // console.log(files[activeid]["errors"])
+
+    }
+    files[activeid]["badges"]=makebadgelist(activeid)   
+    resetbadges(activeid)
+    $("#errorlist tr[errname='"+funcname+"']" ).each(function(){
+        //console.log($(this))
+        $(this).remove();
+    });
+}
+function openrul(line){
+
+    $("#modalrulfileid").modal("show")
+    jumpline=line;
+    $("#modalrulfileid").on("transitionend", function(event){        
+
+        if (jumpline>=0){
+            editorrulfile.resize(true);
+            editorrulfile.scrollToLine(jumpline, true, true, function () {});
+            editorrulfile.gotoLine(jumpline, 1, true); 
+        }
+        jumpline=-1;
+    })
+}
+
+function showerrors(){
+    if (active=="Start")
+    {
+        //$("#rulstart").addClass("in")
+        //$("#rultest").removeClass("in")
+        $("#rultest").find("h3").text(starttitle+modtitle)
+        $("#rultest").find("p").first().text(startdesc)
+    }else{
+        //$("#rulstart").removeClass("in")
+        $("#rultest").addClass("in")
+        $("#rultest").find("h3").text(active+modtitle)
+        for (ri=0;ri<odoc["checklist"].length;ri++){
+            if (active==odoc["checklist"][ri]["name"])
+            {
+                $("#rultest").find("p").first().text(odoc["checklist"][ri]["desc"])
+            }
+        }                
+    }
+
+}
+function resetrules(){
+    //rdoc = jsyaml.load(optionsstring);    
+    odoc = jsyaml.load(optionsstring);
+    $("#sidebar-wrapper ul").find('li:not(.sidebar-brand)').remove()
+    for (ri=0;ri<odoc["checklist"].length;ri++){
+        active="Start";        
+        $("#sidebar-wrapper ul").append('<li opnumber="'+(ri+1)+'"><a href="#">'+odoc["checklist"][ri]["name"]+'<span '+spandefault+'>42</span></a></li>');        
+    }
+
+    $("#sidebar-wrapper a").click(function(evt){    
+        $("#sidebar-wrapper").find("li").removeClass("sidebar-active")
+        $("#sidebar-wrapper").find("li a").removeClass("sidebar-active")
+        //active=$(evt.target).addClass("sidebar-active").text()
+        if ($(evt.target).prop("tagName")=="A"){
+            active=$(evt.target).addClass("sidebar-active").contents().get(0).nodeValue
+        }else{
+            active=$(evt.target).parent().addClass("sidebar-active").contents().get(0).nodeValue
+        }
+        showerrors()
+        reseterrview()
+        resetview()
+    })
+
+}
+/*
+$("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+});
+*/
+$("#baseeditbutton").on("click",function(){
+    $("#editfs").addClass("in")    
+    $("#basesavename").val($("#baseeselect").val())
+    {% for opt in ["basefile","addfile","schemafile","langfile"] %}
+$.ajax({
+  url: "/static/ruldata/"+$("#baseeselect").val()+"/{{opt}}.yaml",
+  data: {},
+  success: function( data ) {        
+        //if ("{{opt}}"=="schemafile")console.log(data)
+        $("#{{yamleditors[opt]["contentid"]}}").val(data)
+        {{yamleditors[opt]["editorvar"]}}.setValue(data,1); 
+        {{yamleditors[opt]["varstring"]}}={{yamleditors[opt]["editorvar"]}}.getValue();
+},
+  cache: false
+});    
+    {% endfor %}
+    
+})
+$("#basesavebutton").on("click",function(){
+
+
+$.ajax({
+                    url:'/_rulnewbase',
+                    type: "POST",
+                    contentType:"application/json",
+                    dataType:"json",
+                    data: JSON.stringify({
+        name: $("#basesavename").val(),
+        pwd: $("#basesavepasswd").val(),
+        basefile: basefilestring,
+        addfile: addfilestring,
+        schemafile: schemafilestring,
+        langfile: langfilestring
+
+      })
+         
+      }).done(function(data) {
+        console.log("done")
+      })
+  
+})
+
+
+$("body").on("ace-yamloptions-post-save", function(){    
+    resetrules()
+});
+
+$("body").on("ace-yamlrulfile-post-save", function(){    
+
+    if (activeid in files) {
+        files[activeid]["fobj"][0]["cont"]=rulfilestring    
+    }
+        
+});
+
+$('.rul-row  button.rul-merge').click(function(e) {
+    idstring=$($(e.target).closest( "div.rul-row" )).attr("id")        
+    found=""
+    foundid=-1
+    for (x in files){
+        if (files[x].order<0) continue;
+        if (files[x].order>files[idstring].order){
+            if (foundid<0 || files[x].order<foundid){
+                foundid=files[x].order
+                found=x
+            }
+        }
+    }
+
+    if (foundid>=0){
+        n="rulid-"+idstring.replace(/^rulid-/,"").replace(/_rul$/,"")+"-"+found.replace(/^rulid-/,"").replace(/_rul$/,"");
+        o=files[idstring].order
+        for (x in files){
+            if (files[x].order>=o )files[x].order++
+        }
+        files[n]={fnlist:[],"badgelist":{}, errors:{}, fobj:[],order:o};
+        fileorder++;        
+        copyrulrow(n); 
+        files[n]["fobj"].push({"fn":n,"cont":"mergeddata"})
+        $("#"+n).detach().insertBefore("#"+idstring)
+        $("#"+n+" button.rul-merge").prop('disabled', true)
+        $("#"+n+" button.rul-merge span").removeClass("glyphicon-compressed")
+        $("#"+n+" button.rul-merge span").addClass("glyphicon-cog")
+
+        $.ajax({
+            url:'/_rulmerge',
+            type: "POST",
+            contentType:"application/json",
+            dataType:"json",
+            data: JSON.stringify({
+                dataname: $("#baseeselect").val(),
+                datastr1: files[idstring]["fobj"][0]["cont"],
+                datastr2: files[found]["fobj"][0]["cont"],
+                modindex: $("#mergemodindex").val(),
+                prepare: $("#enable-mergereformat").prop('checked')
+            })
+        }).done(new function(nstr,s1str, s2str){
+        return function(data) {
+            $("#"+nstr+" button.rul-merge").prop('disabled', false)
+            $("#"+nstr+" button.rul-merge span").addClass("glyphicon-compressed")
+            $("#"+nstr+" button.rul-merge span").removeClass("glyphicon-cog")
+            console.log(files[nstr])
+            files[nstr]["fobj"][0]["cont"]=data["resrul"]
+            if ($("#enable-mergedeletesrc").prop('checked')) {
+                delete files[s1str];
+                $("#"+s1str).remove();        
+                delete files[s2str];
+                $("#"+s2str).remove();        
+            }
+            $("#mergemodindex").val(parseInt($("#mergemodindex").val())+parseInt($("#mergemodinc").val()))
+            
+            }
+      }(n,idstring, found)).fail(new function(nstr,s1str, s2str){
+        return function() {
+            $("#"+nstr+" button.rul-merge span").addClass("glyphicon-fire")
+            $("#"+nstr+" button.rul-merge").addClass("btn-danger")
+            $("#"+nstr+" button.rul-merge span").removeClass("glyphicon-cog")            
+        }
+      }(n,idstring, found));
+
+
+    }   
+    //settext(idstring)
+    //$("#modalrulfileid").modal("show")
+});
+
+$('.rul-row  button.rul-open').click(function(e) {
+    idstring=$($(e.target).closest( "div.rul-row" )).attr("id")    
+    activeid=idstring
+    settext(idstring)
+    $("#modalrulfileid").modal("show")
+});
+
+$('.rul-row  button.rul-test').click(function(e) {
+    idstring=$($(e.target).closest( "div.rul-row" )).attr("id")    
+    activeid=idstring
+    settext(idstring)
+    checkrul(activeid,"#"+activeid+" button.rul-test","#"+activeid+" button.rul-test span")
+});
+
+$('.rul-row  button.rul-delete').click(function(e) {
+    idstring=$($(e.target).closest( "div.rul-row" )).attr("id")    
+    delete files[idstring];
+    $("#"+idstring).remove();
+});
+
+$('.rul-row  button.rul-up').click(function(e) {
+    idstring=$($(e.target).closest( "div.rul-row" )).attr("id")    
+    found=""
+    foundid=-1
+    for (x in files){
+        if (files[x].order<0) continue;
+        if (files[x].order<files[idstring].order){
+            if (foundid<0 || files[x].order>foundid){
+                foundid=files[x].order
+                found=x
+            }
+        }
+    }
+    if (foundid>=0){
+        $("#"+idstring).detach().insertBefore("#"+found)
+        files[found].order=files[idstring].order
+        files[idstring].order=foundid
+    }   
+});
+
+$('.rul-row  button.rul-down').click(function(e) {
+    idstring=$($(e.target).closest( "div.rul-row" )).attr("id")    
+    found=""
+    foundid=-1
+    for (x in files){
+        if (files[x].order<0) continue;
+        if (files[x].order>files[idstring].order){
+            if (foundid<0 || files[x].order<foundid){
+                foundid=files[x].order
+                found=x
+            }
+        }
+    }
+    if (foundid>=0){
+        $("#"+idstring).detach().insertAfter("#"+found)
+        files[found].order=files[idstring].order
+        files[idstring].order=foundid
+    }   
+});
+
+function copyrulrow(idstring){
+  t=$("#rulrowtemplate").clone( withDataAndEvents=true, deepWithDataAndEvents =true );
+  t.removeClass("collapse");
+//  t.find(".rul-rename").val(n)
+  t.find(".rul-rename").val(n.replace(/....$/,"").replace(/^....../,""))
+  t.prop("id",idstring);
+//  t.find(".rul-badges").append("<span class='badge  alert-default'>not tested</span>")
+//  resetselect(t);
+  $("#rul-rows").append(t);  
+
+}
+
+var myDropzone = new Dropzone("#dropzone", { url: "/file/post",previewsContainer:document.getElementById("imgout"),
+createImageThumbnails:false,
+thumbnailWidth:32,
+thumbnailHeight:40,
+fallback: function(){
+messageElement = Dropzone.createElement("<div class='dz-message'><span>Your browser does not support drag'n'drop file uploads. There is no fallback :( use a more recent browser.</span></div>");
+          return this.element.appendChild(messageElement);
+        }
+});
+myDropzone.options.autoProcessQueue=false;
+//myDropzone.options.previewTemplate='<div class="dz-preview dz-file-preview" style="display:inline;">  <div  style="display:inline;" class="dz-details">   <img  style="display:inline;" data-dz-thumbnail />  </div>     </div>';
+
+
+
+myDropzone.on("addedfile", function(file) {
+    ftest=file.name.toUpperCase()
+    allowedext=["RUL"]  
+    console.log(ftest,(allowedext.indexOf(ftest.substr(ftest.length - 3))>=0 && file.size<3000000  ))
+    if (allowedext.indexOf(ftest.substr(ftest.length - 3))>=0 && file.size<3000000  ) {        
+        n="rulid-"+file.name.replace(/[^A-Za-z0-9_]/g, "_");     
+        if(! files.hasOwnProperty(n)){  
+            files[n]={fnlist:[],"badgelist":{}, errors:{}, fobj:[],order:fileorder};
+            fileorder++;
+            copyrulrow(n);      
+            files[n]["fnlist"].push(file.name);
+
+            //      $("#rulid-"+n+" span.badge").text(files[n]["fobj"].length+"/"+files[n]["fnlist"].length).removeClass("badge-success").addClass("alert-warning");
+            //$("#rulid-"+n+" button.rul-test").prop('disabled', true);
+            readers[n]=new FileReader();
+            readers[n].onload=function(rulid,fname){
+                return function(event) {
+                    dataURL = readers[fname].result;
+                    //console.log(dataURL)
+// //          $("#rulid-"+rulid+" span.rul-inputimg").append("<img alt='"+fname+"' title='"+fname+"' src='"+dataURL+"' />")
+                    files[rulid]["fobj"].push({"fn":fname,"cont":dataURL})
+                    //$("#rulid-"+rulid+" button.rul-test").prop('disabled', false);
+                    //$("#rulid-"+rulid+" button.rul-open").prop('disabled', false);
+// //          if (files[rulid]["fobj"].length==files[rulid]["fnlist"].length){
+// //            $("#rulid-"+rulid+" span.badge").text(files[rulid]["fnlist"].length).addClass("badge-success").removeClass("alert-warning");
+// //            $("#rulid-"+rulid+" button.rul-convert").prop('disabled', false);
+// //          }else{
+// //            $("#rulid-"+rulid+" span.badge").text(files[rulid]["fobj"].length+"/"+files[rulid]["fnlist"].length).removeClass("badge-success").addClass("alert-warning");
+//           }
+          
+//           //console.log(spid,event,files);
+                }
+            }(n,n);
+            readers[n].readAsText(file);
+        }
+    }
+});
+
+files["the-default-rul"]={"order":-10, "badgelist":{}, "errors":{}, fnlist:["default"],fobj:[{"fn":"default","cont":$("textarea#rulfiletext").val()}]};
+activeid="the-default-rul"
+odoc = jsyaml.load(optionsstring);
+{{ modal_ace_edit_jsfooter(yamleditors) }}
+resetrules()
+resetview()
+$("#rultest").find("h3").text(starttitle)
+$("#rultest").find("p").first().text(startdesc)
+
+
+{# </script>    #}
+{% endblock %}
+{% block help %}
+help
+{% endblock %}

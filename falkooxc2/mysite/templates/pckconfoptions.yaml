@@ -1,0 +1,90 @@
+- name: PCKtoPNG
+  out: PNG
+  in: PCK
+  mode: PCK
+  maxcolnr: 8
+  width: 32
+  height: 40
+
+
+- name: KnownFiles2PNG
+  out: PNG
+  maxcolnr: 8
+  mode: magic
+  files:
+    SCANG.DAT: [DAT, 4, 4]
+    BIGLETS.DAT: [DAT, 16,16]
+    SMALLSET.DAT: [DAT, 8,9]
+    DETBLOB.DAT: [DAT, 16,16]
+    INTERWIN.DAT: [DAT, 160,556]
+    TFTDINTERWIN.DAT: [DAT, 160,598]
+    LANG1.DAT: [DAT, 64,154]
+    LANG2.DAT: [DAT, 64,154]
+    LANG3.DAT: [DAT, 64,154]
+    MEDIBITS.DAT: [DAT, 52,58]
+    SPICONS.DAT: [DAT, 32,24]
+    TEXTURE.DAT: [DAT, 32,32]
+    SCANG.DAT: [DAT, 4,4]
+    DETBORD.PCK: [SPK, 320,200]
+    DETBORD2.PCK: [SPK, 320,200]
+    ICONS.PCK: [SPK, 320,200]
+    MEDIBORD.PCK: [SPK, 320,200]
+    SCANBORD.PCK: [SPK, 320,200]
+    UNIBORD.PCK: [SPK, 320,200]
+    X1.PCK: [PCK, 128,64]
+    BIGOBS.PCK: [PCK, 32,48]
+
+- name: SCRtoPNG
+  out: PNG
+  mode: DAT
+  in: SCR
+  maxcolnr: 1
+  width: 320
+  height: 200
+
+- name: SPKtoPNG
+  out: PNG
+  mode: SPK
+  in: SPK
+  maxcolnr: 1
+  width: 320
+  height: 200
+
+- name: BDYtoPNG
+  out: PNG
+  mode: BDY
+  in: BDY
+  maxcolnr: 1
+  width: 320
+  height: 200
+
+- name: DATtoPNG
+  out: PNG
+  mode: DAT
+  in: DAT
+  maxcolnr: 1
+  width: 320
+  height: 200
+
+- name: SinglePCKtoPNG
+  out: PNG
+  mode: SPK
+  in: PCK
+  maxcolnr: 1
+  width: 320
+  height: 200
+
+- name: PNGtoPCK
+  out: ZIP
+  mode: PNG2PCK
+  in: PNG
+  width: 32
+  height: 40
+
+- name: SplitPNG
+  out: ZIP
+  mode: PNG2ZIP
+  in: PNG
+  width: 32
+  height: 40
+

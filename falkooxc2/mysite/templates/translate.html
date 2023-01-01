@@ -1,0 +1,414 @@
+{% extends "layout.html" %}
+{% block title %}Language Editor{% endblock %}
+{% block head %}
+<script type="text/javascript" src="/static/lib/FileSaver.js"></script>
+<!-- <script src="http://handsontable.com/lib/jquery.min.js"></script>//-->
+<script type="text/javascript" src="http://handsontable.com/dist/jquery.handsontable.full.js"></script>
+<link rel="stylesheet" media="screen" href="http://handsontable.com/dist/jquery.handsontable.full.css">
+<!-- <link rel="stylesheet" media="screen" href="http://handsontable.com/demo/css/samples.css">//-->
+<script type="text/javascript" src="/static/lib/js-yaml.min.js"></script>
+<script src="/static/lib/bootstrap.file-input.js" type="text/javascript"></script>
+<style type="text/css">
+body {padding-left:30px;padding-right:30px;}
+#example table {
+table-layout: fixed;
+}
+#example td {
+max-width: 80px;
+}
+  #example th, #example td {
+       max-width: 80px;
+       min-width: 30px;
+  }
+</style>
+	
+	<script src="js-yaml.min.js"></script>
+
+		<script type="text/javascript">
+var languages;
+function firstColRenderer(instance, td, row, col, prop, value, cellProperties) {
+  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  td.style.fontWeight = 'bold';
+  td.style.color = 'green';
+  td.style.background = '#CEC';
+}
+var unsafeHtmlRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+
+  td.innerHTML = value;
+  return td;
+};
+function firstRowRenderer(instance, td, row, col, prop, value, cellProperties) {
+  Handsontable.renderers.TextRenderer.apply(this, arguments);
+  td.style.fontWeight = 'bold';
+  
+  td.style.background = 'lightgrey';
+}
+
+function exportcol(colid){
+    d=$("#example").handsontable('getData');    
+	res={};
+	res["extraStrings"]=[];
+	fn="noidea.rul";
+	for (i=1;i< d[0].length ;i++){
+		if (i==colid || colid==0){
+			fn="translate_"+unbreakstring(d[0][i])+".rul";
+			tmp={type:unbreakstring(d[0][i]),strings:{}}
+			for (w =1;w<d.length;w++){
+				tmp["strings"][d[w][0]]=unbreakstring(d[w][i]);
+			}
+			res["extraStrings"].push(tmp);
+		}
+	}
+	if (colid==0) fn="translate_all.rul";
+	var blob = new Blob([jsyaml.safeDump (res)], {
+    type: "text/plain;charset=utf-8;",
+});
+saveAs(blob, fn);
+	//download("test.rul",jsyaml.safeDump (res));
+	//console.log(jsyaml.safeDump (res));
+}
+function init() {
+
+
+    //Check File API support
+    if (window.File && window.FileList && window.FileReader) {
+        var filesInput = document.getElementById("uploadfile");
+
+        filesInput.addEventListener("change", function(event) {
+
+            var files = event.target.files; //FileList object
+            var output = document.getElementById("importtext");
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                //Only plain text
+                //console.log(file.type);
+                //if (!file.type.match('plain')) continue;
+
+                var picReader = new FileReader();
+
+                picReader.addEventListener("load", function(event) {
+
+                    var textFile = event.target;
+
+                    var div = document.createElement("div");
+//console.log(textFile.result);
+                    div.innerText = textFile.result;
+
+                    //output.insertBefore(div, null);
+					output.innerHTML=textFile.result;
+					
+
+                });
+
+                //Read the text file
+               picReader.readAsText(file);
+                //console.log(picReader.readAsText(file));
+            }
+
+        });
+
+	document.getElementById("importtext").style.display="none";
+	document.getElementById("uploadfile").style.display="inline";
+
+		}
+    else {
+		document.getElementById("importtext").style.display="inline";
+		document.getElementById("uploadfile").style.display="none";
+        console.log("Your browser does not support File API");
+    }
+  
+}
+  
+
+function filter(){
+//	$('#example tr').show();
+//	if ($(search_field).val()!=""){
+//		search();
+//		$('#example tr').hide();
+//		$('#example').find('tr').each(function(){console.log(1)});
+//		http://mindmup.github.io/editable-table/
+		alert("disabled");
+		//$("#example tr")
+		//.parents("tr").show();
+//$('#example > tbody  > tr').each(function(r) {console.log(r);});
+
+		//$('#example tr').hide();
+		//$('#example tr:has(td.htSearchResult)').show();
+//		$('#example tr:not(:has(td.htSearchResult))').hide();
+//	}
+
+}
+function search(){
+
+    var hot = $("#example").handsontable('getInstance');
+      var queryResult = hot.search.query($(search_field).val());
+     hot.render();
+}
+function breakstring(str){
+	newwords=str.split(' ');
+	newstring="";
+	nl=0;
+	for (nw=0; nw<newwords.length;nw++){
+		newstring+=newwords[nw];
+		nl+=newwords[nw].length
+		if (nw<newwords.length-1){
+			if (nl>document.getElementById("wordwrapvalue").value){
+				nl=0;
+				newstring+="\n";
+			}else{
+				newstring+=" ";
+			}
+		}
+	}
+	return newstring;
+}
+function unbreakstring(str){
+	if (str)return str.split("\n").join(" ");
+	else return "";
+}
+
+function importrul (){
+	var doc = jsyaml.load(document.getElementById('importtext').value);
+	var prelanguages=[];
+	var words=[];
+	//var lpos=new Object();
+	var wordmap={}
+	for (var l = 0 ; l<doc["extraStrings"].length; l++)
+	{
+			//console.log(doc["extraStrings"][l],);
+		prelanguages.push(doc["extraStrings"][l]["type"])
+		//lpos[doc["extraStrings"][l]["type"]]=l;
+		wordmap[doc["extraStrings"][l]["type"]]={};
+		for (var key in doc["extraStrings"][l]["strings"]) {
+			if (words.indexOf(key)==-1)words.push(key);
+			wordmap[doc["extraStrings"][l]["type"]][key]=doc["extraStrings"][l]["strings"][key];
+		}
+	}
+	words.sort();
+	languages=[""];
+	if (prelanguages.indexOf("en-US")!=-1){
+		languages.push("en-US");
+		prelanguages.splice(prelanguages.indexOf("en-US"),1);
+	}
+	if (prelanguages.indexOf("en-GB")!=-1){
+		languages.push("en-GB");
+		prelanguages.splice(prelanguages.indexOf("en-GB"),1);
+	}
+	prelanguages.sort();
+	for (pl=0;pl<prelanguages.length;pl++) 
+		languages.push(prelanguages[pl]);	
+	console.log(languages,words);
+  var data = [
+//    ["", "Maserati", "Mazda", "Mercedes", "Mini", "Mitsubishi"],
+//    ["2009", 0, 2941, 4303, 354, 5814],
+//    ["2010", 5, 2905, 2867, 412, 5284],
+//    ["20\n\n11", 4, 2517, 4822, 552, 6127],
+//    ["20\n12", 2, 2422, 5399, 776, "41\n\n\n51 fd dgfh gfh gfh fgh gfh gfh gf"]
+  ];
+  
+for (w=-1;w<words.length;w++){
+   tmp=[];
+	for (l=0;l<languages.length;l++) {				
+		if (w<0){
+			if (w==-3){
+				txt = "<button style='padding:1px;line-height:17px;' onclick='exportcol("+l+");return false;' >";
+				switch (l) {
+				case 0:
+					txt+="export all";
+				default:
+					txt+="export";
+				}
+				tmp.push(txt+"</button>");
+			}else{
+				tmp.push(languages[l]);
+			}
+		}else{
+			if (l==0){
+				tmp.push(words[w]);
+			}else{
+				
+				if (typeof wordmap[languages[l]] != 'undefined' && typeof wordmap[languages[l]][words[w]] != 'undefined')
+					tmp.push(breakstring(wordmap[languages[l]][words[w]]));
+				else
+					tmp.push("");
+			}
+		}
+	}
+   data.push(tmp)
+}  
+
+  $('#example').handsontable({
+     
+    data: data,
+    minSpareRows: 0,
+        minRows: 2,
+  minCols: 2,
+      search:true,
+  rowHeaders: false,
+  colHeaders: true,
+  //colWidths: [55, 80, 80, 80, 80, 80, 80],
+     //colHeaders: ['EmployeeNo','EmployeeName','Department','Designation','','2'],
+     //rowHeaders: ['EmploeNo','EmployName','Departnt','Desation','2'],
+  //rowHeights: [50, 40, 100],
+  manualColumnResize: true,
+  manualRowResize: true,
+  manualHeaderResize: true,      
+      beforeRemoveCol: function (e){return e>0;},
+      beforeRemoveRow: function (e){return (e>0 && document.getElementById("allowrowdelete").checked);},
+      cells: function (row, col, prop) {
+    var cellProperties = {};
+    if (col === 0 ) {
+        cellProperties.readOnly = true; //make cell read-only if it is first row or the text reads 'readOnly'
+    }
+     if (row==-10 ){
+      cellProperties.renderer = unsafeHtmlRenderer; //uses function directly
+	  cellProperties.readOnly = true;
+    }
+     if (row==0 ){
+      cellProperties.renderer = firstRowRenderer; //uses function directly
+    }
+    //f (col==0){
+     //ellProperties.renderer = firstColRenderer; //uses function directly
+ // }
+    return cellProperties;
+  },
+      colHeaders: function (col) {
+          var txt = "<button style='padding:1px;line-height:17px;' onclick='exportcol("+col+");return false;' >"
+    switch (col) {
+      case 0:
+        return txt+="export all";
+
+      default:
+        txt+="export column";
+    
+    }
+    return txt+"</button>";
+  },
+    contextMenu: true
+  });
+
+}
+function options(){
+	document.getElementById("allowrowdelete").style.display="inline";
+	document.getElementById("allowrowdeletetxt").style.display="inline";
+	document.getElementById("wordwrapvalue").style.display="inline";
+	document.getElementById("wordwrapvaluetxt").style.display="inline";
+
+}
+//-----------------------------------------
+ 
+
+		</script>
+{% endblock %}
+
+{% block content %}
+
+
+	
+	
+    <!-- Page Content -->
+    <div class="container-fluid">
+        <div class="row">
+        	<div class="col-sm-3">
+        		<input type=file  title="Select a .rul file" data-filename-placement="inside" class="btn btn-primary" id="uploadfile" />
+
+			</div>            
+        	<div class="col-sm-3">
+        		<button type="button" id="importbutton" class="btn btn-primary" disabled="disabled" >Import</button>
+			</div>            
+        </div>
+        <div class="row">
+        	<div class="col-sm-2">
+        		<button type="button" class="btn btn-default" data-toggle="collapse" data-target=".optionstranslate">options</button>
+			</div>
+			<div class="col-sm-3">
+				<div id="demo" class="collapse optionstranslate">
+					<div class="input-group">
+      <span class="input-group-addon">
+        <input name="checkboxes" disabled="disabled" id="allowrowdelete" value="0" type="checkbox">
+      </span>
+      <button type="button" id="allowrowdeletebutton" class="btn btn-default" >disallow deletion of rows</button>
+    </div>
+    </div>
+    </div>
+			<div   class="col-sm-3">
+			<div   class=" collapse optionstranslate">
+					<div class="input-group " >
+      <span class="input-group-addon">
+      	<input id="wordwrapvalue" name="wordwrapvalue" value="50" class="inline " type="text">#letter wrap
+      </span>
+      
+    </div>
+					<!--<input name="checkboxes" id="allowrowdelete" value="0" type="checkbox">allow row delete/
+					<input id="wordwrapvalue" name="wordwrapvalue" value="50" class="inline input-xlarge" type="text">#letter wrap//-->
+					<textarea  style="display:none;" id="importtext"  >filled by script</textarea>
+				</div>
+				</div>
+			</div>
+		
+        <div class="row">
+        	<div class="col-sm-3 form-inline">
+        		<input id="search_field" placeholder="Search.." type="search" class="form-group form-control" >
+                <button type="button" id="translatesearch" class="form-group btn btn-default btn-lg">
+                          <span title="search" class="glyphicon glyphicon-search"></span> 
+                 </button>
+                <!--<button type="button" id="translatefilter" class="form-group btn btn-default btn-lg">
+                          <span title="filter" class="glyphicon glyphicon-filter"></span> 
+                 </button>//-->
+        		  
+			</div>       
+		</div>
+
+
+
+        <div class="row">
+            <div class="col-sm-12">
+
+            	<div class="handsontable" id="example"></div>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container -->
+
+
+
+{% endblock %}
+
+    
+    
+{% block jsfooter %}
+ $(document).ready(init);
+
+$(document ).on('change','#uploadfile' ,function() {$("#importbutton").prop('disabled', false);});
+$(document ).on('click','#importbutton' ,importrul);
+$(document ).on('click','#translatesearch' ,search);
+//$(document ).on('click','#translatefilter' ,filter);
+
+$(document ).on('click','#allowrowdeletebutton' ,function() {
+	$("#allowrowdelete").prop('checked',!  $("#allowrowdelete").prop('checked'));
+	$("#allowrowdeletebutton").toggleClass( "btn-warning" ); 
+	if ($("#allowrowdelete").prop('checked')){
+		$("#allowrowdeletebutton").html( 'allow deletion of rows');		
+	}else{
+		$("#allowrowdeletebutton").html( 'disallow deletion of rows');
+	}
+
+});
+
+$('input[type=file]').bootstrapFileInput();
+$('.file-inputs').bootstrapFileInput();
+//if (typeof window.FileReader === 'undefined') {
+//  $('.file-inputs').addClass("hidden");
+//  $("#importbutton").prop('disabled', false);
+//}
+
+{% endblock %}

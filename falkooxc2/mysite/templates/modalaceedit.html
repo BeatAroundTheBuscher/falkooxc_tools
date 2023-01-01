@@ -1,0 +1,281 @@
+{% macro modal_ace_edit_head(acedata) %}
+
+<script src="static/lib/ace-builds-master/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<style type="text/css" media="screen">
+
+{% for acekey in acedata %}
+#{{ acedata[acekey]["textidstring"] }} {
+    position: relative;
+    min-height: 90%;
+    height: 100px;
+}
+{% endfor %}
+
+.aceeditmodal-dialog {
+  width: 98%;
+  height: 92%;
+  padding: 0;
+}
+
+.aceeditmodal-content {
+  height: 99%;
+}
+.aceeditpull-left {
+  float: left !important;
+}
+.dropdown-submenu{position:relative;}
+.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
+.dropdown-submenu:hover>.dropdown-menu{display:block;}
+.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
+.dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
+.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;}
+
+</style>
+<script type="text/javascript">
+{% for acekey in acedata %}
+ 
+var {{ acedata[acekey]["varstring"] }};
+var {{ acedata[acekey]["textidstring"] }}fontsize=10;
+var {{ acedata[acekey]["textidstring"] }}currenttheme="ace/theme/monokai";
+{% endfor %}
+</script> 
+
+{% endmacro %}
+
+
+
+{% macro modal_ace_edit_button(acedate) %}
+    <a href="#" id="{{ acedate["buttonidstring"] }}" class="btn btn-success" data-toggle="modal" data-backdrop="static" data-target="#{{ acedate["modalidstring"] }}">{{ acedate["buttontext"] }}</a>
+{% endmacro %}
+
+
+
+{% macro modal_ace_edit_body(acedate) %}
+
+    <div class="modal fade modal-fullscreen force-fullscreen" id="{{ acedate["modalidstring"] }}" tabindex="-1" role="dialog" aria-labelledby="{{ acedate["modalidstring"] }}" aria-hidden="true">
+        <div class="modal-dialog aceeditmodal-dialog">
+            <div class="modal-content aceeditmodal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                    <h4 class="modal-title" id="myModalLabel">{{ acedate["title"] }}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <!--<h3>Modal Body</h3>//-->
+                        <button title="Undo" type="button" id="{{ acedate["textidstring"] }}undo" class="btn btn-default ">
+                          <span  class="glyphicon glyphicon-share-alt" style="-moz-transform: scale(-1, 1);-webkit-transform: scale(-1, 1);-o-transform: scale(-1, 1);-ms-transform: scale(-1, 1);transform: scale(-1, 1);"></span>
+                        </button>
+                        <button title="Redo" type="button" id="{{ acedate["textidstring"] }}redo" class="btn btn-default ">
+                          <span class="glyphicon glyphicon-share-alt"></span> 
+                        </button>
+                        <button type="button" id="{{ acedate["textidstring"] }}expand" class="btn btn-default ">
+                          <span class="glyphicon glyphicon-resize-full"></span> Expand all
+                        </button>
+                        <button type="button" id="{{ acedate["textidstring"] }}collapse" class="btn btn-default ">
+                          <span class="glyphicon glyphicon-resize-small"></span> Collapse all
+                        </button>
+                        <!-- <button type="button" id="yamleditslpitview" class="btn btn-default btn-lg">
+                          <span class="glyphicon glyphicon-sound-stereo"></span> Split View
+                        </button> //-->
+                        <button title="zoom in" type="button" id="{{ acedate["textidstring"] }}zoomin" class="btn btn-default ">
+                          <span class="glyphicon glyphicon-zoom-in"></span> 
+                        </button>
+                        <button title="zoom out" type="button" id="{{ acedate["textidstring"] }}zoomout" class="btn btn-default ">
+                          <span  class="glyphicon glyphicon-zoom-out"></span> 
+                        </button>
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            Options <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu">
+                            <li><a id="{{ acedate["textidstring"] }}-optioninvisibles" href="#"><span class="glyphicon glyphicon-ok hidden"></span> Show Invisibles</a></li>
+                            <li><a id="{{ acedate["textidstring"] }}-optionintendguides" href="#"><span class="glyphicon glyphicon-ok hidden"></span> Show IntendGuides</a></li>
+                            <li><a id="{{ acedate["textidstring"] }}-optiongutter" href="#"><span class="glyphicon glyphicon-ok hidden"></span> Show Gutter</a></li>
+                            <li class="dropdown-submenu">
+                                <a tabindex="-1" href="#">Soft Wrap</a>
+                                <ul class="dropdown-menu">
+                                  <li><a id="{{ acedate["textidstring"] }}-optionwrapoff" href="#"><span class="glyphicon glyphicon-ok hidden"></span> Off</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionwrapNUM" href="#"><span class="glyphicon glyphicon-ok hidden"></span> 40 chars</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionwrapNUM" href="#"><span class="glyphicon glyphicon-ok hidden"></span> 80 chars</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionwrapNUM" href="#"><span class="glyphicon glyphicon-ok hidden"></span> 120 chars</a></li>
+                                  <li><a id="{{ acedate["textidstring"] }}-optionwrapfree" href="#"><span class="glyphicon glyphicon-ok hidden"></span> Free</a></li>
+                                </ul>
+                            </li>
+                            <li class="divider"></li>    
+                            <li class="dropdown-submenu">
+                                <a tabindex="-1" href="#">Light Themes</a>
+                                <ul class="dropdown-menu">
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> chrome</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> clouds</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> crimson_editor</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> dawn</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> dreamweaver</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> eclipse</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> github</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> solarized_light</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> textmate</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> tomorrow</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> kuroir</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> katzenmilch</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                            <a tabindex="-1" href="#">Dark Themes</a>
+                                <ul class="dropdown-menu">
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> ambiance</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> chaos</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> clouds_midnight</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> cobalt</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> idle_fingers</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> kr_theme</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> merbivore</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> merbivore_soft</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> mono_industrial</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> monokai</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> pastel_on_dark</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> solarized_dark</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> terminal</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> tomorrow_night</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> tomorrow_night_blue</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> tomorrow_night_bright</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> tomorrow_night_eighties</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> twilight</a></li>
+                                  <li><a class="{{ acedate["textidstring"] }}-optionsettheme" href="#"> vibrant_ink</a></li>
+                                </ul>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <div id="{{ acedate["textidstring"] }}"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="{{ acedate["textidstring"] }}reset" class="btn btn-warning pull-left">Reset</button>
+                    <button type="button" id="{{ acedate["textidstring"] }}save" class="btn btn-primary" data-dismiss="modal">Save <!--changes//-->and close</button>
+                    <!--<button type="button" id="{{ acedate["textidstring"] }}close" class="btn btn-default" data-dismiss="modal">Close</button>//-->
+            </div>
+        </div>
+      </div>
+    </div>
+
+{% endmacro %}
+
+
+
+
+{% macro modal_ace_edit_jsfooter(acedata) %}
+{% for acekey in acedata %}
+    var {{ acedata[acekey]["editorvar"] }} = ace.edit("{{ acedata[acekey]["textidstring"] }}");     
+     //$(document).ready( function() {
+        {{ acedata[acekey]["editorvar"] }}.setValue($("#{{ acedata[acekey]["contentid"] }}").val(),1); 
+        {{ acedata[acekey]["varstring"] }}={{ acedata[acekey]["editorvar"] }}.getValue();
+    //});
+
+   
+    {{ acedata[acekey]["editorvar"] }}.setTheme({{ acedata[acekey]["textidstring"] }}currenttheme);
+    {{ acedata[acekey]["editorvar"] }}.getSession().setMode("ace/mode/yaml");
+    {{ acedata[acekey]["editorvar"] }}.getSession().setTabSize(2);
+    {{ acedata[acekey]["editorvar"] }}.getSession().setUseSoftTabs(true);
+    {{ acedata[acekey]["editorvar"] }}.resize(true);
+    {{ acedata[acekey]["editorvar"] }}.setShowPrintMargin(false);    
+    //editor.scrollToLine(300, true, true, function () {});
+    //editor.gotoLine(300, 10, true);
+    //editor.getSession().foldAll(0,100);
+    //window.setTimeout(function() { editor.getSession().foldAll();editor.getSession().unfold(2000,3000); }, 100);
+
+    $("#{{ acedata[acekey]["textidstring"] }}undo").click(function(){ {{ acedata[acekey]["editorvar"] }}.undo();{{ acedata[acekey]["editorvar"] }}.focus();});
+    $("#{{ acedata[acekey]["textidstring"] }}redo").click(function(){ {{ acedata[acekey]["editorvar"] }}.redo();{{ acedata[acekey]["editorvar"] }}.focus();});
+    $("#{{ acedata[acekey]["textidstring"] }}expand").click(function(){ {{ acedata[acekey]["editorvar"] }}.getSession().unfold();{{ acedata[acekey]["editorvar"] }}.focus();});
+    $("#{{ acedata[acekey]["textidstring"] }}collapse").click(function(){ {{ acedata[acekey]["editorvar"] }}.getSession().foldAll();{{ acedata[acekey]["editorvar"] }}.focus();});
+    //$("#yamleditslpitview").click(function(){editor.getSession().setSplits(2);});
+
+    $("#{{ acedata[acekey]["textidstring"] }}zoomin").click(function(){ {{ acedata[acekey]["textidstring"] }}fontsize++;document.getElementById('{{ acedata[acekey]["textidstring"] }}').style.fontSize={{ acedata[acekey]["textidstring"] }}fontsize+'px';{{ acedata[acekey]["editorvar"] }}.focus();});
+    $("#{{ acedata[acekey]["textidstring"] }}zoomout").click(function(){ {{ acedata[acekey]["textidstring"] }}fontsize--;document.getElementById('{{ acedata[acekey]["textidstring"] }}').style.fontSize={{ acedata[acekey]["textidstring"] }}fontsize+'px';{{ acedata[acekey]["editorvar"] }}.focus();});
+
+$("#{{ acedata[acekey]["textidstring"] }}-optioninvisibles").click(function(){ 
+{{ acedata[acekey]["editorvar"] }}.setShowInvisibles(! {{ acedata[acekey]["editorvar"] }}.getShowInvisibles()); 
+updateaceoption{{ acedata[acekey]["textidstring"] }}(); });
+
+$("#{{ acedata[acekey]["textidstring"] }}-optionintendguides").click(function(){ 
+{{ acedata[acekey]["editorvar"] }}.setDisplayIndentGuides(! {{ acedata[acekey]["editorvar"] }}.getDisplayIndentGuides()); 
+updateaceoption{{ acedata[acekey]["textidstring"] }}(); });
+
+$("#{{ acedata[acekey]["textidstring"] }}-optiongutter").click(function(){ 
+{{ acedata[acekey]["editorvar"] }}.renderer.setShowGutter(! {{ acedata[acekey]["editorvar"] }}.renderer.getShowGutter()); 
+updateaceoption{{ acedata[acekey]["textidstring"] }}(); });
+
+$("#{{ acedata[acekey]["textidstring"] }}-optionwrapoff").click(function(){ 
+{{ acedata[acekey]["editorvar"] }}.setOption("wrap", "off"); 
+updateaceoption{{ acedata[acekey]["textidstring"] }}(); });
+
+$("#{{ acedata[acekey]["textidstring"] }}-optionwrapfree").click(function(){ 
+{{ acedata[acekey]["editorvar"] }}.setOption("wrap", "free"); 
+updateaceoption{{ acedata[acekey]["textidstring"] }}(); });
+
+$(".{{ acedata[acekey]["textidstring"] }}-optionwrapNUM").click(function(x){ 
+{{ acedata[acekey]["editorvar"] }}.setOption("wrap", parseInt($(x.target).text().replace(new RegExp("[^0-9]", "g"), "")));
+updateaceoption{{ acedata[acekey]["textidstring"] }}();});
+
+$(".{{ acedata[acekey]["textidstring"] }}-optionsettheme").click(function(x){ 
+{{ acedata[acekey]["textidstring"] }}currenttheme="ace/theme/"+$(x.target).text().trim()
+{{ acedata[acekey]["editorvar"] }}.setTheme({{ acedata[acekey]["textidstring"] }}currenttheme);
+updateaceoption{{ acedata[acekey]["textidstring"] }}();});
+
+$(".{{ acedata[acekey]["textidstring"] }}-optionsettheme").hover(function(x){ 
+{{ acedata[acekey]["editorvar"] }}.setTheme("ace/theme/"+$(x.target).text().trim());},function(x){ 
+{{ acedata[acekey]["editorvar"] }}.setTheme({{ acedata[acekey]["textidstring"] }}currenttheme);});
+
+function updateaceoption{{ acedata[acekey]["textidstring"] }}(){
+    if ({{ acedata[acekey]["editorvar"] }}.getShowInvisibles()){$("#{{ acedata[acekey]["textidstring"] }}-optioninvisibles span").removeClass("hidden");}else{$("#{{ acedata[acekey]["textidstring"] }}-optioninvisibles span").addClass("hidden");}
+
+    if ({{ acedata[acekey]["editorvar"] }}.getDisplayIndentGuides()){$("#{{ acedata[acekey]["textidstring"] }}-optionintendguides span").removeClass("hidden");}else{$("#{{ acedata[acekey]["textidstring"] }}-optionintendguides span").addClass("hidden");}
+
+    if ({{ acedata[acekey]["editorvar"] }}.renderer.getShowGutter()){$("#{{ acedata[acekey]["textidstring"] }}-optiongutter span").removeClass("hidden");}else{$("#{{ acedata[acekey]["textidstring"] }}-optiongutter span").addClass("hidden");}
+
+
+    if ({{ acedata[acekey]["editorvar"] }}.getOption("wrap")=="off"){$("#{{ acedata[acekey]["textidstring"] }}-optionwrapoff span").removeClass("hidden");}else{$("#{{ acedata[acekey]["textidstring"] }}-optionwrapoff span").addClass("hidden");}
+
+    if ({{ acedata[acekey]["editorvar"] }}.getOption("wrap")=="free"){$("#{{ acedata[acekey]["textidstring"] }}-optionwrapfree span").removeClass("hidden");}else{$("#{{ acedata[acekey]["textidstring"] }}-optionwrapfree span").addClass("hidden");}
+
+    $( ".{{ acedata[acekey]["textidstring"] }}-optionwrapNUM" ).each(function(i, obj) {
+        if ({{ acedata[acekey]["editorvar"] }}.getOption("wrap")==parseInt($(obj).text().replace(new RegExp("[^0-9]", "g"), ""))) {$(obj).find("span").removeClass("hidden");   }else{$(obj).find("span").addClass("hidden");}    });
+
+}
+
+updateaceoption{{ acedata[acekey]["textidstring"] }}();
+
+    $("#{{ acedata[acekey]["textidstring"] }}save").click(function(){ 
+      {{ acedata[acekey]["varstring"] }}={{ acedata[acekey]["editorvar"] }}.getValue();
+      {{ acedata[acekey]["editorvar"] }}.focus();
+      $("body").trigger("ace-{{ acedata[acekey]["textidstring"] }}-post-save");      
+    });
+    $("#{{ acedata[acekey]["textidstring"] }}reset").click(function(){
+      tmpline={{ acedata[acekey]["editorvar"] }}.selection.getCursor().row;
+      tmpcol={{ acedata[acekey]["editorvar"] }}.selection.getCursor().column;
+      {{ acedata[acekey]["editorvar"] }}.setValue({{ acedata[acekey]["varstring"] }},1);{{ acedata[acekey]["editorvar"] }}.gotoLine(tmpline+1,tmpcol);{{ acedata[acekey]["editorvar"] }}.scrollToLine(tmpline+1, true, true, function () {});{{ acedata[acekey]["editorvar"] }}.focus();});
+    
+    
+
+
+
+{% endfor %}
+
+    function resizeAce() {
+        var h = window.innerHeight;
+        if (h > 360) {
+            {% for acekey in acedata %}
+                $('#{{ acedata[acekey]["textidstring"] }}').css('height', (h - 300).toString() + 'px');
+            {% endfor %}
+        }
+    };
+    $(window).on('resize', function () {
+        resizeAce();
+    });
+    resizeAce();
+
+{% endmacro %}

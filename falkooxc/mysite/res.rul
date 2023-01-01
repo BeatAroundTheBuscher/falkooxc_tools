@@ -1,0 +1,2639 @@
+﻿craftWeapons:
+  - type: STR_GAUSS_CANNON_UC
+    sprite: 11
+    sound: 9
+    damage: 100
+    range: 14
+    accuracy: 60
+    reloadCautious: 14
+    reloadStandard: 12
+    reloadAggressive: 10
+    ammoMax: 120
+    launcher: STR_GAUSS_CANNON
+    clip: STR_GAUSS_CANNON_ROUNDS_X60
+    projectileType: 4
+    projectileSpeed: 8
+    rearmRate: 120
+items:
+  - type: STR_TANK_CANNON
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 4
+    size: 6
+    costBuy: 420000
+    costSell: 340000
+    transferTime: 96
+    weight: 1
+    fireSound: 12
+    compatibleAmmo:
+      - STR_HWP_CANNON_SHELLS
+    accuracySnap: 70
+    accuracyAimed: 90
+    tuSnap: 30
+    tuAimed: 80
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 0
+    accuracyAuto: 40
+    tuAuto: 50
+  - type: STR_HWP_CANNON_SHELLS
+    bigSprite: -1
+    floorSprite: 12
+    size: 0.1
+    costBuy: 200
+    costSell: 100
+    transferTime: 48
+    clipSize: 30
+    weight: 1
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    hitSound: 13
+    hitAnimation: 0
+    power: 85
+    damageType: 3
+    blastRadius: 1
+    armor: 10
+  - type: STR_TANK_HMG
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 4
+    size: 6
+    costBuy: 420000
+    costSell: 120000
+    transferTime: 96
+    weight: 1
+    fireSound: 12
+    compatibleAmmo:
+      - STR_HWP_HMG_SHELLS
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 0
+    accuracyAuto: 65
+    tuAuto: 35
+    arcingShot: true
+    autoRange: 20
+    autoShots: 10
+    listOrder: 1204
+  - type: STR_HWP_HMG_SHELLS
+    bigSprite: -1
+    floorSprite: 12
+    size: 0.1
+    costBuy: 100
+    costSell: 20
+    transferTime: 48
+    clipSize: 80
+    weight: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    hitSound: 13
+    hitAnimation: 26
+    power: 65
+    damageType: 1
+    bulletSpeed: 50
+    explosionSpeed: 10
+    listOrder: 1205
+  - type: STR_TANK_MINIGUN
+    bigSprite: 110
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 2
+    size: 6
+    costBuy: 630000
+    costSell: 510000
+    transferTime: 96
+    weight: 1
+    fireSound: 63
+    compatibleAmmo:
+      - STR_HWP_MINIGUN_CLIP
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 8
+    accuracyAuto: 53
+    tuAuto: 38
+    autoShots: 20
+    listOrder: 1215
+  - type: STR_HWP_MINIGUN_CLIP
+    bigSprite: -1
+    floorSprite: 12
+    size: 0.001
+    costBuy: 40
+    costSell: 30
+    transferTime: 48
+    clipSize: 200
+    weight: 1
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    hitSound: 22
+    hitAnimation: 26
+    power: 55
+    damageType: 1
+    bulletSpeed: 32
+    explosionSpeed: 10
+    listOrder: 1216
+  - type: STR_TANK_ROCKET_LAUNCHER
+    bigSprite: 42
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 0
+    size: 6
+    costBuy: 480000
+    costSell: 360000
+    transferTime: 96
+    weight: 1
+    fireSound: 52
+    compatibleAmmo:
+      - STR_HWP_ROCKETS
+    accuracySnap: 55
+    accuracyAimed: 115
+    tuSnap: 45
+    tuAimed: 75
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 1
+    accuracyAuto: 44
+    tuAuto: 50
+    autoShots: 2
+  - type: STR_HWP_ROCKETS
+    bigSprite: -1
+    floorSprite: 16
+    size: 0.6
+    costBuy: 1500
+    costSell: 1250
+    transferTime: 48
+    clipSize: 16
+    weight: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    hitSound: 0
+    hitAnimation: 0
+    power: 85
+    damageType: 3
+  - type: STR_TANK_GRENADE_LAUNCHER
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 3
+    size: 6
+    costBuy: 420000
+    costSell: 120000
+    transferTime: 96
+    weight: 1
+    fireSound: 4
+    compatibleAmmo:
+      - STR_HWP_GRENADES
+    accuracySnap: 85
+    accuracyAimed: 115
+    tuSnap: 30
+    tuAimed: 70
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 0
+    accuracyAuto: 45
+    tuAuto: 63
+    arcingShot: true
+    listOrder: 1405
+  - type: STR_HWP_GRENADES
+    bigSprite: -1
+    floorSprite: 16
+    size: 0.6
+    costBuy: 500
+    costSell: 350
+    transferTime: 48
+    clipSize: 40
+    weight: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    hitSound: 0
+    hitAnimation: 0
+    power: 75
+    damageType: 3
+    blastRadius: 2
+    listOrder: 1406
+  - type: STR_TANK_ARTILLERY
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 3
+    size: 6
+    costBuy: 520000
+    costSell: 140000
+    transferTime: 96
+    weight: 1
+    fireSound: 4
+    compatibleAmmo:
+      - STR_ARTILLERY_SHELLS
+    accuracyAimed: 170
+    tuAimed: 50
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 0
+    arcingShot: true
+    listOrder: 1410
+  - type: STR_ARTILLERY_SHELLS
+    bigSprite: -1
+    floorSprite: 16
+    size: 0.6
+    costBuy: 500
+    costSell: 150
+    transferTime: 48
+    clipSize: 10
+    weight: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    hitSound: 0
+    hitAnimation: 0
+    power: 95
+    damageType: 3
+    blastRadius: 4
+    listOrder: 1411
+  - type: STR_TANK_LASER_CANNON
+    bigSprite: 54
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 5
+    size: 6
+    costSell: 594000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 11
+    accuracySnap: 74
+    accuracyAimed: 85
+    tuSnap: 33
+    tuAimed: 75
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 2
+    hitSound: 19
+    hitAnimation: 36
+    power: 110
+    damageType: 4
+    accuracyAuto: 52
+    tuAuto: 50
+  - type: STR_TANK_GAUSS
+    bigSprite: 110
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 8
+    size: 6
+    costSell: 594000
+    transferTime: 96
+    weight: 1
+    fireSound: 55
+    compatibleAmmo:
+      - STR_HWP_GAUSS_AMMO
+    accuracySnap: 70
+    accuracyAimed: 105
+    tuSnap: 33
+    tuAimed: 75
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 9
+    listOrder: 1510
+  - type: STR_HWP_GAUSS_AMMO
+    bigSprite: -1
+    floorSprite: 12
+    size: 0.1
+    costSell: 6600
+    transferTime: 48
+    clipSize: 60
+    weight: 1
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    hitSound: 56
+    hitAnimation: 26
+    power: 95
+    damageType: 1
+    listOrder: 1511
+  - type: STR_GAUSS_CANNON_ROUNDS_X60
+    size: 0.1
+    costSell: 160000
+    transferTime: 96
+    clipSize: 60
+    listOrder: 951
+  - type: STR_GAUSS_CANNON
+    size: 1.2
+    costSell: 162000
+    transferTime: 48
+    listOrder: 950
+  - type: STR_TANK_PLASMA
+    bigSprite: 40
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 8
+    size: 6
+    costSell: 680000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 18
+    accuracySnap: 75
+    accuracyAimed: 105
+    tuSnap: 25
+    tuAimed: 75
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 3
+    hitSound: 19
+    hitAnimation: 46
+    power: 110
+    damageType: 5
+    accuracyAuto: 41
+    tuAuto: 50
+    listOrder: 1520
+  - type: STR_TANK_SNOOP
+    bigSprite: 40
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 3
+    size: 6
+    costBuy: 80000
+    costSell: 40000
+    transferTime: 48
+    clipSize: -1
+    weight: 1
+    fireSound: 4
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 3
+    hitSound: 22
+    hitAnimation: 26
+    power: 60
+    damageType: 1
+    accuracyAuto: 35
+    tuAuto: 30
+    autoShots: 6
+    listOrder: 1068
+  - type: STR_SCOUT_DRONE
+    bigSprite: 69
+    bulletSprite: 3
+    size: 6
+    costBuy: 30000
+    costSell: 11400
+    transferTime: 72
+    clipSize: -1
+    weight: 10
+    fireSound: 88
+    accuracySnap: 100
+    tuSnap: 20
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 1
+    invHeight: 1
+    hitSound: 13
+    hitAnimation: 26
+    power: 40
+    damageType: 9
+    blastRadius: 3
+    arcingShot: true
+    listOrder: 1099
+    maxRange: 3
+  - type: STR_SMALL_TANK_CORPSE
+    bigSprite: 63
+    floorSprite: 84
+    weight: 20
+    battleType: 10
+    invWidth: 2
+    invHeight: 3
+    twoHanded: true
+    recover: false
+  - type: STR_HOVERTANK_ROCKET_LAUNCHER
+    bigSprite: 42
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 0
+    size: 6
+    costSell: 940000
+    transferTime: 96
+    weight: 1
+    fireSound: 52
+    compatibleAmmo:
+      - STR_HWP_ROCKETS
+    accuracySnap: 80
+    accuracyAimed: 100
+    tuSnap: 45
+    tuAimed: 80
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 1
+    listOrder: 1575
+  - type: STR_HOVERTANK_GRENADE_LAUNCHER
+    bigSprite: 42
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 3
+    size: 6
+    costSell: 520000
+    transferTime: 96
+    weight: 1
+    fireSound: 4
+    compatibleAmmo:
+      - STR_HWP_ADVANCED_GRENADES
+    accuracySnap: 85
+    accuracyAimed: 115
+    tuSnap: 40
+    tuAimed: 70
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 1
+    arcingShot: true
+    listOrder: 1576
+  - type: STR_HWP_ADVANCED_GRENADES
+    bigSprite: -1
+    floorSprite: 16
+    size: 0.6
+    costSell: 20700
+    transferTime: 48
+    clipSize: 20
+    weight: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    hitSound: 0
+    hitAnimation: 0
+    power: 80
+    damageType: 3
+    blastRadius: 6
+    listOrder: 1577
+  - type: STR_HOVERTANK_ARTILLERY
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 3
+    size: 6
+    costSell: 590000
+    transferTime: 96
+    weight: 1
+    fireSound: 4
+    compatibleAmmo:
+      - STR_HWP_ADVANCED_ARTILLERY_SHELLS
+    accuracyAimed: 170
+    tuAimed: 50
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 0
+    armor: 20
+    arcingShot: true
+    listOrder: 1576
+  - type: STR_HWP_ADVANCED_ARTILLERY_SHELLS
+    bigSprite: -1
+    floorSprite: 16
+    size: 0.6
+    costSell: 1500
+    transferTime: 48
+    clipSize: 10
+    weight: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    hitSound: 0
+    hitAnimation: 0
+    power: 95
+    damageType: 3
+    blastRadius: 4
+    listOrder: 1577
+  - type: STR_HOVERTANK_LASER
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 5
+    size: 6
+    costSell: 594000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 11
+    accuracySnap: 70
+    accuracyAimed: 120
+    tuSnap: 25
+    tuAimed: 75
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 2
+    hitSound: 19
+    hitAnimation: 36
+    power: 110
+    damageType: 4
+    armor: 20
+  - type: STR_HOVERTANK_SCATTER_LASER
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 5
+    size: 6
+    costSell: 610000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 11
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 2
+    hitSound: 19
+    hitAnimation: 36
+    power: 110
+    damageType: 4
+    armor: 20
+    accuracyAuto: 20
+    tuAuto: 50
+    autoShots: 20
+    bulletSpeed: 50
+    explosionSpeed: 10
+  - type: STR_HOVERTANK_GAUSS
+    bigSprite: 40
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 8
+    size: 6
+    costSell: 980000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 18
+    compatibleAmmo:
+      - STR_HWP_GAUSS_AMMO
+    accuracySnap: 85
+    accuracyAimed: 100
+    tuSnap: 25
+    tuAimed: 50
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 3
+    hitSound: 19
+    hitAnimation: 46
+    power: 110
+    damageType: 5
+    listOrder: 1590
+  - type: STR_SECTOPOD_LASER
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 5
+    size: 4
+    costSell: 594000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 11
+    accuracySnap: 60
+    accuracyAimed: 115
+    tuSnap: 25
+    tuAimed: 50
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 2
+    hitSound: 19
+    hitAnimation: 36
+    power: 110
+    damageType: 4
+    armor: 20
+    accuracyAuto: 50
+    tuAuto: 45
+  - type: STR_SECTOPOD_PLASMA
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 8
+    size: 4
+    costSell: 980000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 11
+    accuracySnap: 60
+    accuracyAimed: 115
+    tuSnap: 35
+    tuAimed: 80
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    turretType: 3
+    hitSound: 19
+    hitAnimation: 46
+    power: 120
+    damageType: 5
+    armor: 20
+    accuracyAuto: 50
+    tuAuto: 45
+  - type: STR_XCOM_CYBERDISC_CORPSE
+    size: 1
+    battleType: 11
+    power: 120
+    blastRadius: 6
+  - type: STR_XCOM_CYBERDISC_CORPSE_1
+    name: STR_XCOM_CYBERDISC_CORPSE
+    floorSprite: 56
+    battleType: 11
+    invWidth: 0
+    invHeight: 0
+    recover: false
+  - type: STR_XCOM_CYBERDISC_CORPSE_2
+    floorSprite: 57
+    battleType: 11
+    invWidth: 0
+    invHeight: 0
+    recover: false
+  - type: STR_XCOM_CYBERDISC_CORPSE_3
+    name: STR_XCOM_CYBERDISC_CORPSE
+    floorSprite: 58
+    battleType: 11
+    invWidth: 0
+    invHeight: 0
+    recover: false
+  - type: STR_XCOM_CYBERDISC_CORPSE_4
+    name: STR_XCOM_CYBERDISC_CORPSE
+    floorSprite: 59
+    battleType: 11
+    invWidth: 0
+    invHeight: 0
+    recover: false
+  - type: STR_XCOM_CYBERDISC_PLASMA
+    bigSprite: 131
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 8
+    size: 6
+    costSell: 900000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 18
+    accuracySnap: 75
+    accuracyAimed: 110
+    tuSnap: 30
+    tuAimed: 60
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    hitSound: 19
+    hitAnimation: 46
+    power: 120
+    damageType: 5
+  - type: STR_XCOM_CYBERDISC_LASER
+    bigSprite: 131
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 5
+    size: 6
+    costSell: 800000
+    transferTime: 96
+    clipSize: -1
+    weight: 1
+    fireSound: 11
+    accuracySnap: 75
+    accuracyAimed: 110
+    tuSnap: 30
+    tuAimed: 60
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    hitSound: 19
+    hitAnimation: 36
+    power: 110
+    damageType: 4
+  - type: STR_LIGHT_MINIGUN
+    bigSprite: 107
+    floorSprite: 92
+    handSprite: 200
+    bulletSprite: 2
+    size: 0.5
+    costBuy: 8000
+    costSell: 3600
+    weight: 18
+    fireSound: 64
+    compatibleAmmo:
+      - STR_LIGHT_MINIGUN_CLIP
+    battleType: 1
+    invWidth: 2
+    invHeight: 3
+    armor: 30
+    accuracyAuto: 25
+    tuAuto: 65
+    twoHanded: true
+    autoShots: 10
+    listOrder: 3050
+  - type: STR_LIGHT_MINIGUN_CLIP
+    bigSprite: 108
+    floorSprite: 90
+    size: 0.3
+    costBuy: 800
+    costSell: 550
+    clipSize: 90
+    weight: 5
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    hitSound: 22
+    hitAnimation: 26
+    power: 20
+    damageType: 1
+    armor: 30
+    autoShots: 10
+    bulletSpeed: 50
+    explosionSpeed: 5
+    listOrder: 3051
+  - type: STR_MINIGUN
+    bigSprite: 105
+    floorSprite: 86
+    handSprite: 200
+    bulletSprite: 2
+    size: 0.6
+    costBuy: 9000
+    costSell: 4000
+    weight: 26
+    fireSound: 63
+    compatibleAmmo:
+      - STR_MINIGUN_CLIP
+    battleType: 1
+    invWidth: 2
+    invHeight: 3
+    armor: 30
+    accuracyAuto: 30
+    tuAuto: 75
+    twoHanded: true
+    autoShots: 20
+    listOrder: 3052
+  - type: STR_MINIGUN_CLIP
+    bigSprite: 106
+    floorSprite: 88
+    size: 0.3
+    costBuy: 1500
+    costSell: 1000
+    clipSize: 100
+    weight: 15
+    battleType: 2
+    invWidth: 2
+    invHeight: 3
+    hitSound: 22
+    hitAnimation: 26
+    power: 25
+    damageType: 1
+    armor: 30
+    autoShots: 20
+    bulletSpeed: 50
+    explosionSpeed: 5
+    listOrder: 3053
+  - type: STR_SCATTER_LASER
+    bigSprite: 109
+    floorSprite: 93
+    handSprite: 201
+    bulletSprite: 6
+    size: 0.3
+    costSell: 86900
+    clipSize: -1
+    weight: 34
+    fireSound: 11
+    battleType: 1
+    invWidth: 2
+    invHeight: 3
+    hitSound: 19
+    hitAnimation: 36
+    power: 50
+    damageType: 4
+    accuracyAuto: 35
+    tuAuto: 70
+    twoHanded: true
+    autoShots: 20
+    bulletSpeed: 50
+    explosionSpeed: 5
+    listOrder: 3710
+armors:
+  - type: TANK_ARMOR
+    spriteSheet: TANKS.PCK
+    corpseBattle:
+      - TANK_CORPSE_1
+      - TANK_CORPSE_2
+      - TANK_CORPSE_3
+      - TANK_CORPSE_4
+    frontArmor: 90
+    sideArmor: 75
+    rearArmor: 60
+    underArmor: 60
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.4
+      - 0.75
+      - 1.0
+      - 1.0
+      - 0.0
+      - 0.9
+      - 0.4
+      - 0.0
+    loftempsSet: [92, 89, 90, 91]
+    drawingRoutine: 2
+    size: 2
+  - type: TANK_ARMOR
+    spriteSheet: MINITNKS.PCK
+    corpseBattle:
+      - TANK_CORPSE_1
+      - TANK_CORPSE_2
+      - TANK_CORPSE_3
+      - TANK_CORPSE_4
+    frontArmor: 90
+    sideArmor: 75
+    rearArmor: 60
+    underArmor: 60
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.4
+      - 0.75
+      - 1.0
+      - 1.0
+      - 0.0
+      - 0.9
+      - 0.4
+      - 0.0
+    loftempsSet: [92, 89, 90, 91]
+    drawingRoutine: 2
+    size: 2
+  - type: TANK_ARMOR
+    spriteSheet: NEWTANKS.PCK
+    corpseBattle:
+      - TANK_CORPSE_1
+      - TANK_CORPSE_2
+      - TANK_CORPSE_3
+      - TANK_CORPSE_4
+    frontArmor: 90
+    sideArmor: 75
+    rearArmor: 60
+    underArmor: 60
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.4
+      - 0.75
+      - 1.0
+      - 1.0
+      - 0.0
+      - 0.9
+      - 0.4
+      - 0.0
+    loftempsSet: [92, 89, 90, 91]
+    drawingRoutine: 2
+    size: 2
+  - type: HOVERTANK_ARMOR
+    spriteSheet: NEWTANKS.PCK
+    corpseBattle:
+      - HOVERTANK_CORPSE_1
+      - HOVERTANK_CORPSE_2
+      - HOVERTANK_CORPSE_3
+      - HOVERTANK_CORPSE_4
+    frontArmor: 130
+    sideArmor: 130
+    rearArmor: 130
+    underArmor: 100
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.4
+      - 0.75
+      - 1.0
+      - 1.0
+      - 0.0
+      - 0.9
+      - 0.4
+      - 0.0
+    loftempsSet: [92, 89, 90, 91]
+    movementType: 1
+    drawingRoutine: 2
+    size: 2
+  - type: TANK_ARMOR_SNOOP
+    spriteSheet: TANKS.PCK
+    corpseBattle:
+      - TANK_CORPSE_1
+      - TANK_CORPSE_2
+      - TANK_CORPSE_3
+      - TANK_CORPSE_4
+    frontArmor: 80
+    sideArmor: 65
+    rearArmor: 50
+    underArmor: 50
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.4
+      - 0.75
+      - 1.0
+      - 1.0
+      - 0.0
+      - 0.9
+      - 0.4
+      - 0.0
+    loftempsSet: [92, 89, 90, 91]
+    drawingRoutine: 2
+    size: 2
+  - type: SMALL_TANK_ARMOR
+    spriteSheet: SCOUT.PCK
+    corpseBattle:
+      - STR_SMALL_TANK_CORPSE
+    frontArmor: 40
+    sideArmor: 30
+    rearArmor: 15
+    underArmor: 15
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.4
+      - 0.8
+      - 1.0
+      - 1.0
+      - 0.0
+      - 1.0
+      - 1.4
+      - 0.0
+    loftempsSet: [5]
+    drawingRoutine: 4
+    size: 1
+  - type: SECTOPOD_ARMOR2
+    spriteSheet: TANK2.PCK
+    corpseBattle:
+      - SECTOPOD_CORPSE_1
+      - SECTOPOD_CORPSE_2
+      - SECTOPOD_CORPSE_3
+      - SECTOPOD_CORPSE_4
+    frontArmor: 130
+    sideArmor: 115
+    rearArmor: 85
+    underArmor: 85
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.6
+      - 0.8
+      - 1.2
+      - 0.8
+      - 0.0
+      - 1.0
+      - 0.5
+      - 0.0
+    loftempsSet: [92, 89, 90, 91]
+    drawingRoutine: 5
+    corpseGeo: STR_SECTOPOD_CORPSE
+    size: 2
+  - type: SECTOPOD_ARMOR3
+    spriteSheet: TANK3.PCK
+    corpseBattle:
+      - SECTOPOD_CORPSE_1
+      - SECTOPOD_CORPSE_2
+      - SECTOPOD_CORPSE_3
+      - SECTOPOD_CORPSE_4
+    frontArmor: 150
+    sideArmor: 135
+    rearArmor: 105
+    underArmor: 95
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.6
+      - 0.8
+      - 1.2
+      - 0.8
+      - 0.0
+      - 1.0
+      - 0.5
+      - 0.0
+    loftempsSet: [92, 89, 90, 91]
+    drawingRoutine: 5
+    corpseGeo: STR_SECTOPOD_CORPSE
+    size: 2
+  - type: XCOM_CYBERDISC_ARMOR
+    spriteSheet: XCOM_CYBERDISC.PCK
+    corpseBattle:
+      - STR_XCOM_CYBERDISC_CORPSE_1
+      - STR_XCOM_CYBERDISC_CORPSE_2
+      - STR_XCOM_CYBERDISC_CORPSE_3
+      - STR_XCOM_CYBERDISC_CORPSE_4
+    frontArmor: 34
+    sideArmor: 34
+    rearArmor: 34
+    underArmor: 34
+    damageModifier:
+      - 1.0
+      - 0.8
+      - 1.0
+      - 0.6
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 0.0
+    loftempsSet: [92, 89, 90, 91]
+    movementType: 1
+    drawingRoutine: 3
+    corpseGeo: STR_XCOM_CYBERDISC_CORPSE
+    size: 2
+    constantAnimation: true
+units:
+  - type: STR_TANK_CANNON
+    race: STR_TANK_CANNON
+    armor: TANK_ARMOR
+    stats:
+      tu: 90
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 75
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+    energyRecovery: 50
+  - type: STR_TANK_HMG
+    race: STR_TANK_HMG
+    armor: TANK_ARMOR
+    stats:
+      tu: 90
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 70
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+    energyRecovery: 50
+  - type: STR_TANK_MINIGUN
+    race: STR_TANK_MINIGUN
+    armor: TANK_ARMOR
+    stats:
+      tu: 90
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 60
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+  - type: STR_TANK_ROCKET_LAUNCHER
+    stats:
+      tu: 90
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 75
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+  - type: STR_TANK_GRENADE_LAUNCHER
+    race: STR_TANK_GRENADE_LAUNCHER
+    armor: TANK_ARMOR
+    stats:
+      tu: 100
+      stamina: 90
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 60
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+    energyRecovery: 50
+  - type: STR_TANK_ARTILLERY
+    race: STR_TANK_ARTILLERY
+    armor: TANK_ARMOR
+    stats:
+      tu: 90
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 100
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+    energyRecovery: 50
+  - type: STR_TANK_LASER_CANNON
+    stats:
+      tu: 90
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 75
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+  - type: STR_TANK_GAUSS
+    race: STR_TANK_GAUSS
+    armor: TANK_ARMOR
+    stats:
+      tu: 90
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 70
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+    energyRecovery: 50
+  - type: STR_TANK_PLASMA
+    race: STR_TANK_PLASMA
+    armor: TANK_ARMOR
+    stats:
+      tu: 90
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 78
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 7
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+  - type: STR_TANK_SNOOP
+    race: STR_TANK_SNOOP
+    armor: TANK_ARMOR_SNOOP
+    stats:
+      tu: 115
+      stamina: 110
+      health: 90
+      bravery: 110
+      reactions: 0
+      firing: 65
+      throwing: 0
+      strength: 80
+      psiStrength: 100
+      psiSkill: 0
+      melee: 80
+    standHeight: 16
+    kneelHeight: 16
+    value: 10
+    deathSound: 23
+    moveSound: 14
+    energyRecovery: 50
+  - type: STR_SCOUT_DRONE
+    race: STR_SCOUT_DRONE
+    rank: STR_LIVE_TERRORIST
+    armor: SMALL_TANK_ARMOR
+    stats:
+      tu: 120
+      stamina: 110
+      health: 40
+      bravery: 110
+      reactions: 110
+      firing: 0
+      throwing: 0
+      strength: 10
+      psiStrength: 110
+      psiSkill: 0
+      melee: 0
+    standHeight: 10
+    kneelHeight: 10
+    value: 50
+    deathSound: 23
+    moveSound: 14
+  - type: STR_HOVERTANK_ROCKET_LAUNCHER
+    race: STR_HOVERTANK_ROCKET_LAUNCHER
+    armor: HOVERTANK_ARMOR
+    stats:
+      tu: 110
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 0
+      firing: 80
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 60
+    standHeight: 12
+    kneelHeight: 12
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    energyRecovery: 50
+    floatHeight: 6
+  - type: STR_HOVERTANK_GRENADE_LAUNCHER
+    race: STR_HOVERTANK_GRENADE_LAUNCHER
+    armor: HOVERTANK_ARMOR
+    stats:
+      tu: 110
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 75
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    energyRecovery: 50
+  - type: STR_HOVERTANK_ARTILLERY
+    race: STR_HOVERTANK_ARTILLERY
+    armor: HOVERTANK_ARMOR
+    stats:
+      tu: 110
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 20
+      firing: 110
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    energyRecovery: 50
+  - type: STR_HOVERTANK_LASER
+    race: STR_HOVERTANK_LASER
+    armor: HOVERTANK_ARMOR
+    stats:
+      tu: 110
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 30
+      firing: 85
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 0
+    standHeight: 15
+    kneelHeight: 15
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    loftemps: 4
+  - type: STR_HOVERTANK_GAUSS
+    race: STR_HOVERTANK_GAUSS
+    armor: HOVERTANK_ARMOR
+    stats:
+      tu: 110
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 30
+      firing: 80
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 0
+    standHeight: 15
+    kneelHeight: 15
+    value: 20
+    deathSound: 23
+    moveSound: 15
+    loftemps: 4
+  - type: STR_HOVERTANK_SCATTER_LASER
+    race: STR_HOVERTANK_SCATTER_LASER
+    armor: HOVERTANK_ARMOR
+    stats:
+      tu: 110
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 30
+      firing: 70
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 0
+    standHeight: 15
+    kneelHeight: 15
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    loftemps: 4
+  - type: STR_HOVERTANK_PLASMA
+    race: STR_HOVERTANK_PLASMA
+    armor: HOVERTANK_ARMOR
+    stats:
+      tu: 110
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 30
+      firing: 88
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    standHeight: 12
+    kneelHeight: 12
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    energyRecovery: 50
+    floatHeight: 6
+  - type: STR_HOVERTANK_LAUNCHER
+    race: STR_HOVERTANK_LAUNCHER
+    armor: HOVERTANK_ARMOR
+    stats:
+      tu: 110
+      stamina: 100
+      health: 90
+      bravery: 110
+      reactions: 30
+      firing: 80
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 60
+    standHeight: 12
+    kneelHeight: 12
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    energyRecovery: 50
+    floatHeight: 6
+  - type: STR_SECTOPOD_LASER
+    race: STR_SECTOPOD_LASER
+    armor: SECTOPOD_ARMOR2
+    stats:
+      tu: 120
+      stamina: 100
+      health: 100
+      bravery: 110
+      reactions: 30
+      firing: 90
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 0
+    standHeight: 15
+    kneelHeight: 15
+    value: 20
+    deathSound: 23
+    moveSound: 23
+    loftemps: 4
+  - type: STR_SECTOPOD_PLASMA
+    race: STR_SECTOPOD_PLASMA
+    armor: SECTOPOD_ARMOR3
+    stats:
+      tu: 120
+      stamina: 100
+      health: 100
+      bravery: 110
+      reactions: 30
+      firing: 95
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 0
+    standHeight: 15
+    kneelHeight: 15
+    value: 20
+    deathSound: 23
+    moveSound: 23
+    loftemps: 4
+  - type: STR_XCOM_CYBERDISC_LASER
+    race: STR_XCOM_CYBERDISC_LASER
+    armor: XCOM_CYBERDISC_ARMOR
+    stats:
+      tu: 95
+      stamina: 90
+      health: 120
+      bravery: 110
+      reactions: 64
+      firing: 79
+      throwing: 0
+      strength: 90
+      psiStrength: 100
+      psiSkill: 0
+      melee: 0
+    standHeight: 15
+    kneelHeight: 15
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    energyRecovery: 50
+    floatHeight: 2
+    specab: 1
+  - type: STR_XCOM_CYBERDISC_PLASMA
+    race: STR_XCOM_CYBERDISC_PLASMA
+    armor: XCOM_CYBERDISC_ARMOR
+    stats:
+      tu: 95
+      stamina: 90
+      health: 120
+      bravery: 110
+      reactions: 64
+      firing: 81
+      throwing: 0
+      strength: 90
+      psiStrength: 100
+      psiSkill: 0
+      melee: 0
+    standHeight: 15
+    kneelHeight: 15
+    value: 20
+    deathSound: 23
+    moveSound: 40
+    energyRecovery: 50
+    floatHeight: 2
+    specab: 1
+research:
+  - name: STR_SCATTER_LASER
+    cost: 440
+    points: 10
+    dependencies:
+      - STR_HEAVY_LASER
+    listOrder: 450
+  - name: STR_GAUSS_WEAPONS
+    cost: 40
+    points: 10
+    listOrder: 610
+  - name: STR_GAUSS_PISTOL
+    cost: 100
+    points: 10
+    dependencies:
+      - STR_GAUSS_WEAPONS
+    listOrder: 615
+  - name: STR_GAUSS_PISTOL_CLIP
+    cost: 0
+    dependencies:
+      - STR_GAUSS_PISTOL
+  - name: STR_GAUSS_RIFLE
+    cost: 300
+    points: 10
+    dependencies:
+      - STR_GAUSS_PISTOL
+    listOrder: 620
+  - name: STR_GAUSS_RIFLE_CLIP
+    cost: 0
+    dependencies:
+      - STR_GAUSS_RIFLE
+  - name: STR_GAUSS_SNIPER_RIFLE
+    cost: 150
+    points: 10
+    dependencies:
+      - STR_GAUSS_RIFLE
+    listOrder: 625
+  - name: STR_GAUSS_SNIPER_RIFLE_CLIP
+    cost: 0
+    dependencies:
+      - STR_GAUSS_SNIPER_RIFLE
+  - name: STR_HEAVY_GAUSS
+    cost: 510
+    points: 15
+    dependencies:
+      - STR_GAUSS_RIFLE
+    listOrder: 630
+  - name: STR_HEAVY_GAUSS_CLIP
+    cost: 0
+    dependencies:
+      - STR_HEAVY_GAUSS
+  - name: STR_GAUSS_CANNON
+    cost: 420
+    points: 15
+    dependencies:
+      - STR_HEAVY_GAUSS
+    listOrder: 635
+  - name: STR_SECTOPOD_CONSTRUCTION
+    cost: 600
+    points: 50
+    dependencies:
+      - STR_SECTOPOD_CORPSE
+      - STR_SECTOPOD_AUTOPSY
+  - name: STR_XCOM_CYBERDISC
+    cost: 20
+    points: 20
+    dependencies:
+      - STR_CYBERDISC_AUTOPSY
+      - STR_UFO_NAVIGATION
+  - name: STR_ADVANCED_ROBOTICS
+    cost: 600
+    points: 50
+    dependencies:
+      - STR_CYBERDISC_AUTOPSY
+      - STR_CYBERDISC_CORPSE
+      - STR_ELERIUM_115
+      - STR_POWER_SUIT
+  - name: STR_ULTIMATE_ROBOT
+    cost: 600
+    points: 50
+    dependencies:
+      - STR_SECTOPOD_AUTOPSY
+      - STR_SECTOPOD_CORPSE
+      - STR_ADVANCED_ROBOTICS
+manufacture:
+  - name: STR_GAUSS_PISTOL
+    category: STR_WEAPON
+    requires:
+      - STR_GAUSS_PISTOL
+    space: 2
+    time: 250
+    cost: 7000
+    listOrder: 1150
+  - name: STR_GAUSS_PISTOL_CLIP
+    category: STR_AMMUNITION
+    requires:
+      - STR_GAUSS_PISTOL_CLIP
+    space: 3
+    time: 65
+    cost: 1550
+    listOrder: 1151
+  - name: STR_GAUSS_RIFLE
+    category: STR_WEAPON
+    requires:
+      - STR_GAUSS_RIFLE
+    space: 4
+    time: 350
+    cost: 17000
+    listOrder: 1160
+  - name: STR_GAUSS_RIFLE_CLIP
+    category: STR_AMMUNITION
+    requires:
+      - STR_GAUSS_RIFLE_CLIP
+    space: 4
+    time: 85
+    cost: 3000
+    listOrder: 1161
+  - name: STR_GAUSS_SNIPER_RIFLE
+    category: STR_WEAPON
+    requires:
+      - STR_GAUSS_SNIPER_RIFLE
+    space: 4
+    time: 400
+    cost: 21000
+    listOrder: 1170
+  - name: STR_GAUSS_SNIPER_RIFLE_CLIP
+    category: STR_AMMUNITION
+    requires:
+      - STR_GAUSS_SNIPER_RIFLE_CLIP
+    space: 4
+    time: 70
+    cost: 2500
+    listOrder: 1171
+  - name: STR_HEAVY_GAUSS
+    category: STR_WEAPON
+    requires:
+      - STR_HEAVY_GAUSS
+    space: 5
+    time: 650
+    cost: 30000
+    listOrder: 1180
+  - name: STR_HEAVY_GAUSS_CLIP
+    category: STR_AMMUNITION
+    requires:
+      - STR_HEAVY_GAUSS_CLIP
+    space: 6
+    time: 140
+    cost: 4800
+    listOrder: 1181
+  - name: STR_SCATTER_LASER
+    category: STR_WEAPON
+    requires:
+      - STR_SCATTER_LASER
+    space: 4
+    time: 1000
+    cost: 38000
+    listOrder: 1110
+  - name: STR_GAUSS_CANNON
+    category: STR_CRAFT_WEAPON
+    requires:
+      - STR_GAUSS_CANNON
+    space: 6
+    time: 280
+    cost: 150000
+    listOrder: 250
+  - name: STR_GAUSS_CANNON_ROUNDS_X60
+    category: STR_CRAFT_WEAPON
+    requires:
+      - STR_GAUSS_CANNON
+    space: 3
+    time: 30
+    cost: 4000
+    listOrder: 350
+  - name: STR_TANK_GAUSS
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_GAUSS_CANNON
+    space: 25
+    time: 1200
+    cost: 500000
+    requiredItems:
+      STR_GAUSS_CANNON: 1
+    listOrder: 450
+  - name: STR_HOVERTANK_GAUSS
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_GAUSS_CANNON
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1200
+    cost: 950000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 5
+      STR_ELERIUM_115: 20
+      STR_GAUSS_CANNON: 1
+    listOrder: 560
+  - name: STR_HWP_GAUSS_AMMO
+    category: STR_HWP_CANNON_SHELLS
+    requires:
+      - STR_GAUSS_CANNON
+    space: 3
+    time: 75
+    cost: 3600
+    listOrder: 750
+  - name: STR_TANK_PLASMA
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_PLASMA_CANNON
+    space: 25
+    time: 1200
+    cost: 550000
+    requiredItems:
+      STR_ELERIUM_115: 15
+      STR_PLASMA_BEAM: 1
+    listOrder: 502
+  - name: STR_TANK_LASER_CANNON
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_LASER_CANNON
+    space: 25
+    time: 1200
+    cost: 500000
+    requiredItems: STR_LASER_CANNON
+  - name: STR_HOVERTANK_ROCKET_LAUNCHER
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1200
+    cost: 800000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 20
+      STR_ELERIUM_115: 15
+    listOrder: 563
+  - name: STR_HOVERTANK_GRENADE_LAUNCHER
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1000
+    cost: 600000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 8
+      STR_ELERIUM_115: 20
+    listOrder: 561
+  - name: STR_HWP_ADVANCED_GRENADES
+    category: STR_HWP_CANNON_SHELLS
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    space: 5
+    time: 100
+    cost: 500
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+    listOrder: 562
+  - name: STR_HOVERTANK_ARTILLERY
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1000
+    cost: 600000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 8
+      STR_ELERIUM_115: 20
+    listOrder: 563
+  - name: STR_HWP_ADVANCED_ARTILLERY_SHELLS
+    category: STR_HWP_CANNON_SHELLS
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    space: 5
+    time: 100
+    cost: 500
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+    listOrder: 564
+  - name: STR_HOVERTANK_LASER
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_LASER_CANNON
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1200
+    cost: 850000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 5
+      STR_ELERIUM_115: 20
+      STR_LASER_CANNON: 1
+    listOrder: 564
+  - name: STR_HOVERTANK_SCATTER_LASER
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_LASER_CANNON
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1200
+    cost: 850000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 5
+      STR_ELERIUM_115: 20
+      STR_LASER_CANNON: 1
+      STR_SCATTER_LASER: 1
+    listOrder: 565
+  - name: STR_HOVERTANK_PLASMA
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_PLASMA_CANNON
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1200
+    cost: 850000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 5
+      STR_ELERIUM_115: 30
+      STR_PLASMA_BEAM: 1
+  - name: STR_HOVERTANK_LAUNCHER
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_FUSION_MISSILE
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1200
+    cost: 900000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 8
+      STR_ELERIUM_115: 25
+      STR_FUSION_BALL_LAUNCHER: 1
+  - name: STR_SECTOPOD_LASER
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_LASER_CANNON
+      - STR_SECTOPOD_CONSTRUCTION
+    space: 30
+    time: 1200
+    cost: 900000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 10
+      STR_ELERIUM_115: 10
+      STR_LASER_CANNON: 1
+      STR_SECTOPOD_CORPSE: 1
+      STR_UFO_NAVIGATION: 1
+    listOrder: 750
+  - name: STR_SECTOPOD_PLASMA
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_PLASMA_CANNON
+      - STR_SECTOPOD_CONSTRUCTION
+    space: 30
+    time: 1200
+    cost: 900000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 10
+      STR_ELERIUM_115: 20
+      STR_PLASMA_BEAM: 1
+      STR_SECTOPOD_CORPSE: 1
+      STR_UFO_NAVIGATION: 1
+    listOrder: 751
+  - name: STR_XCOM_CYBERDISC_LASER
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_XCOM_CYBERDISC
+      - STR_LASER_CANNON
+    space: 10
+    time: 400
+    cost: 15000
+    requiredItems:
+      STR_CYBERDISC_CORPSE: 1
+      STR_LASER_CANNON: 1
+      STR_UFO_NAVIGATION: 1
+    listOrder: 752
+  - name: STR_XCOM_CYBERDISC_PLASMA
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_XCOM_CYBERDISC
+      - STR_PLASMA_CANNON
+    space: 10
+    time: 400
+    cost: 15000
+    requiredItems:
+      STR_CYBERDISC_CORPSE: 1
+      STR_PLASMA_BEAM: 1
+      STR_UFO_NAVIGATION: 1
+    listOrder: 753
+ufopaedia:
+  - id: STR_TANK_CANNON
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_TANK_CANNON_UFOPEDIA
+    weapon: STR_CANNON
+  - id: STR_TANK_HMG
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_TANK_HMG_UFOPEDIA
+    weapon: STR_HWP_HMG
+    listOrder: 2203
+  - id: STR_LIGHT_MINIGUN
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_LIGHT_MINIGUN_UFOPEDIA
+    listOrder: 3150
+  - id: STR_LIGHT_MINIGUN_CLIP
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+  - id: STR_MINIGUN
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_MINIGUN_UFOPEDIA
+    listOrder: 3160
+  - id: STR_MINIGUN_CLIP
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+  - id: STR_SCATTER_LASER
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_SCATTER_LASER_UFOPEDIA
+    requires:
+      - STR_SCATTER_LASER
+    listOrder: 3810
+  - id: STR_TANK_MINIGUN
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_TANK_MINIGUN_UFOPEDIA
+    weapon: STR_MINIGUN
+    listOrder: 1350
+  - id: STR_TANK_GRENADE_LAUNCHER
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_TANK_GRENADE_LAUNCHER_UFOPEDIA
+    weapon: STR_HWP_GRENADES
+    listOrder: 2202
+  - id: STR_TANK_ARTILLERY
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_TANK_ARTILLERY_UFOPEDIA
+    weapon: STR_ARTILLERY_CANNON
+    listOrder: 2202
+  - id: STR_GAUSS_PISTOL
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_GAUSS_PISTOL_UFOPEDIA
+    requires:
+      - STR_GAUSS_PISTOL
+    listOrder: 3850
+  - id: STR_GAUSS_PISTOL_CLIP
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+  - id: STR_GAUSS_RIFLE
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_GAUSS_RIFLE_UFOPEDIA
+    requires:
+      - STR_GAUSS_RIFLE
+    listOrder: 3855
+  - id: STR_GAUSS_RIFLE_CLIP
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+  - id: STR_GAUSS_SNIPER_RIFLE
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_GAUSS_SNIPER_RIFLE_UFOPEDIA
+    requires:
+      - STR_GAUSS_SNIPER_RIFLE
+    listOrder: 3860
+  - id: STR_GAUSS_SNIPER_RIFLE_CLIP
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+  - id: STR_HEAVY_GAUSS
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_HEAVY_GAUSS_UFOPEDIA
+    requires:
+      - STR_HEAVY_GAUSS
+    listOrder: 3865
+  - id: STR_HEAVY_GAUSS_CLIP
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+  - id: STR_GAUSS_CANNON_UC
+    type_id: 2
+    section: STR_XCOM_CRAFT_ARMAMENT
+    image_id: GAUSS_CANNON
+    text: STR_GAUSS_CANNON_UFOPEDIA
+    requires:
+      - STR_GAUSS_CANNON
+    listOrder: 1050
+  - id: STR_TANK_GAUSS
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_TANK_GAUSS_UFOPEDIA
+    requires:
+      - STR_GAUSS_CANNON
+    weapon: STR_GAUSS_CANNON
+    listOrder: 1410
+  - id: STR_HOVERTANK_GAUSS
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_HOVERTANK_GAUSS_UFOPEDIA
+    requires:
+      - STR_GAUSS_CANNON
+      - STR_NEW_FIGHTER_CRAFT
+    weapon: STR_GAUSS_CANNON
+    listOrder: 1490
+  - id: STR_TANK_PLASMA
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_TANK_PLASMA_UFOPEDIA
+    requires:
+      - STR_PLASMA_CANNON
+    weapon: STR_PLASMA_CANNON
+    listOrder: 1420
+  - id: STR_TANK_SNOOP
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_TANK_SNOOP_UFOPEDIA
+    weapon: STR_TANK_SNOOP_WEAPON
+  - id: STR_SCOUT_DRONE
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_SCOUT_DRONE_UFOPEDIA
+    weapon: STR_SCOUT_SMOKE
+    listOrder: 1199
+  - id: STR_HOVERTANK_ROCKET_LAUNCHER
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_HOVERTANK_ROCKET_LAUNCHER_UFOPEDIA
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    weapon: STR_ROCKET_LAUNCHER
+    listOrder: 1475
+  - id: STR_HOVERTANK_GRENADE_LAUNCHER
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_HOVERTANK_GRENADE_LAUNCHER_UFOPEDIA
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    weapon: STR_HWP_ADVANCED_GRENADES
+    listOrder: 2202
+  - id: STR_HOVERTANK_ARTILLERY
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_HOVERTANK_ARTILLERY_UFOPEDIA
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    weapon: STR_HWP_ADVANCED_ARTILLERY_SHELLS
+    listOrder: 2203
+  - id: STR_HOVERTANK_LASER
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_HOVERTANK_LASER_UFOPEDIA
+    requires:
+      - STR_LASER_CANNON
+      - STR_NEW_FIGHTER_CRAFT
+    weapon: STR_LASER_CANNON
+  - id: STR_HOVERTANK_SCATTER_LASER
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_HOVERTANK_SCATTER_LASER_UFOPEDIA
+    requires:
+      - STR_LASER_CANNON
+      - STR_NEW_FIGHTER_CRAFT
+    weapon: STR_SCATTER_LASER_CANNON
+  - id: STR_SECTOPOD_CONSTRUCTION
+    type_id: 8
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_SECTOPOD_CONSTRUCTION_UFOPEDIA
+    requires:
+      - STR_SECTOPOD_CONSTRUCTION
+  - id: STR_SECTOPOD_LASER
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_SECTOPOD_LASER_UFOPEDIA
+    requires:
+      - STR_LASER_CANNON
+      - STR_SECTOPOD_CONSTRUCTION
+    weapon: STR_LASER_CANNON
+  - id: STR_XCOM_CYBERDISC_LASER
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_XCOM_CYBERDISC_LASER_UFOPEDIA
+    requires:
+      - STR_XCOM_CYBERDISC
+    weapon: STR_LASER_CANNON
+  - id: STR_XCOM_CYBERDISC_PLASMA
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_XCOM_CYBERDISC_PLASMA_UFOPEDIA
+    requires:
+      - STR_XCOM_CYBERDISC
+    weapon: STR_PLASMA_CANNON
+  - id: STR_ARTIFICIAL_SOLDIER_ASSAULT
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_ARTIFICIAL_SOLDIER_ASSAULT_UFOPEDIA
+    requires:
+      - STR_PLASMA_RIFLE
+      - STR_POWER_SUIT
+      - STR_ADVANCED_ROBOTICS
+    weapon: STR_PLASMA_RIFLE
+  - id: STR_ARTIFICIAL_SOLDIER_VANGUARD
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_ARTIFICIAL_SOLDIER_VANGUARD_UFOPEDIA
+    requires:
+      - STR_POWER_SUIT
+      - STR_LASER_RIFLE
+      - STR_ADVANCED_ROBOTICS
+    weapon: STR_LASER_RIFLE
+  - id: STR_ADVANCED_ROBOTICS
+    type_id: 7
+    section: STR_WEAPONS_AND_EQUIPMENT
+    image_id: ENFORCER_BIG
+    text: STR_ADVANCED_ROBOTICS_UFOPEDIA
+    requires:
+      - STR_ADVANCED_ROBOTICS
+    text_width: 300
+    listOrder: 4805
+  - id: STR_XCOM_ENFORCER
+    type_id: 3
+    section: STR_HEAVY_WEAPONS_PLATFORMS
+    text: STR_XCOM_ENFORCER_UFOPEDIA
+    requires:
+      - STR_PLASMA_RIFLE
+      - STR_POWER_SUIT
+      - STR_ULTIMATE_ROBOT
+    weapon: STR_ADVANCED_PLASMA_RIFLE
+    listOrder: 1420
+  - id: STR_ULTIMATE_ROBOT
+    type_id: 7
+    section: STR_WEAPONS_AND_EQUIPMENT
+    image_id: ENFORCER_BIG
+    text: STR_ULTIMATE_ROBOT_UFOPEDIA
+    requires:
+      - STR_PLASMA_RIFLE
+      - STR_ULTIMATE_ROBOT
+      - STR_POWER_SUIT
+    text_width: 300
+    listOrder: 4806
+extraSprites:
+  - type: TANK2.PCK
+    files:
+      0: Resources/TDS/HWP/UNITS/LASER/
+    width: 32
+    height: 40
+    singleImage: false
+  - type: TANK3.PCK
+    files:
+      0: Resources/TDS/HWP/UNITS/PLASMA/
+    width: 32
+    height: 40
+    singleImage: false
+  - type: MINITNKS.PCK
+    files:
+      0: Resources/TDS/Minigun/Minitnks/
+    width: 32
+    height: 40
+  - type: BIGOBS.PCK
+    files:
+      105: Resources/TDS/Minigun/Minigun.gif
+      106: Resources/TDS/Minigun/Minigun_Ammo.gif
+      107: Resources/TDS/Minigun/Minigun_light.gif
+      108: Resources/TDS/Minigun/Minigun_Ammo_light.gif
+      109: Resources/TDS/Minigun/Scatter_Laser.gif
+      110: Resources/TDS/Minigun/Minigun_turret.gif
+  - type: FLOOROB.PCK
+    files:
+      86: Resources/TDS/Minigun/floorob_Minigun.gif
+      88: Resources/TDS/Minigun/floorob_Ammo.gif
+      90: Resources/TDS/Minigun/floorob_Ammo_light.gif
+      92: Resources/TDS/Minigun/floorob_Minigun_Light.gif
+      93: Resources/TDS/Minigun/Floorob_Scatter_Laser.gif
+  - type: HANDOB.PCK
+    files:
+      200: Resources/TDS/Minigun/HandOb_Minigun/
+      201: Resources/TDS/Minigun/handob_SCATTER_LASER/
+  - type: NEWTANKS.PCK
+    files:
+      0: Resources/TDS/GaussWeaponry/Newtanks.png
+    width: 256
+    height: 760
+    subX: 32
+    subY: 40
+  - type: BIGOBS.PCK
+    files:
+      60: Resources/TDS/GaussWeaponry/GaussSniper.gif
+      61: Resources/TDS/GaussWeaponry/GaussRifle.gif
+      62: Resources/TDS/GaussWeaponry/GaussPistol.gif
+      63: Resources/TDS/GaussWeaponry/HeavyGauss.gif
+      65: Resources/TDS/GaussWeaponry/GaussSniperClip.gif
+      66: Resources/TDS/GaussWeaponry/GaussRifleClip.gif
+      67: Resources/TDS/GaussWeaponry/GaussPistolClip.gif
+      68: Resources/TDS/GaussWeaponry/HeavyGaussClip.gif
+      110: Resources/TDS/GaussWeaponry/Gauss_turret.gif
+      111: Resources/TDS/GaussWeaponry/Gauss_hover_turret.gif
+  - type: BASEBITS.PCK
+    files:
+      59: Resources/TDS/GaussWeaponry/Basebits/gausscraft.gif
+  - type: INTICON.PCK
+    files:
+      16: Resources/TDS/GaussWeaponry/Inticon/gausscraft.gif
+  - type: FLOOROB.PCK
+    files:
+      80: Resources/TDS/GaussWeaponry/floorob_GaussSniper.gif
+      81: Resources/TDS/GaussWeaponry/floorob_GaussRifle.gif
+      82: Resources/TDS/GaussWeaponry/floorob_GaussPistol.gif
+      83: Resources/TDS/GaussWeaponry/floorob_HeavyGauss.gif
+      85: Resources/TDS/GaussWeaponry/floorob_GaussClip.gif
+      86: Resources/TDS/GaussWeaponry/floorob_HeavyGaussClip.gif
+  - type: HANDOB.PCK
+    files:
+      130: Resources/TDS/GaussWeaponry/HandOb_GaussSniper.png
+      139: Resources/TDS/GaussWeaponry/HandOb_GaussRifle.png
+      147: Resources/TDS/GaussWeaponry/HandOb_GaussPistol.png
+      155: Resources/TDS/GaussWeaponry/HandOb_HeavyGauss.png
+    width: 256
+    height: 40
+    subX: 32
+    subY: 40
+  - type: GAUSS_CANNON
+    files:
+      0: Resources/TDS/GaussWeaponry/Ufopedia/Gauss_Cannon_Craft.gif
+    width: 320
+    height: 200
+    singleImage: true
+  - type: BIGOBS.PCK
+    files:
+      69: Resources/TDS/Scoutdrone/bigobs_63.gif
+  - type: FLOOROB.PCK
+    files:
+      84: Resources/TDS/Scoutdrone/floorob_84.gif
+  - type: SCOUT.PCK
+    files:
+      0: Resources/TDS/Scoutdrone/Drone/
+  - type: XCOM_CYBERDISC.PCK
+    files:
+      0: Resources/TDS/XComCyberdisc/cybgreen.png
+    width: 512
+    height: 160
+    subX: 32
+    subY: 40
+  - type: BIGOBS.PCK
+    files:
+      131: Resources/TDS/XComCyberdisc/Cyberdisc_weapon.gif
+  - type: BIGOBS.PCK
+    files:
+      222: Resources/TDS/DRONE/BLUE/Screens/BLUE_Corpse_Inv.gif
+      224: Resources/TDS/DRONE/RED/Screens/RED_Corpse_Inv.gif
+      226: Resources/TDS/DRONE/OD/Screens/OD_Corpse_Inv.gif
+  - type: FLOOROB.PCK
+    files:
+      223: Resources/TDS/DRONE/BLUE/Screens/BLUE_Corpse.gif
+      225: Resources/TDS/DRONE/RED/Screens/RED_Corpse.gif
+      227: Resources/TDS/DRONE/OD/Screens/OD_Corpse.gif
+  - type: HAMMER.PCK
+    files:
+      0: Resources/TDS/DRONE/BLUE/
+    width: 32
+    height: 40
+  - type: ASSAULT.PCK
+    files:
+      0: Resources/TDS/DRONE/RED/
+    width: 32
+    height: 40
+  - type: VANGUARD.PCK
+    files:
+      0: Resources/TDS/DRONE/OD/
+    width: 32
+    height: 40
+  - type: MAN_8F0.SPK
+    files:
+      0: Resources/TDS/DRONE/BLUE/Screens/BLUE_PowerSuit.gif
+    singleImage: true
+  - type: MAN_8F1.SPK
+    files:
+      0: Resources/TDS/DRONE/BLUE/Screens/BLUE_PowerSuit.gif
+    singleImage: true
+  - type: MAN_8F2.SPK
+    files:
+      0: Resources/TDS/DRONE/BLUE/Screens/BLUE_PowerSuit.gif
+    singleImage: true
+  - type: MAN_8F3.SPK
+    files:
+      0: Resources/TDS/DRONE/BLUE/Screens/BLUE_PowerSuit.gif
+    singleImage: true
+  - type: MAN_8M0.SPK
+    files:
+      0: Resources/TDS/DRONE/BLUE/Screens/BLUE_PowerSuit.gif
+    singleImage: true
+  - type: MAN_8M1.SPK
+    files:
+      0: Resources/TDS/DRONE/BLUE/Screens/BLUE_PowerSuit.gif
+    singleImage: true
+  - type: MAN_8M2.SPK
+    files:
+      0: Resources/TDS/DRONE/BLUE/Screens/BLUE_PowerSuit.gif
+    singleImage: true
+  - type: MAN_8M3.SPK
+    files:
+      0: Resources/TDS/DRONE/BLUE/Screens/BLUE_PowerSuit.gif
+    singleImage: true
+  - type: MAN_9F0.SPK
+    files:
+      0: Resources/TDS/DRONE/RED/Screens/RED_PowerSuit.gif
+    singleImage: true
+  - type: MAN_9F1.SPK
+    files:
+      0: Resources/TDS/DRONE/RED/Screens/RED_PowerSuit.gif
+    singleImage: true
+  - type: MAN_9F2.SPK
+    files:
+      0: Resources/TDS/DRONE/RED/Screens/RED_PowerSuit.gif
+    singleImage: true
+  - type: MAN_9F3.SPK
+    files:
+      0: Resources/TDS/DRONE/RED/Screens/RED_PowerSuit.gif
+    singleImage: true
+  - type: MAN_9M0.SPK
+    files:
+      0: Resources/TDS/DRONE/RED/Screens/RED_PowerSuit.gif
+    singleImage: true
+  - type: MAN_9M1.SPK
+    files:
+      0: Resources/TDS/DRONE/RED/Screens/RED_PowerSuit.gif
+    singleImage: true
+  - type: MAN_9M2.SPK
+    files:
+      0: Resources/TDS/DRONE/RED/Screens/RED_PowerSuit.gif
+    singleImage: true
+  - type: MAN_9M3.SPK
+    files:
+      0: Resources/TDS/DRONE/RED/Screens/RED_PowerSuit.gif
+    singleImage: true
+  - type: MAN_10F0.SPK
+    files:
+      0: Resources/TDS/DRONE/OD/Screens/OD_PowerSuit.gif
+    singleImage: true
+  - type: MAN_10F1.SPK
+    files:
+      0: Resources/TDS/DRONE/OD/Screens/OD_PowerSuit.gif
+    singleImage: true
+  - type: MAN_10F2.SPK
+    files:
+      0: Resources/TDS/DRONE/OD/Screens/OD_PowerSuit.gif
+    singleImage: true
+  - type: MAN_10F3.SPK
+    files:
+      0: Resources/TDS/DRONE/OD/Screens/OD_PowerSuit.gif
+    singleImage: true
+  - type: MAN_10M0.SPK
+    files:
+      0: Resources/TDS/DRONE/OD/Screens/OD_PowerSuit.gif
+    singleImage: true
+  - type: MAN_10M1.SPK
+    files:
+      0: Resources/TDS/DRONE/OD/Screens/OD_PowerSuit.gif
+    singleImage: true
+  - type: MAN_10M2.SPK
+    files:
+      0: Resources/TDS/DRONE/OD/Screens/OD_PowerSuit.gif
+    singleImage: true
+  - type: MAN_10M3.SPK
+    files:
+      0: Resources/TDS/DRONE/OD/Screens/OD_PowerSuit.gif
+    singleImage: true
+  - type: BIGOBS.PCK
+    files:
+      222: Resources/TDS/Enforcer/Inventory/Enforcer_Corpse_Inv.gif
+  - type: FLOOROB.PCK
+    files:
+      223: Resources/TDS/Enforcer/FLOOROB/Enforcer_Corpse.gif
+  - type: ENFORCER.PCK
+    files:
+      0: Resources/TDS/Enforcer/XCOM_5/
+    width: 32
+    height: 40
+  - type: MAN_9
+    files:
+      0: Resources/TDS/Enforcer/BIGOBS/Enforcer_Suit.gif
+    width: 320
+    height: 200
+    singleImage: true
+  - type: ENFORCER_BIG
+    files:
+      0: Resources/TDS/Enforcer/Ufopedia/Advanced_Robotics_Ufo.gif
+    width: 320
+    height: 200
+    singleImage: true
+extraSounds:
+  - type: BATTLE.CAT
+    files:
+      88: Resources/TDS/Scoutdrone/pop.wav
+  - type: BATTLE.CAT
+    files:
+      63: Resources/TDS/Minigun/Sounds/fire.wav
+      64: Resources/TDS/Minigun/Sounds/fire_light.wav
+  - type: BATTLE.CAT
+    files:
+      55: Resources/TDS/GaussWeaponry/Sounds/HeavyGauss.wav
+      56: Resources/TDS/GaussWeaponry/Sounds/lashit.wav
+      57: Resources/TDS/GaussWeaponry/Sounds/GaussRifle.wav
+      58: Resources/TDS/GaussWeaponry/Sounds/GaussPistol.wav
+  - type: BATTLE.CAT
+    files:
+      86: Resources/TDS/Enforcer/Sounds/plasmacannon.wav
+      87: Resources/TDS/Enforcer/Sounds/hit.wav
+extraStrings:
+  - type: en-GB
+    strings:
+      STR_ADVANCED_PLASMA_RIFLE: Advanced Plasma Rifle
+      STR_ADVANCED_ROBOTICS: Advanced Robotics Technology
+      STR_ADVANCED_ROBOTICS_UFOPEDIA: Thanks to reverse engineering of several alien artefacts human technology made great advances. Knowledge that we have gained by studying these technologies allow us to create the perfect artificial intelligence. Understanding of the alien machines together with knowledge of the principles of artificial intelligence will allow us to develop new defence technologies. Thanks to these discoveries we are only a step from the creation of perfect, self-sufficient AI, which could mark a turning point in the fight against the alien threat - robotic warriors.
+      STR_ARTIFICIAL_SOLDIER_ASSAULT: Artificial Soldier/Assualt
+      STR_ARTIFICIAL_SOLDIER_ASSAULT_M: Artificial Soldier/Assualt
+      STR_ARTIFICIAL_SOLDIER_ASSAULT_UFOPEDIA: An autonomous soldier made from used Power Armor. Used for frontline combat on the xeno front.
+      STR_ARTIFICIAL_SOLDIER_VANGUARD: Artificial Soldier/Vanguard
+      STR_ARTIFICIAL_SOLDIER_VANGUARD_M: Artificial Soldier/Vanguard
+      STR_ARTIFICIAL_SOLDIER_VANGUARD_UFOPEDIA: An autonomous soldier made from used Power Armor. Designed to carry equipment and scout the area.
+      STR_ARTILLERY_CANNON: 155mm Howitzer
+      STR_ARTILLERY_SHELLS: Artillery Shells
+      STR_CORPSE_BOT: Scrap
+      STR_CORPSE_ROBO: Scrap Metal
+      STR_GAUSS_CANNON: Gauss Cannon
+      STR_GAUSS_CANNON_ROUNDS_X60: Craft Gauss Cannon Rounds (x60)
+      STR_GAUSS_CANNON_UC: GAUSS CANNON
+      STR_GAUSS_CANNON_UFOPEDIA: THE GAUSS CANNON IS THE APOGEE OF GAUSS TECHNOLOGY. FIRING RELATIVELY SMALL BULLETS AT VERY HIGH SPEEDS, IT CAN PENETRATE ANY ARMOUR. ITS RANGE, HOVEVER, IS LIMITED, AS THE BULLETS EVAPORATE QUICKLY DUE TO ATMOSPHERIC FRICTION.
+      STR_GAUSS_PISTOL: Gauss Pistol
+      STR_GAUSS_PISTOL_CLIP: Gauss Pistol Clip
+      STR_GAUSS_PISTOL_UFOPEDIA: The gauss pistol is a very potent sidearm, firing small ferromagnetic bullets using an electromagnetic field instead of chemical explosives.  High bullet velocity deal significant damage, able to pierce through vehicle armor plates with ease, as well as gives the weapon greater accuracy.
+      STR_GAUSS_RIFLE: Gauss Rifle
+      STR_GAUSS_RIFLE_CLIP: Gauss Rifle Clip
+      STR_GAUSS_RIFLE_UFOPEDIA: An extended and modified version of the gauss pistol, the gauss rifle is a very accurate and extremely powerful hand weapon.  The bullets' small size allow for a large clip that takes long to deplete.  The weapon's obvious downside is lack of autofire setting, as it would cause instant overheating.
+      STR_GAUSS_SNIPER_RIFLE: Gauss Sniper Rifle
+      STR_GAUSS_SNIPER_RIFLE_CLIP: Gauss Sniper Rifle Clip
+      STR_GAUSS_SNIPER_RIFLE_UFOPEDIA: The gauss sniper rifle is a successful attempt at capitalizing on the gauss rifle's innate strengths.  It is yet more powerful and definitely more accurate, allowing X-Com operatives to down tough enemies in just one shot, therefore diminishing the need of autofire.
+      STR_GAUSS_WEAPONS: Gauss Weapons
+      STR_HEAVY_GAUSS: Heavy Gauss
+      STR_HEAVY_GAUSS_CLIP: Heavy Gauss Clip
+      STR_HEAVY_GAUSS_UFOPEDIA: Although the heavy gauss it is less accurate than its smaller counterparts, its destructive potential makes it more of an anti-tank weapon than anything else.  It is a successful attempt to adapt our troopers' equipment to the ever-increasing challenges of the alien war.
+      STR_HOVERTANK_ARTILLERY: Hovertank/Artillery
+      STR_HOVERTANK_ARTILLERY_UFOPEDIA: The 155mm howitzer designed for the Tank/Artillery has been modified and modernized to fit the new Artillery shells which are bigger and more powerful. The tank itself is now fitted onto a hover chassis.
+      STR_HOVERTANK_GAUSS: Hovertank/Gauss
+      STR_HOVERTANK_GAUSS_UFOPEDIA: This flying tank is armed with a light gauss cannon that can instantly pierce through virtually any armour.
+      STR_HOVERTANK_GRENADE_LAUNCHER: Hovertank/Grenade Launcher
+      STR_HOVERTANK_GRENADE_LAUNCHER_UFOPEDIA: The indirect fire-support platform has breathed new life in the form of hovering support. Slightly more accurate, but only because the rapid fire function has been unincluded for safety reasons.
+      STR_HOVERTANK_LASER: Hovertank/Laser
+      STR_HOVERTANK_LASER_UFOPEDIA: Alien technology has given the HWP a new lease of life.  The added maneuverability of air travel and the power of laser is a lethal combination.
+      STR_HOVERTANK_ROCKET_LAUNCHER: Hovertank/Rocket Launcher
+      STR_HOVERTANK_ROCKET_LAUNCHER_UFOPEDIA: Our understanding of alien construction has allowed us to improve our HWP designs, this unit features alien alloy plating and an anti gravity unit for enhanced mobility. This variant sports the rocket launcher.
+      STR_HOVERTANK_SCATTER_LASER: Hovertank/Scatter Laser
+      STR_HOVERTANK_SCATTER_LASER_UFOPEDIA: The Infantry weapon known as the Scatter Laser, developed in the Labs, was enlarged to fit onto a HWP. While inaccurate, it's one of the few hover vehicles XCOM utilizes that features rapid fire.
+      STR_HWP_ADVANCED_ARTILLERY_SHELLS: HWP Advanced Artillery Shells
+      STR_HWP_ADVANCED_GRENADES: HWP Advanced Grenades
+      STR_HWP_GAUSS_AMMO: HWP Gauss Ammo
+      STR_HWP_GRENADES: HWP Grenades
+      STR_HWP_HMG: Heavy Machine Gun
+      STR_HWP_HMG_SHELLS: Machine Gun Shells
+      STR_HWP_MINIGUN_CLIP: HWP Minigun Clip
+      STR_LIGHT_MINIGUN: Light Minigun
+      STR_LIGHT_MINIGUN_CLIP: Light Minigun Ammo Box
+      STR_LIGHT_MINIGUN_UFOPEDIA: Light minigun combines portability with long, powerful bursts of fire, making it a highly versatile weapon.
+      STR_MINIGUN: Minigun
+      STR_MINIGUN_CLIP: Minigun Ammo Pack
+      STR_MINIGUN_UFOPEDIA: This heavy support weapon fires deadly hails of bullets, most effective in area clearing and suppressing the enemy. Due to its inherent weight, high strength is required to use it to its full potential.
+      STR_SCATTER_LASER: Scatter Laser
+      STR_SCATTER_LASER_UFOPEDIA: This weapon is a Minigun analogue, shooting long volleys of pulse laser beams for a devastating effect.
+      STR_SCOUT_DRONE: Tank/Scout
+      STR_SCOUT_DRONE_UFOPEDIA: This small rugged drone is designed for scout and reconnaissance. Although lacking in offensive weaponry or the armour of larger HWPs, it is fast and allows ground units to quickly scout out enemy positions and act as a spotter without risk to X-Com personnel. It also features a smoke launcher to help conceal itself and ground troops in open ground or from incoming fire.
+      STR_SCOUT_SMOKE: Smoke Pellet
+      STR_SECTOPOD_CONSTRUCTION: Sectopod Construction
+      STR_SECTOPOD_CONSTRUCTION_UFOPEDIA: The reverse engineering of the Alien Sectopod is complete.  Once the principles of their design are understood, and the functions of each component are known, then it is possible to rebuild these types of bipedal HWP.  Requiring less energy to move, more power is available to the main weapon.  Replacing the psionic-link control with our tank AI proved the most difficult.
+      STR_SECTOPOD_LASER: Sectopod/Laser
+      STR_SECTOPOD_LASER_UFOPEDIA: This robot is a sturdy design, an AI powered armor capable of resisting most forms of attack, in particular plasma weapons.  We were also able to reduce the circuitry vulnerability to laser weapons.  Coupled with an Heavy Laser our Unit is a valuable complement to any assault squad.
+      STR_SECTOPOD_PLASMA: Sectopod/Plasma
+      STR_SECTOPOD_PLASMA_UFOPEDIA: This robot is a sturdy design, an AI powered armor capable of resisting most forms of attack, in particular plasma weapons.  We were also able to reduce the circuitry vulnerability to laser weapons.  Coupled with an Heavy Plasma our Unit is a valuable complement to any assault squad.
+      STR_SMALL_TANK_CORPSE: Tank
+      STR_TANK_ARTILLERY: Tank/Artillery
+      STR_TANK_GAUSS: Tank/Gauss
+      STR_TANK_GAUSS_UFOPEDIA: This automatic armoured vehicle's turret was upgraded to a potent light gauss cannon.  Its overall combat profile is superior to traditional light cannons in both accuracy and power.
+      STR_TANK_GRENADE_LAUNCHER: Tank/Grenade Launcher
+      STR_TANK_GRENADE_LAUNCHER_UFOPEDIA: Inspired by weapons such as the American M109 Paladin and the German Panzerhaubitze 2000, this Self Propelled Gun features a 155mm low velocity cannon that accurately launches shells from a very long range.
+      STR_TANK_HMG: Tank/MachineGun
+      STR_TANK_HMG_UFOPEDIA: The Tank Machine Gun is equipped with a Heavy Machine Gun, which is ideal for covering purposes, specially on open spaces.
+      STR_TANK_MINIGUN: Tank/Minigun
+      STR_TANK_MINIGUN_UFOPEDIA: This automated heavy weapons platform is equipped with a high-speed minigun, useful for area denial operations.
+      STR_TANK_PLASMA: Tank/Plasma Cannon
+      STR_TANK_PLASMA_UFOPEDIA: The newest developments in Plasma Technology have led us to believe a powerful heavy weapons platform could be produced. This has led to our first developments into Heavy Plasma machinery, the Plasma Tank.
+      STR_TANK_SNOOP: Tank/Snoop
+      STR_TANK_SNOOP_UFOPEDIA: This tank allows you to scout unknown areas without risking the lives of your soldiers.
+      STR_TANK_SNOOP_WEAPON: Light Machine Gun
+      STR_ULTIMATE_ROBOT: Ultimate Robot
+      STR_ULTIMATE_ROBOT_UFOPEDIA: Our advances in robotics technology have led us to believe that we can improve on the Artificial Soldier design. With help from a scientist based in Nevada, we are able to create the most advanced soldier that has ever been seen.
+      STR_XCOM_CYBERDISC: X-Com Cyberdisc
+      STR_XCOM_CYBERDISC_LASER: X-Com Cyberdisc/Laser
+      STR_XCOM_CYBERDISC_LASER_UFOPEDIA: The Cyberdisc is a weapon to be feared on the battlefield when in alien hands. Now they feel the same fear when these new cyberdiscs, reverse engineered from their own, are on the battlefield, equipped with a heavy laser cannon.
+      STR_XCOM_CYBERDISC_PLASMA: X-Com Cyberdisc/Plasma
+      STR_XCOM_CYBERDISC_PLASMA_UFOPEDIA: The Cyberdisc is a weapon to be feared on the battlefield when in alien hands. Now they feel the same fear when these new cyberdiscs, reverse engineered from their own, are on the battlefield, equipped with a heavy plasma cannon.
+      STR_XCOM_CYBERDISC_UFOPEDIA: Thanks to our advances in alien electronics and construction, we have developed the ability to repair damaged Cyberdiscs and use them for our own purposes.  While powerful, these miniature UFOs still have a tendency to violently explode when critically damaged, therefore caution is advised.
+      STR_XCOM_ENFORCER: X-Com Enforcer
+      STR_XCOM_ENFORCER_M: X-Com Enforcer
+      STR_XCOM_ENFORCER_UFOPEDIA: Enforcer is an ideological child of Professor Able Standard. Stationed in Nevada, he worked on the Advanced Robotics Program before leaving to work on his own idea. The X-COM Enforcer is a perfect soldier. Heavily armed and armoured, this robot is a threat to all aliens that match it. We're sure even Sectopods won't stand too much of a chance.
+  - type: en-US
+    strings:
+      STR_ADVANCED_PLASMA_RIFLE: Advanced Plasma Rifle
+      STR_ADVANCED_ROBOTICS: Advanced Robotics Technology
+      STR_ADVANCED_ROBOTICS_UFOPEDIA: Thanks to reverse engineering of several alien artefacts human technology made great advances. Knowledge that we have gained by studying these technologies allow us to create the perfect artificial intelligence. Understanding of the alien machines together with knowledge of the principles of artificial intelligence will allow us to develop new defence technologies. Thanks to these discoveries we are only a step from the creation of perfect, self-sufficient AI, which could mark a turning point in the fight against the alien threat - robotic warriors.
+      STR_ARTIFICIAL_SOLDIER_ASSAULT: Artificial Soldier/Assualt
+      STR_ARTIFICIAL_SOLDIER_ASSAULT_M: Artificial Soldier/Assualt
+      STR_ARTIFICIAL_SOLDIER_ASSAULT_UFOPEDIA: An autonomous soldier made from used Power Armor. Used for frontline combat on the xeno front.
+      STR_ARTIFICIAL_SOLDIER_VANGUARD: Artificial Soldier/Vanguard
+      STR_ARTIFICIAL_SOLDIER_VANGUARD_M: Artificial Soldier/Vanguard
+      STR_ARTIFICIAL_SOLDIER_VANGUARD_UFOPEDIA: An autonomous soldier made from used Power Armor. Designed to carry equipment and scout the area.
+      STR_ARTILLERY_CANNON: 155mm Howitzer
+      STR_ARTILLERY_SHELLS: Artillery Shells
+      STR_CORPSE_BOT: Scrap
+      STR_CORPSE_ROBO: Scrap Metal
+      STR_GAUSS_CANNON: Gauss Cannon
+      STR_GAUSS_CANNON_ROUNDS_X60: Craft Gauss Cannon Rounds (x60)
+      STR_GAUSS_CANNON_UC: GAUSS CANNON
+      STR_GAUSS_CANNON_UFOPEDIA: THE GAUSS CANNON IS THE APOGEE OF GAUSS TECHNOLOGY. FIRING RELATIVELY SMALL BULLETS AT VERY HIGH SPEEDS, IT CAN PENETRATE ANY ARMOUR. ITS RANGE, HOVEVER, IS LIMITED, AS THE BULLETS EVAPORATE QUICKLY DUE TO ATMOSPHERIC FRICTION.
+      STR_GAUSS_PISTOL: Gauss Pistol
+      STR_GAUSS_PISTOL_CLIP: Gauss Pistol Clip
+      STR_GAUSS_PISTOL_UFOPEDIA: The gauss pistol is a very potent sidearm, firing small ferromagnetic bullets using an electromagnetic field instead of chemical explosives.  High bullet velocity deal significant damage, able to pierce through vehicle armor plates with ease, as well as gives the weapon greater accuracy.
+      STR_GAUSS_RIFLE: Gauss Rifle
+      STR_GAUSS_RIFLE_CLIP: Gauss Rifle Clip
+      STR_GAUSS_RIFLE_UFOPEDIA: An extended and modified version of the gauss pistol, the gauss rifle is a very accurate and extremely powerful hand weapon.  The bullets' small size allow for a large clip that takes long to deplete.  The weapon's obvious downside is lack of autofire setting, as it would cause instant overheating.
+      STR_GAUSS_SNIPER_RIFLE: Gauss Sniper Rifle
+      STR_GAUSS_SNIPER_RIFLE_CLIP: Gauss Sniper Rifle Clip
+      STR_GAUSS_SNIPER_RIFLE_UFOPEDIA: The gauss sniper rifle is a successful attempt at capitalizing on the gauss rifle's innate strengths.  It is yet more powerful and definitely more accurate, allowing X-Com operatives to down tough enemies in just one shot, therefore diminishing the need of autofire.
+      STR_GAUSS_WEAPONS: Gauss Weapons
+      STR_HEAVY_GAUSS: Heavy Gauss
+      STR_HEAVY_GAUSS_CLIP: Heavy Gauss Clip
+      STR_HEAVY_GAUSS_UFOPEDIA: Although the heavy gauss it is less accurate than its smaller counterparts, its destructive potential makes it more of an anti-tank weapon than anything else.  It is a successful attempt to adapt our troopers' equipment to the ever-increasing challenges of the alien war.
+      STR_HOVERTANK_ARTILLERY: Hovertank/Artillery
+      STR_HOVERTANK_ARTILLERY_UFOPEDIA: The 155mm howitzer designed for the Tank/Artillery has been modified and modernized to fit the new Artillery shells which are bigger and more powerful. The tank itself is now fitted onto a hover chassis.
+      STR_HOVERTANK_GAUSS: Hovertank/Gauss
+      STR_HOVERTANK_GAUSS_UFOPEDIA: This flying tank is armed with a light gauss cannon that can instantly pierce through virtually any armour.
+      STR_HOVERTANK_GRENADE_LAUNCHER: Hovertank/Grenade Launcher
+      STR_HOVERTANK_GRENADE_LAUNCHER_UFOPEDIA: The indirect fire-support platform has breathed new life in the form of hovering support. Slightly more accurate, but only because the rapid fire function has been unincluded for safety reasons.
+      STR_HOVERTANK_LASER: Hovertank/Laser
+      STR_HOVERTANK_LASER_UFOPEDIA: Alien technology has given the HWP a new lease of life.  The added maneuverability of air travel and the power of laser is a lethal combination.
+      STR_HOVERTANK_ROCKET_LAUNCHER: Hovertank/Rocket Launcher
+      STR_HOVERTANK_ROCKET_LAUNCHER_UFOPEDIA: Our understanding of alien construction has allowed us to improve our HWP designs, this unit features alien alloy plating and an anti gravity unit for enhanced mobility. This variant sports the rocket launcher.
+      STR_HOVERTANK_SCATTER_LASER: Hovertank/Scatter Laser
+      STR_HOVERTANK_SCATTER_LASER_UFOPEDIA: The Infantry weapon known as the Scatter Laser, developed in the Labs, was enlarged to fit onto a HWP. While inaccurate, it's one of the few hover vehicles XCOM utilizes that features rapid fire.
+      STR_HWP_ADVANCED_ARTILLERY_SHELLS: HWP Advanced Artillery Shells
+      STR_HWP_ADVANCED_GRENADES: HWP Advanced Grenades
+      STR_HWP_GAUSS_AMMO: HWP Gauss Ammo
+      STR_HWP_GRENADES: HWP Grenades
+      STR_HWP_HMG: Heavy Machine Gun
+      STR_HWP_HMG_SHELLS: Machine Gun Shells
+      STR_HWP_MINIGUN_CLIP: HWP Minigun Clip
+      STR_LIGHT_MINIGUN: Light Minigun
+      STR_LIGHT_MINIGUN_CLIP: Light Minigun Ammo Box
+      STR_LIGHT_MINIGUN_UFOPEDIA: Light minigun combines portability with long, powerful bursts of fire, making it a highly versatile weapon.
+      STR_MINIGUN: Minigun
+      STR_MINIGUN_CLIP: Minigun Ammo Pack
+      STR_MINIGUN_UFOPEDIA: This heavy support weapon fires deadly hails of bullets, most effective in area clearing and suppressing the enemy. Due to its inherent weight, high strength is required to use it to its full potential.
+      STR_SCATTER_LASER: Scatter Laser
+      STR_SCATTER_LASER_UFOPEDIA: This weapon is a Minigun analogue, shooting long volleys of pulse laser beams for a devastating effect.
+      STR_SCOUT_DRONE: Tank/Scout
+      STR_SCOUT_DRONE_UFOPEDIA: This small rugged drone is designed for scout and reconnaissance. Although lacking in offensive weaponry or the armour of larger HWPs, it is fast and allows ground units to quickly scout out enemy positions and act as a spotter without risk to X-Com personnel. It also features a smoke launcher to help conceal itself and ground troops in open ground or from incoming fire.
+      STR_SCOUT_SMOKE: Smoke Pellet
+      STR_SECTOPOD_CONSTRUCTION: Sectopod Construction
+      STR_SECTOPOD_CONSTRUCTION_UFOPEDIA: The reverse engineering of the Alien Sectopod is complete.  Once the principles of their design are understood, and the functions of each component are known, then it is possible to rebuild these types of bipedal HWP.  Requiring less energy to move, more power is available to the main weapon.  Replacing the psionic-link control with our tank AI proved the most difficult.
+      STR_SECTOPOD_LASER: Sectopod/Laser
+      STR_SECTOPOD_LASER_UFOPEDIA: This robot is a sturdy design, an AI powered armor capable of resisting most forms of attack, in particular plasma weapons.  We were also able to reduce the circuitry vulnerability to laser weapons.  Coupled with an Heavy Laser our Unit is a valuable complement to any assault squad.
+      STR_SECTOPOD_PLASMA: Sectopod/Plasma
+      STR_SECTOPOD_PLASMA_UFOPEDIA: This robot is a sturdy design, an AI powered armor capable of resisting most forms of attack, in particular plasma weapons.  We were also able to reduce the circuitry vulnerability to laser weapons.  Coupled with an Heavy Plasma our Unit is a valuable complement to any assault squad.
+      STR_SMALL_TANK_CORPSE: Tank
+      STR_TANK_ARTILLERY: Tank/Artillery
+      STR_TANK_GAUSS: Tank/Gauss
+      STR_TANK_GAUSS_UFOPEDIA: This automatic armoured vehicle's turret was upgraded to a potent light gauss cannon.  Its overall combat profile is superior to traditional light cannons in both accuracy and power.
+      STR_TANK_GRENADE_LAUNCHER: Tank/Grenade Launcher
+      STR_TANK_GRENADE_LAUNCHER_UFOPEDIA: Inspired by weapons such as the American M109 Paladin and the German Panzerhaubitze 2000, this Self Propelled Gun features a 155mm low velocity cannon that accurately launches shells from a very long range.
+      STR_TANK_HMG: Tank/MachineGun
+      STR_TANK_HMG_UFOPEDIA: The Tank Machine Gun is equipped with a Heavy Machine Gun, which is ideal for covering purposes, specially on open spaces.
+      STR_TANK_MINIGUN: Tank/Minigun
+      STR_TANK_MINIGUN_UFOPEDIA: This automated heavy weapons platform is equipped with a high-speed minigun, useful for area denial operations.
+      STR_TANK_PLASMA: Tank/Plasma Cannon
+      STR_TANK_PLASMA_UFOPEDIA: The newest developments in Plasma Technology have led us to believe a powerful heavy weapons platform could be produced. This has led to our first developments into Heavy Plasma machinery, the Plasma Tank.
+      STR_TANK_SNOOP: Tank/Snoop
+      STR_TANK_SNOOP_UFOPEDIA: This tank allows you to scout unknown areas without risking the lives of your soldiers.
+      STR_TANK_SNOOP_WEAPON: Light Machine Gun
+      STR_ULTIMATE_ROBOT: Ultimate Robot
+      STR_ULTIMATE_ROBOT_UFOPEDIA: Our advances in robotics technology have led us to believe that we can improve on the Artificial Soldier design. With help from a scientist based in Nevada, we are able to create the most advanced soldier that has ever been seen.
+      STR_XCOM_CYBERDISC: X-Com Cyberdisc
+      STR_XCOM_CYBERDISC_LASER: X-Com Cyberdisc/Laser
+      STR_XCOM_CYBERDISC_LASER_UFOPEDIA: The Cyberdisc is a weapon to be feared on the battlefield when in alien hands. Now they feel the same fear when these new cyberdiscs, reverse engineered from their own, are on the battlefield, equipped with a heavy laser cannon.
+      STR_XCOM_CYBERDISC_PLASMA: X-Com Cyberdisc/Plasma
+      STR_XCOM_CYBERDISC_PLASMA_UFOPEDIA: The Cyberdisc is a weapon to be feared on the battlefield when in alien hands. Now they feel the same fear when these new cyberdiscs, reverse engineered from their own, are on the battlefield, equipped with a heavy plasma cannon.
+      STR_XCOM_CYBERDISC_UFOPEDIA: Thanks to our advances in alien electronics and construction, we have developed the ability to repair damaged Cyberdiscs and use them for our own purposes.  While powerful, these miniature UFOs still have a tendency to violently explode when critically damaged, therefore caution is advised.
+      STR_XCOM_ENFORCER: X-Com Enforcer
+      STR_XCOM_ENFORCER_M: X-Com Enforcer
+      STR_XCOM_ENFORCER_UFOPEDIA: Enforcer is an ideological child of Professor Able Standard. Stationed in Nevada, he worked on the Advanced Robotics Program before leaving to work on his own idea. The X-COM Enforcer is a perfect soldier. Heavily armed and armoured, this robot is a threat to all aliens that match it. We're sure even Sectopods won't stand too much of a chance.

@@ -1,0 +1,125 @@
+<!doctype html>
+<title>OpenXCOM Mod Tester 0.1</title>
+<style type="text/css">
+<!--
+.warning {color:#9BA013;}
+.error {color:red;}
+.info {color:gray;}
+-->
+</style>
+<script type="text/javascript">
+function echange(v,i,a){
+    for (e=0;e<a.length;e++){
+        document.getElementById('err-'+a[e]).checked=document.getElementById('entry-'+v).checked
+    }
+
+}
+function vistog(a){
+    if (document.getElementById(a).style.display=="block"){
+        document.getElementById(a).style.display="none";
+    }else{
+        document.getElementById(a).style.display="block";
+    }
+
+}
+    function showoptions(a)
+{
+    if(a==1){
+    document.getElementById("errorlist").style.display="none";
+    document.getElementById("showb").style.display="block";
+
+    }else{
+    document.getElementById("errorlist").style.display="block";
+    document.getElementById("showb").style.display="none";
+    }
+    return false;
+}
+    function lshowoptions(a)
+{
+    if(a==1){
+    document.getElementById("langlist").style.display="none";
+    document.getElementById("lshowb").style.display="block";
+
+    }else{
+    document.getElementById("langlist").style.display="block";
+    document.getElementById("lshowb").style.display="none";
+    }
+    return false;
+}
+    function fshowoptions(a)
+{
+    if(a==1){
+    document.getElementById("fixlist").style.display="none";
+    document.getElementById("fshowb").style.display="block";
+
+    }else{
+    document.getElementById("fixlist").style.display="block";
+    document.getElementById("fshowb").style.display="none";
+    }
+    return false;
+}
+</script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>OpenXcom-Mod-Tester</h1>
+      <form action="/" method=post class=add-entry enctype="multipart/form-data">
+      <dl>
+
+
+    select error messages: <div  id="showb"><a href="#"  onclick="javascript:showoptions(2)">Show Errorselection</a></div>
+    <div id="errorlist" style="display:none">
+    <a href="#"  onclick="javascript:showoptions(1)">Hide Errorselection</a>
+    <ul  class=entries >
+
+  {% for lentry in elevelsort %}
+    <li ><input type="checkbox" checked id="entry-{{newelevel[lentry][0]|safe}}" onclick="echange(this.value,'{{newelevel[lentry][0]|safe}}',[{% for entry2 in errorlist %}{% if entry2[2] == newelevel[lentry][0] %}'{{entry2[0]|safe}}',{% endif %}{% endfor %}]);" value="{{ newelevel[lentry][0]|safe }}" /><span style="color:{{ newelevel[lentry][1]}}">{{ newelevel[lentry][0]|safe }}</span><a onclick="vistog('ul{{newelevel[lentry][0]|safe}}');return false;"> MORE</a><ul style="display:none" id=ul{{newelevel[lentry][0]|safe}}>
+  {% for entry in errorlist %}
+  {% if entry[2] == newelevel[lentry][0] %}
+    <li ><input type="checkbox" id="err-{{entry[0]|safe}}" name="eselect[]" {{ entry[-1] }} value="{{ entry[0]|safe }}" /><span style="color:{{ entry[3]}}">{{ entry[0]|safe }}</span> - {{ entry[1]|safe }}</li>
+  {% endif %}
+  {% endfor %}</ul></li>
+  {% endfor %}
+  </ul><hr /></div><br />
+    check for languages: <div  id="lshowb"><a href="#"  onclick="javascript:lshowoptions(2)">Show Languageselection</a></div>
+    <div id="langlist" style="display:none">
+    <a href="#"  onclick="javascript:lshowoptions(1)">Hide Languageselection</a>
+    <ul  class=entries >
+  {% for entry in langlist %}
+    <li ><input type="checkbox" name="lselect[]" {{ entry[-1] }} value="{{ entry[0]|safe }}" />{{ entry[0]|safe }}
+
+  {% endfor %}
+  </ul><hr /></div><br />
+    enable some fixes: <div  id="fshowb"><a href="#"  onclick="javascript:fshowoptions(2)">Show Fixselection</a></div>
+    <div id="fixlist" style="display:none">
+    <a href="#"  onclick="javascript:fshowoptions(1)">Hide Fixselection</a>
+    <ul  class=entries >
+  {% for entry in fixlist %}
+    <li ><input type="checkbox" name="fselect[]" {{ entry[-1] }} value="{{ entry[0]|safe }}" />{{ entry[0]|safe }}
+
+  {% endfor %}
+  </ul><hr /></div><br />
+
+<!--
+        <dt>you care about Languages?:
+        <dd><input type=text name=lang  value="{{langstr }}" /> //-->
+        <dt>Upload Mod ZIP-File:
+        <dd><input name=mfile type=file />
+        <dd><input type=submit value=Test>
+      </dl>
+    </form>
+
+  <ul class=entries>
+  {% for entry in errors %}
+    <li><h3 class="{{ entry[1][0:-1]|safe }}">{{ entry[0]|safe }}</h3>{{ entry[1:]|safe }}
+
+  {% else %}
+    <li><em>Unbelievable.  No entries here so far</em>
+  {% endfor %}
+  </ul>
+  {% if newrul %}<textarea rows="30" cols="70">{{newrul}}</textarea><br /><br /><br /><br />{% endif %}
+  <div class=metanav>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</div>

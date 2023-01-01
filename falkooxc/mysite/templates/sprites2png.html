@@ -1,0 +1,27 @@
+<!doctype html>
+<title>OpenXCOM Mod Tester 0.1</title>
+<style type="text/css">
+<!--
+-->
+</style>
+<script type="text/javascript">
+</script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>OpenXcom-Sprite Combiner</h1>
+      <form action="/getpngcomb" name="theForm" method=post class=add-entry enctype="multipart/form-data">
+    <dl>
+        <dt>amount of columns:
+        <dd><input name=nrcols value=16 />
+        <dt>Upload ZIP-File with sprites:
+        <dd><input name=mfile type=file />
+        <dd><input type=submit value=getpng>
+      </dl>
+    </form>
+
+  <div class=metanav>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</div>

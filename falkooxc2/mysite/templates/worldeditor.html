@@ -1,0 +1,2271 @@
+{% extends "layout.html" %}
+{% from 'modalaceedit.html' import modal_ace_edit_head  %}
+{% from 'modalaceedit.html' import modal_ace_edit_body  %}
+{% from 'modalaceedit.html' import modal_ace_edit_button  %}
+{% from 'modalaceedit.html' import modal_ace_edit_jsfooter %}
+
+
+{%
+	set yamleditors={
+	"options":{
+		"textidstring":"yamloptions",
+		"varstring":"optionsstring",
+		"modalidstring":"modaloptionsid",
+		"title":"Set Colors for textures",
+		"editorvar":"editoroptions",
+		"buttontext":"Open options",
+		"buttonidstring":"yamloptionsbuttonid",
+		"contentid":"optionstext"
+	},"exportrul":{
+		"textidstring":"yamlexport",
+		"varstring":"exportstring",
+		"modalidstring":"modalexportid",
+		"title":"The exported Rul-File",
+		"editorvar":"editorexport",
+		"buttontext":"Open Export",
+		"buttonidstring":"yamlexportbuttonid",
+		"contentid":"exporttext"	
+	},"importrul":{
+		"textidstring":"yamlimport",
+		"varstring":"importstring",
+		"modalidstring":"modalimportid",
+		"title":"The imported Rul-File",
+		"editorvar":"editorimport",
+		"buttontext":"Open Import",
+		"buttonidstring":"yamlimportbuttonid",
+		"contentid":"importtext"	
+	}
+}
+%}
+{% block title %}World Editor{% endblock %}
+{% block head %}
+
+	{{ modal_ace_edit_head(yamleditors) }}
+	<script src="/static/lib/polyk.js"></script>
+	<script src="/static/lib/js-yaml.min.js"></script>
+	<script src='/static/lib/OpenLayers-2.13.1/OpenLayers.js'></script>
+	<link href="/static/lib/select2-3.5.1/select2.css" rel="stylesheet"/>
+	<script src="/static/lib/select2-3.5.1/select2.js"></script>
+	<script type="text/javascript" src="/static/lib/FileSaver.js"></script>
+	<script src="/static/lib/bootstrap.file-input.js" type="text/javascript"></script>	
+	<style>
+		html,body {
+			height: 99%;
+			width: 99%;
+		}
+		#map {
+			width: 99%;
+			height: 93%;			
+
+			border: 1px solid black;
+		}
+		.mapheader {			
+			min-height: 75px;
+		}
+		
+	</style>
+
+		<script type="text/javascript">
+var map;
+
+
+//vectorlayers
+var textures ;	
+var regions ;
+var countries;
+var cities ;
+var borders;
+var missionzones;
+//maps
+var empty;
+var terrapagesStreetLayer ;
+var wms ;
+var gwc ;
+var citylights ;
+var marsheights ;
+var marsgeo ;
+var marsterra; 
+var phobos ;
+var moon ;
+var mercury ;
+var venus1;
+var venus2 ;
+var io ;
+var europa ;
+
+//styles
+var bstyle;
+var sbstyle;
+
+var regioncolors={};
+var missioncolors={};
+var countrycolors={};
+var textcolors={};
+
+var missionzones_control=[];
+var newmissions_control=[];
+	
+var lastmodified=-1;
+var deleteme=-1;
+
+var opacitylayer=textures;
+var snap;
+var citycounter=0;
+var countrycounter=0;
+
+var texgraphicZIndex=0;
+
+
+function mod(n, m) {
+        return ((m % n) + n) % n;
+}
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+function dir(object) {
+    stuff = [];
+    for (s in object) {
+        stuff.push(s);
+    }
+    stuff.sort();
+    return stuff;
+}
+function doit(){
+	
+//	map = new OpenLayers.Map('map',{units: 'degrees',minScale: 10000000,maxScale: 120000000, numZoomLevels: 15} );			
+	map = new OpenLayers.Map('map',{units: 'degrees',
+
+ controls:[
+                new OpenLayers.Control.LayerSwitcher({
+                    'ascending':false
+                    }),
+                new OpenLayers.Control.ScaleLine({
+                    'geodesic': "true"
+                }),
+                 new OpenLayers.Control.Navigation(),
+                 new OpenLayers.Control.Zoom(),
+                 //new OpenLayers.Control.NavToolbar(),
+                 //new OpenLayers.Control.Measure(),                                  
+                 new OpenLayers.Control.Attribution(),
+                 new OpenLayers.Control.KeyboardDefaults(),
+//                 new OpenLayers.Control.OverviewMap({
+//                    autoPan: false
+//                 }),
+//                 new OpenLayers.Control.Permalink()
+                ]
+} );			
+	var wmscURL = [
+		"http://wmsc1.terrapages.net/getmap?",
+		"http://wmsc2.terrapages.net/getmap?",
+		"http://wmsc3.terrapages.net/getmap?",
+		"http://wmsc4.terrapages.net/getmap?"
+	];
+	
+	var empty = new OpenLayers.Layer.Image('Blank', 'static/worldeditor/empty.gif', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(1152, 576),
+                {wrapDateLine: true, attribution: "",minScale: 10000000,maxScale: 120000000, numZoomLevels: 15}); //OpenLayers.Size(1152, 576)
+//	var empty = new OpenLayers.Layer("Blank",{isBaseLayer: true},{wrapDateLine: true});
+	var terrapagesStreetLayer = new OpenLayers.Layer.WMS( 'TerraPages Street',wmscURL, {layers: 'UnprojectedStreet', format: 'image/jpeg' }, {wrapDateLine: true,buffer: 1, isBaseLayer: true,attribution: "<a href='http://www.osgeo.org/'>Provided by OSGeo</a>"} );
+	var wms = new OpenLayers.Layer.WMS("WMS", "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: "basic"},{attribution: "<a href='http://www.terrapages.net/'>Provided by terrapages.net</a>"});
+	var gwc = new OpenLayers.Layer.WMS("Global Imagery", "http://maps.opengeo.org/geowebcache/service/wms", {layers: "bluemarble"}, {wrapDateLine: true,tileOrigin: new OpenLayers.LonLat(-180, -90),attribution: "<a href='http://maps.opengeo.org'>Provided by opengeo.org</a>"});
+
+	citylights = new OpenLayers.Layer.Image( 'City Lights','http://eoimages.gsfc.nasa.gov/images/imagerecords/79000/79765/dnb_land_ocean_ice.2012.3600x1800.jpg', new OpenLayers.Bounds(-180, -90, 180, 90), new OpenLayers.Size(360, 180),
+                {wrapDateLine: true, attribution: "<a href='http://earthobservatory.nasa.gov/NaturalHazards/view.php?id=79765'>Provided by NASA/Suomi NPP VIIRS </a>"});
+	marsheights = new OpenLayers.Layer.Image('marsheights','static/worldeditor/MOLA_cylin.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759),new OpenLayers.Size(576, 288),
+                {wrapDateLine: true, attribution: "<a href='http://marsoweb.nas.nasa.gov/globalData/'>Provided by NASA</a>"});
+	marsgeo = new OpenLayers.Layer.Image('marsgeology', 'http://marsoweb.nas.nasa.gov/globalData/images/fullscale/geology.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://marsoweb.nas.nasa.gov/globalData/'>Provided by NASA</a>"});
+	marsterra = new OpenLayers.Layer.Image('marsterra', 'http://fc06.deviantart.net/fs14/f/2007/110/0/7/Terraformed_Mars_by_Quanto.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://quanto.deviantart.com/art/Terraformed-Mars-53595798'>Provided by Quanto</a>"});
+	phobos = new OpenLayers.Layer.Image('phobos', 'http://www.unmannedspaceflight.com/index.php?act=attach&type=post&id=21716', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://www.unmannedspaceflight.com/index.php?showtopic=6502&st=30&p=159941&#entry159941'>Provided by Phil Stooke</a>"});
+	moon = new OpenLayers.Layer.Image('moon', 'http://laps.noaa.gov/albers/sos/moon/moon_8k_color_brim16.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://laps.noaa.gov/albers/sos/sos.html'>Provided by Steve Albers</a>"});
+	mercury = new OpenLayers.Layer.Image('mercury', 'http://laps.noaa.gov/albers/sos/mercury/mercury/mercury_rgb_cyl_www.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://laps.noaa.gov/albers/sos/sos.html'>Provided by Steve Albers</a>"});
+	venus1 = new OpenLayers.Layer.Image('venus1', 'http://laps.noaa.gov/albers/sos/venus/venus4/venus4_rgb_cyl_www.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://laps.noaa.gov/albers/sos/sos.html'>Provided by Steve Albers</a>"});
+	venus2 = new OpenLayers.Layer.Image('venus2', 'http://laps.noaa.gov/albers/sos/venus/venus_shaded.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://laps.noaa.gov/albers/sos/sos.html'>Provided by Steve Albers</a>"});
+	io = new OpenLayers.Layer.Image('io', 'http://laps.noaa.gov/albers/sos/jupiter/io/io_rgb_cyl.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://laps.noaa.gov/albers/sos/sos.html'>Provided by Steve Albers</a>"});
+	europa = new OpenLayers.Layer.Image('europa', 'http://laps.noaa.gov/albers/sos/jupiter/europa/europa2_out.jpg', new OpenLayers.Bounds(-180, -88.759, 180, 88.759), new OpenLayers.Size(288, 144),
+                {wrapDateLine: true, attribution: "<a href='http://laps.noaa.gov/albers/sos/sos.html'>Provided by Steve Albers</a>"});
+				
+
+			
+//isBaseLayer: false,opacity: 0.7,wrapDateLine: true
+
+
+	map.addLayer(empty);
+	map.addLayer(terrapagesStreetLayer);
+	map.addLayer(wms);
+	map.addLayer(gwc);
+	
+	
+
+	map.zoomToMaxExtent();
+
+	//cstyle={strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillColor: "#FF0000",fillOpacity: 0.7,pointRadius: 8};
+	bstyle = {strokeColor: '#0000ff', strokeOpacity: 1, strokeWidth: 2 };	
+	//cnstyle={strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillColor: "#FF00FF",fillOpacity: 0.7,pointRadius: 8};
+	popuppoint={
+        eventListeners:{
+            'featureselected':function(evt){
+				var feature = evt.feature;
+				if (typeof feature.attributes.name != 'undefined' && typeof feature.attributes.region != 'undefined')
+				{				
+					var popup = new OpenLayers.Popup.FramedCloud("popup",
+						OpenLayers.LonLat.fromString(feature.geometry.toShortString()),
+						null,
+						"<div style='font-size:.8em'>" + feature.attributes.type+": " + feature.attributes.region+"-"+feature.attributes.name+"</div>",
+						null,
+						true
+					);
+					feature.popup = popup;
+					map.addPopup(popup);
+				}
+            },
+            'featureunselected':function(evt){
+                var feature = evt.feature;
+				if (typeof feature.attributes.name != 'undefined' && typeof feature.attributes.region != 'undefined')				
+				{				
+					map.removePopup(feature.popup);
+					feature.popup.destroy();
+					feature.popup = null;
+				}
+            }
+        }
+    }
+    function finishborder(obj)
+    {
+		newborders_control.deactivate();
+		console.log(obj)
+		obj.style=bstyle;
+		borders.redraw();
+		$("#enablenewborder").removeClass( "btn-warning" ); 
+
+    }
+	newborder={
+        eventListeners:{
+            'featureadded':function(evt){
+				//var feature = evt.feature;
+				finishborder(evt.feature)	
+            }
+		}
+    }		  
+	newcity={
+        eventListeners:{
+            'featureadded':function(evt){
+				var feature = evt.feature;				
+				newcities_control.deactivate();
+				feature.style={strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillColor: regioncolors[document.getElementById('region-city').value],fillOpacity: 0.7,pointRadius: 8};
+				feature.attributes["type"]="city";
+				feature.attributes["name"]=document.getElementById('newcityname').value;
+				feature.attributes["region"]=document.getElementById('region-city').value;
+				cities.redraw();
+				$("#enablenewcity").removeClass( "btn-warning" );
+				$("#cityregcollapse").addClass( "hidden" ); 		 
+            }
+		}
+    }	
+	newregion={
+        eventListeners:{
+            'featureadded':function(evt){
+            	
+				var feature = evt.feature;				
+				newregions_control.deactivate();
+				x=feature.geometry.getCentroid().x;
+				y=feature.geometry.getCentroid().y;
+				lr=new OpenLayers.Geometry.LinearRing([
+				new OpenLayers.Geometry.Point(x-5,y+5),
+				new OpenLayers.Geometry.Point(x-5,y-5),
+				new OpenLayers.Geometry.Point(x+5,y-5),
+				new OpenLayers.Geometry.Point(x+5,y+5)]);
+            	
+				pol = new OpenLayers.Geometry.Polygon([lr]);
+				rcol=regioncolors[document.getElementById('region-region').value];
+				box=new OpenLayers.Feature.Vector( pol,{region:document.getElementById('region-region').value},{strokeColor: rcol, strokeOpacity: 1, strokeWidth: 5, fillColor: rcol,fillOpacity: 0.7});
+				regions.addFeatures([box]);
+				regions.removeFeatures(feature);
+				regions.redraw();
+				$("#enablenewregion").removeClass( "btn-warning" ); 	
+				
+
+            }
+		}
+    }	
+	newmission={
+        eventListeners:{
+            'featureadded':function(evt){
+				var feature = evt.feature;				
+				x=feature.geometry.getCentroid().x;
+				y=feature.geometry.getCentroid().y;
+				lr=new OpenLayers.Geometry.LinearRing([
+				new OpenLayers.Geometry.Point(x-5,y+5),
+				new OpenLayers.Geometry.Point(x-5,y-5),
+				new OpenLayers.Geometry.Point(x+5,y-5),
+				new OpenLayers.Geometry.Point(x+5,y+5)]);
+				pol = new OpenLayers.Geometry.Polygon([lr]);
+				feature.destroy();
+				layer=-1;
+				foundi=-1;
+				for (var i =0 ;i<6;i++)
+					if (document.getElementById('enable-missionzones').value == i)
+					{
+						layer=missionzones[i];
+						foundi=i;
+					}
+				if (layer != -1)
+				{
+					mcol=missioncolors[document.getElementById('region-mission').value+":"+foundi];
+					box=new OpenLayers.Feature.Vector( pol,{mz:foundi,region:document.getElementById('region-mission').value},{strokeColor: mcol, strokeOpacity: 1, strokeWidth: 5, fillColor: mcol,fillOpacity: 0.7});
+					layer.addFeatures([box]);
+					layer.redraw();
+					newmissions_control[foundi].deactivate();
+				}
+				$("#enablenewmissionzone").removeClass( "btn-warning" ); 
+            }
+		}
+    }	
+	newcountry={
+        eventListeners:{
+            'featureadded':function(evt){
+				var feature = evt.feature;				
+				newcountries_control.deactivate();
+				x=feature.geometry.getCentroid().x;
+				y=feature.geometry.getCentroid().y;
+				lr=new OpenLayers.Geometry.LinearRing([
+				new OpenLayers.Geometry.Point(x-5,y+5),
+				new OpenLayers.Geometry.Point(x-5,y-5),
+				new OpenLayers.Geometry.Point(x+5,y-5),
+				new OpenLayers.Geometry.Point(x+5,y+5)]);
+				pol = new OpenLayers.Geometry.Polygon([lr]);
+				if (document.getElementById('countrylist').value!=-2)
+				{
+					if (document.getElementById('countrylist').value==-1)
+					{
+						cn=document.getElementById("newcountryname").value;
+						fb=document.getElementById("newcountryfund").value;
+						fc=document.getElementById("newcountrycap").value;
+						countrycolors[cn]=getRandomColor();						
+						select=document.getElementById("countrylist");
+						opt = document.createElement('option');
+						opt.value = cn;
+						opt.innerHTML = cn;
+						select.appendChild(opt);
+					}else{
+						cn=document.getElementById('countrylist').value;
+					}							
+					ccol=countrycolors[cn];
+					box=new OpenLayers.Feature.Vector( pol,{type:"countrybox",country:cn},{strokeColor: ccol, strokeOpacity: 1, strokeWidth: 5, fillColor: ccol,fillOpacity: 0.7});
+					countries.addFeatures([box]);
+					if (document.getElementById('countrylist').value==-1)
+						countries.addFeatures(new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(x,y),{type:"countryname",country:cn,region:"",name:cn,fund:fb,funcap:fc},{ pointRadius: 8,strokeOpacity: 1, strokeWidth: 2, fillColor: countrycolors[cn],fillOpacity: 0.7 }));
+				}
+				countries.removeFeatures(feature);
+				countries.redraw();
+				$("#enablenewcountries").removeClass( "btn-warning" ); 
+            }
+		}
+    }
+	newterrain={
+        eventListeners:{
+            'featureadded':function(evt){
+				var feature = evt.feature;				
+				newtextures_control.deactivate();
+				feature.style={fillColor: textcolors[0],strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillOpacity: 0.7,graphicZIndex:texgraphicZIndex};
+				texgraphicZIndex++;
+				feature.attributes["tn"]=0;
+				checktex(feature);
+				$("#enablenewtexture").removeClass( "btn-warning" ); 					
+            }
+		}
+    }	
+	
+	
+	
+	textures = new OpenLayers.Layer.Vector( "Textures" ,{rendererOptions: { zIndexing: true } });
+	//{syle:{	pointRadius: 20, fillColor: "red",fillOpacity: 0.7, strokeColor: "black" filltype:"tile", fillGraphic: "file:///C:/Users/fr/Desktop/oxcom/modtest/data/Ruleset/notfmp/tmp/textblup.gif" }}
+	regions = new OpenLayers.Layer.Vector("Region");
+	countries = new OpenLayers.Layer.Vector("Country",popuppoint);
+	cities = new OpenLayers.Layer.Vector( "Cities" ,popuppoint);
+	borders = new OpenLayers.Layer.Vector( "Borders");//{style:bstyle}
+	missionzones = [];
+	for (i=0;i<6;i++)
+	{
+		missionzones.push(new OpenLayers.Layer.Vector("missionZones"+i));
+		missionzones[i].setOpacity(0.5);
+	}
+	textures.setOpacity(0.5);
+	regions.setOpacity(0.5);
+	countries.setOpacity(0.5);
+	cities.setOpacity(0.5);
+	borders.setOpacity(0.5);
+
+	
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	map.addLayer(textures);
+	map.addLayer(cities);
+	map.addLayer(regions);
+	map.addLayer(countries);
+	map.addLayer(borders);
+	map.addLayer(missionzones[0]);
+	map.addLayer(missionzones[1]);
+	map.addLayer(missionzones[2]);
+	map.addLayer(missionzones[3]);
+	map.addLayer(missionzones[4]);
+	map.addLayer(missionzones[5]);
+
+	fillmap();
+	
+	cities.setVisibility(false);
+	regions.setVisibility(false);
+	borders.setVisibility(false);
+	countries.setVisibility(false);
+	missionzones[0].setVisibility(false);
+	missionzones[1].setVisibility(false);
+	missionzones[2].setVisibility(false);
+	missionzones[3].setVisibility(false);
+	missionzones[4].setVisibility(false);
+	missionzones[5].setVisibility(false);
+	
+	//texture_control=new OpenLayers.Control.DrawFeature(textures,OpenLayers.Handler.Polygon)
+	
+
+	//texture_control=new OpenLayers.Control.ModifyFeature(countries,OpenLayers.Handler.Polygon)
+	//texture_control.mode = OpenLayers.Control.ModifyFeature.DRAG
+	//texture_control.mode +=OpenLayers.Control.ModifyFeature.RESHAPE;
+	//texture_control.mode |= OpenLayers.Control.ModifyFeature.RESIZE;
+
+	// create the select feature control
+
+	texture_control=new OpenLayers.Control.ModifyFeature(textures,OpenLayers.Handler.Polygon);
+	texture_control.mode = OpenLayers.Control.ModifyFeature.DRAG;
+	texture_control.mode +=OpenLayers.Control.ModifyFeature.RESHAPE;	
+	map.addControl(texture_control);	
+	newtextures_control=new OpenLayers.Control.DrawFeature(textures,OpenLayers.Handler.Polygon,newterrain);
+	map.addControl(newtextures_control);
+
+
+	var citiesselector = new OpenLayers.Control.SelectFeature(cities,{hover:true, autoActivate:true}); 	
+	map.addControl(citiesselector);
+	cities_control=new OpenLayers.Control.ModifyFeature(cities,OpenLayers.Handler.Polygon);
+	cities_control.mode = OpenLayers.Control.ModifyFeature.DRAG;
+	map.addControl(cities_control);	
+	newcities_control=new OpenLayers.Control.DrawFeature(cities,OpenLayers.Handler.Point,newcity);
+	map.addControl(newcities_control);
+	
+	var countries_selector = new OpenLayers.Control.SelectFeature(countries,{hover:true, autoActivate:true}); 	
+	map.addControl(countries_selector);	
+	countries_control=new OpenLayers.Control.ModifyFeature(countries,OpenLayers.Handler.Polygon);
+	//countries_control=new OpenLayers.Control.TransformFeature(countries, {
+    //     rotate: false,
+    //     irregular: true
+    //  });
+	countries_control.mode = OpenLayers.Control.ModifyFeature.DRAG;
+	countries_control.mode +=OpenLayers.Control.ModifyFeature.RESHAPE;
+	countries_control.mode |= OpenLayers.Control.ModifyFeature.RESIZE;
+	map.addControl(countries_control);	
+	newcountries_control=new OpenLayers.Control.DrawFeature(countries,OpenLayers.Handler.Point,newcountry);
+	map.addControl(newcountries_control);
+	
+
+	regions_control=new OpenLayers.Control.TransformFeature(regions, {
+         rotate: false,
+         irregular: true
+      });
+//    regions_control.events.register("transformcomplete");
+//	regions_control=new OpenLayers.Control.ModifyFeature(regions,OpenLayers.Handler.Polygon);
+	regions_control.mode = OpenLayers.Control.ModifyFeature.DRAG;
+//	regions_control.mode +=OpenLayers.Control.ModifyFeature.RESHAPE;
+//	regions_control.mode |= OpenLayers.Control.ModifyFeature.RESIZE;
+	map.addControl(regions_control);	
+	//newregions_control = new OpenLayers.Control.DrawFeature(regions, OpenLayers.Handler.RegularPolygon, {
+    //      handlerOptions: {
+    //        sides: 4,
+    //        snapAngle: 90,
+    //        irregular: true,
+    //        persist: true
+    //      }
+    //    });
+	newregions_control=new OpenLayers.Control.DrawFeature(regions,OpenLayers.Handler.Point,newregion);
+	map.addControl(newregions_control);
+
+	borders_control=new OpenLayers.Control.ModifyFeature(borders,OpenLayers.Handler.Path);
+	borders_control.mode =OpenLayers.Control.ModifyFeature.RESHAPE;
+	map.addControl(borders_control);	
+	newborders_control=new OpenLayers.Control.DrawFeature(borders,OpenLayers.Handler.Path,newborder);
+	map.addControl(newborders_control);	
+	
+	
+	
+
+	for (var i =0 ;i<6;i++)
+	{
+		missionzones_control.push(new OpenLayers.Control.TransformFeature(missionzones[i], {
+         rotate: false,
+         irregular: true
+      }));
+		missionzones_control[i].mode = OpenLayers.Control.ModifyFeature.DRAG;
+		//missionzones_control.push(new OpenLayers.Control.ModifyFeature(missionzones[i],OpenLayers.Handler.Polygon));
+		//missionzones_control[i].mode = OpenLayers.Control.ModifyFeature.DRAG;
+		//missionzones_control[i].mode +=OpenLayers.Control.ModifyFeature.RESHAPE;
+		//missionzones_control[i].mode |= OpenLayers.Control.ModifyFeature.RESIZE;
+		map.addControl(missionzones_control[i]);	
+		newmissions_control[i]=new OpenLayers.Control.DrawFeature(missionzones[i],OpenLayers.Handler.Point,newmission);
+		map.addControl(newmissions_control[i]);
+//		missionzones[i].events.on({"beforefeaturemodified": modifiedstart,"afterfeaturemodified": modifiedstop});
+		missionzones_control[i].events.on({"setfeature": modifiedstart,"afterfeaturemodified": modifiedstop});
+	}
+	//"vertexmodified":setlastvertice,
+	textures.events.on({"featuremodified":modchecktex, "beforefeaturemodified": modifiedstart,"afterfeaturemodified": modifiedstop});
+	cities.events.on({"beforefeaturemodified": modifiedstart,"afterfeaturemodified": modifiedstop});
+	//regions.events.on({"beforefeaturemodified": modifiedstart,"afterfeaturemodified": modifiedstop});
+	regions_control.events.on({"setfeature": modifiedstart,"afterfeaturemodified": modifiedstop});
+	countries.events.on({"beforefeaturemodified": modifiedstart,"afterfeaturemodified": modifiedstop});
+	borders.events.on({"beforefeaturemodified": modifiedstart,"afterfeaturemodified": modifiedstop});
+
+	var keyboardControl = new OpenLayers.Control();
+    var control = new OpenLayers.Control();
+    var callbacks = 
+	{ 
+		keydown: function(evt)
+		{						
+			if (evt.keyCode==46)
+			{
+				
+				console.log(deleteme)
+				if (deleteme!=-1) deleteme.destroy();
+				deleteme=-1;
+				if (newborders_control.active) newborders_control.undo();
+				if (newtextures_control.active) newtextures_control.undo();
+			}
+			if (evt.keyCode==13)
+			{
+				if (newborders_control.active)
+				{					
+					newborders_control.finishSketch();
+					//console.log(11,newborders_control.layer)
+					//finishborder(newborders_control.layer.features[newborders_control.layer.features.length-1])
+					//newborders_control.cancel();
+					//newborders_control.deactivate();
+					//$("#enablenewborder").removeClass( "btn-warning" ); 
+					//console.log(newborders_control)
+					//newborders_control.eventListeners.featureadded(evt);
+					//feature.style=bstyle;
+					//newborders_control.deactivate();
+					//$("#enablenewborder").removeClass( "btn-warning" ); 
+				}
+				if (newtextures_control.active)
+				{					
+					newtextures_control.finishSketch();
+					//console.log(11,newtextures_control.layer)
+					//finishborder(newtextures_control.layer.features[newtextures_control.layer.features.length-1])
+					//newtextures_control.cancel();
+					//newtextures_control.deactivate();
+					//$("#enablenewtexture").removeClass( "btn-warning" ); 
+					//console.log(newborders_control)
+					//newborders_control.eventListeners.featureadded(evt);
+					//feature.style=bstyle;
+					//newborders_control.deactivate();
+					//$("#enablenewborder").removeClass( "btn-warning" ); 
+				}
+			}
+			if (evt.keyCode==27)
+			{
+				if (newborders_control.active)
+				{
+					newborders_control.cancel();
+					newborders_control.deactivate();
+					$("#enablenewborder").removeClass( "btn-warning" ); 
+				}
+				if (newtextures_control.active)
+				{
+					newtextures_control.cancel();
+					newtextures_control.deactivate();
+					$("#enablenewtexture").removeClass( "btn-warning" ); 
+				}
+
+			}
+
+		}
+	}
+	var deletehandler = new OpenLayers.Handler.Keyboard(control, callbacks, {});
+	map.addControl(keyboardControl);				
+	deletehandler.activate(); //always on
+	
+	snap = new OpenLayers.Control.Snapping({layer: textures});
+	map.addControl(snap);
+	// snapreg = new OpenLayers.Control.Snapping({layer: regions});
+	// map.addControl(snapreg);
+	// snapreg.activate()
+	// snapreg.events.on({"snap": function (e){console.log(e)} });
+	//snap.activate();
+	fillnewmapselect()
+	
+}
+      function boxResize(event) {
+        setBounds(event.feature.geometry.bounds);
+      }
+//function setlastvertice(e)
+//	console.log(e);
+function modifiedstart(e) {
+	deleteme=e.feature;
+	//console.log(e,e.type, e.feature.id);
+	if (e.feature.layer.name=="Textures")
+		modifytexture(e.feature);
+};
+function execmodifiedstop(obj) 
+{
+	if (obj==deleteme)
+		deleteme=-1;
+//	if (obj.layer.name=="Textures")
+//		checktex(obj);
+	//console.log(e,e.type, e.feature.id);
+}
+function modifiedstop(e) {
+	execmodifiedstop(e.feature);
+	//console.log(e,e.type, e.feature.id);
+	
+
+};
+function checktex(obj)
+{
+	obj.style.strokeColor="#777777";
+	if (! testtex(obj))
+		obj.style.strokeColor="red";
+	textures.redraw();
+}
+function modchecktex(e){
+	checktex(e.feature);
+}
+function testtex(obj)	
+{
+	ret=true;
+	vert=obj.geometry.getVertices();
+	points=[];
+	for (i=0;i<vert.length; i++)
+	{
+		points.push(400+vert[i].x);
+		points.push(400+vert[i].y);
+	}	
+	if (points.length>6)
+	{
+		if (points.length>8) ret=false;
+		if (!( PolyK.IsSimple(points))) ret=false;
+	}
+	return ret;
+}
+
+function modifytexture(obj)
+{
+	//console.log(obj);
+	if (document.getElementById('texturesel').value>=0)
+	{
+		obj.style.fillColor=textcolors[document.getElementById('texturesel').value];
+		obj.attributes["tn"]=parseInt(document.getElementById('texturesel').value);		
+		execmodifiedstop(obj);
+		textures.redraw();
+	}
+	//if (document.getElementById('texturesel').value==-2)
+	if (document.getElementById('texturesel').value>= -4 && document.getElementById('texturesel').value <= -2)
+	{
+		vert=obj.geometry.getVertices();
+		points=[];
+		for (i=0;i<vert.length; i++)
+		{
+			points.push(400+vert[i].x);
+			points.push(400+vert[i].y);
+		}
+		points2=[];
+		for (i=vert.length-1;i>=0 ;i--)
+		{
+			points2.push(400+vert[i].x);
+			points2.push(400+vert[i].y);
+		}
+		if(points.length>8 && PolyK.IsSimple(points))
+		{
+			newt1=PolyK.Triangulate(points);
+			newt2=PolyK.Triangulate(points2);
+			newt=[];			
+			for (i=0;i<Math.max(newt1.length,newt2.length);i++)
+				if (newt2.length > newt1.length)
+					if (document.getElementById('texturesel').value==-3){
+						newt.push(new OpenLayers.Geometry.Point(vert[vert.length-newt2[i]-1].x,vert[vert.length-newt2[i]-1].y))
+					}else{
+						newt.push(vert[vert.length-newt2[i]-1])
+					}
+				else
+					if (document.getElementById('texturesel').value==-3){
+						newt.push(new OpenLayers.Geometry.Point(vert[newt1[i]].x,vert[newt1[i]].y))
+					}else{
+						newt.push(vert[newt1[i]])
+					}
+			for (i=0;i<newt.length;i=i+3)
+			{
+				tmp=new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing([newt[i],newt[i+1],newt[i+2]])]),{tn:obj.attributes["tn"]},{fillColor: textcolors[obj.attributes["tn"]],strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillOpacity: 0.7,graphicZIndex:texgraphicZIndex})
+				texgraphicZIndex++;
+				textures.addFeatures([tmp]);		
+				
+			}
+			obj.destroy();
+			execmodifiedstop(obj);
+			textures.redraw();
+		}
+	}
+}
+function formatsel(state) {
+if (!state.id) return state.text; // optgroup
+if (state.id<0) return state.text; // optgroup
+return  '<span style="background:'+textcolors[state.id]+'";min-height=10px;min-width=17px">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + state.text;
+}
+//
+function fillmap()
+{
+	//var doc = jsyaml.load(document.getElementById('txt').value);
+	var doc = jsyaml.load(importstring);
+	var tdoc = jsyaml.load(optionsstring);
+	
+	textcolors=[];
+	for (var tci = 0; tci < tdoc["texturecolors"].length; tci++)
+	{
+		textcolors.push(tdoc["texturecolors"][tci]);
+		
+		//textstyle.push({fillColor: doc["texturecolors"][tci],strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillOpacity: 0.7});
+	}
+	//texturescolors=[]
+	//for (var to = 0; to < doc["texturecolors"].length; to++)
+	//	texturescolors.push(doc["texturecolors"][to]);
+	tmp=['region-city','region-region','region-mission'];
+	for (var rs = 0; rs < tmp.length; rs++)
+	{
+		select=document.getElementById(tmp[rs]);
+		for (i = select.options.length-1; i>=0 ;i--) {
+			select.remove(i);
+		}
+		for (var co = 0; co < doc["regions"].length; co++)
+		{
+			opt = document.createElement('option');
+			opt.value = doc["regions"][co]["type"];
+			opt.innerHTML = doc["regions"][co]["type"];
+			select.appendChild(opt);
+		}		
+	}
+	select=document.getElementById("countrylist");
+	for (i = select.options.length-1; i>=2 ;i--) {
+		select.remove(i);
+	}
+	for (var co =0 ; co < doc["countries"].length;  co++)
+	{
+		opt = document.createElement('option');
+		opt.value = doc["countries"][co]["type"];
+		opt.innerHTML = doc["countries"][co]["type"];
+		select.appendChild(opt);
+	}
+	//<select onchange="texturechange();" id="texturesel" ><option>change terrain:</option></select>
+	select=document.getElementById("texturesel");
+	fillselect=document.getElementById("FillUpPlanet-col");
+	for (i = select.options.length-3; i>=3 ;i--) {
+		select.remove(i);
+	}
+	for (i = fillselect.options.length-1; i>=1 ;i--) {
+		fillselect.remove(i);
+	}
+	for (var co =0 ; co < textcolors.length;  co++)
+	{
+		opt = document.createElement('option');
+		opt.value = co;
+		opt.innerHTML = "--&gt; Terrain - "+co;
+		select.appendChild(opt);
+		opt = document.createElement('option');
+		opt.value = co;
+		opt.innerHTML = "--&gt; Terrain - "+co;
+		fillselect.appendChild(opt);
+	}
+	
+	$("#texturesel").select2({
+		dropdownAutoWidth: 'false',
+		width: "140px",
+		minimumResultsForSearch: -1,
+	 	formatResult: formatsel,
+		formatSelection: formatsel,
+		escapeMarkup: function(m) { return m; }
+		});
+
+
+	textures.destroyFeatures();	
+	borders.destroyFeatures();	
+	countries.destroyFeatures();	
+	cities.destroyFeatures();	
+	regions.destroyFeatures();	
+	for (var mr = 0; mr < 6; mr++)
+		missionzones[mr].destroyFeatures();	
+	
+
+	ctest=0;		
+	for (var to = 0; to < doc["globe"]["polygons"].length; to++)
+	{
+		bcol=getRandomColor();
+		points=[];
+		//apoints=[];
+		//a2points=[];
+		//test=false;
+		mina=999999;
+		maxa=0;
+		//minb=999999;
+		//maxb=0;
+		//mina2=999999;
+		//maxa2=0;
+		//minb2=999999;
+		//maxb2=0;		
+		m180check=false;
+		l180check=false;
+		//for(var toi = 0; toi < doc["textures"][to].length; toi++)
+		//tx//
+		for(var toi = 0; toi < doc["globe"]["polygons"][to].length; toi++)
+		{
+			if (toi<1) continue;
+			if (toi%2==1) continue;
+			a=doc["globe"]["polygons"][to][toi-1];
+			if (a>180) m180check=true;
+			if (a<=180) l180check=true;
+			//apoints.push(a)
+			mina=Math.min(mina,a);
+			maxa=Math.max(maxa,a);
+		}
+		for(var toi = 0; toi < doc["globe"]["polygons"][to].length; toi++)
+		{
+			if (toi<1) continue;
+			if (toi%2==0)
+			{
+				a=doc["globe"]["polygons"][to][toi-1];
+				b=doc["globe"]["polygons"][to][toi];
+				if ( maxa-mina<160 && m180check)
+					a=a-360
+				else
+					if (a>180)a=a-360;				
+				points.push(new OpenLayers.Geometry.Point(a,-1*b));
+				//a2points.push(a)
+				//mina2=Math.min(mina2,a);
+				//maxa2=Math.max(maxa2,a);
+			}
+		}
+		tmp=new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(points)]),{tn:doc["globe"]["polygons"][to][0]},{fillColor: textcolors[doc["globe"]["polygons"][to][0]],strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillOpacity: 0.7,graphicZIndex:texgraphicZIndex})
+		texgraphicZIndex++;
+		if (! testtex(tmp)){
+//			console.log(doc["globe"]["polygons"][to]);
+			tmp.style.strokeColor="red";
+		}
+		textures.addFeatures([tmp]);		
+		//checktex(tmp);
+	}
+	
+	//console.log(ctest);
+	
+	for (var bo = 0; bo < doc["globe"]["polylines"].length; bo++)
+	{
+		bcol=getRandomColor();
+		points=[];
+		for(var boi = 0; boi < doc["globe"]["polylines"][bo].length; boi++)
+		{
+			if (boi%2==1)
+			{
+				a=doc["globe"]["polylines"][bo][boi-1];
+				b=doc["globe"]["polylines"][bo][boi];
+				if (a>180)a=a-360;
+				if (b>180)b=b-360;
+				points.push(new OpenLayers.Geometry.Point(a,-1*b));
+			}
+		}		
+		borders.addFeatures(new OpenLayers.Feature.Vector(new OpenLayers.Geometry.LineString(points),{},bstyle));
+	}
+
+	for (var co = doc["countries"].length-1; co >=0 ; co--)
+	{
+		if (typeof doc["countries"][co]["areas"] != 'undefined')
+		{			
+			if (typeof countrycolors[doc["countries"][co]["type"]] == 'undefined')
+				countrycolors[doc["countries"][co]["type"]]=getRandomColor();
+			ccol=countrycolors[doc["countries"][co]["type"]];
+			for (var ar = 0; ar < doc["countries"][co]["areas"].length; ar++)
+			{
+				a=doc["countries"][co]["areas"][ar][0];
+				b=doc["countries"][co]["areas"][ar][1];
+				c=doc["countries"][co]["areas"][ar][2];
+				d=doc["countries"][co]["areas"][ar][3];
+				if (a>180)a=a-360;
+				if (b>180)b=b-360;
+				if (a>b)a=-180-(180-a);
+				lr=new OpenLayers.Geometry.LinearRing([
+				new OpenLayers.Geometry.Point(a,-1*d),
+				new OpenLayers.Geometry.Point(a,-1*c),
+				new OpenLayers.Geometry.Point(b,-1*c),
+				new OpenLayers.Geometry.Point(b,-1*d)]);
+				pol = new OpenLayers.Geometry.Polygon([lr]);
+				box=new OpenLayers.Feature.Vector( pol,{type:"countrybox", country:doc["countries"][co]["type"]},{strokeColor: ccol, strokeOpacity: 1, strokeWidth: 5, fillColor: ccol,fillOpacity: 0.7 });
+				countries.addFeatures([box]);
+			}
+		}
+		a=doc["countries"][co]["labelLon"];
+		b=doc["countries"][co]["labelLat"];
+		if (a>180)a=a-360;
+		countries.addFeatures(new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(a,-1*b),{type:"countryname",region:"",country:doc["countries"][co]["type"],name:doc["countries"][co]["type"],fund:doc["countries"][co]["fundingBase"],funcap:doc["countries"][co]["fundingCap"]},{ pointRadius: 8,strokeOpacity: 1, strokeWidth: 2, fillColor: ccol,fillOpacity: 0.7 }));
+	}
+
+	for (var co = 0; co < doc["regions"].length; co++)
+	{
+		if (typeof regioncolors[doc["regions"][co]["type"]] == 'undefined')
+			regioncolors[doc["regions"][co]["type"]]=getRandomColor();
+		rcol=regioncolors[doc["regions"][co]["type"]];
+		if (typeof doc["regions"][co]["cities"] != 'undefined')
+		{
+			for (var ci = 0; ci < doc["regions"][co]["cities"].length; ci++)
+			{
+				a=doc["regions"][co]["cities"][ci]["lon"];
+				b=doc["regions"][co]["cities"][ci]["lat"];
+				if (a>180)a=a-360;
+				cities.addFeatures(new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point(a,-1*b),{type:"city",region:doc["regions"][co]["type"],name:doc["regions"][co]["cities"][ci]["name"]},{strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillColor: rcol,fillOpacity: 0.7,pointRadius: 8}));
+			}
+		}
+		if (typeof doc["regions"][co]["areas"] != 'undefined')
+		{
+			
+			for (var ar = 0; ar < doc["regions"][co]["areas"].length; ar++)
+			{
+				a=doc["regions"][co]["areas"][ar][0];
+				b=doc["regions"][co]["areas"][ar][1];
+				c=doc["regions"][co]["areas"][ar][2];
+				d=doc["regions"][co]["areas"][ar][3];
+				if ((b-a)>=300){a=-180;b=180;}
+				if (a>180)a=a-360;
+				if (b>180)b=b-360;
+				if (a>b)a=-180-(180-a);
+				lr=new OpenLayers.Geometry.LinearRing([
+				new OpenLayers.Geometry.Point(a,-1*d),
+				new OpenLayers.Geometry.Point(a,-1*c),
+				new OpenLayers.Geometry.Point(b,-1*c),
+				new OpenLayers.Geometry.Point(b,-1*d)]);
+				pol = new OpenLayers.Geometry.Polygon([lr]);
+				box=new OpenLayers.Feature.Vector( pol,{region:doc["regions"][co]["type"]},{strokeColor: rcol, strokeOpacity: 1, strokeWidth: 5, fillColor: rcol,fillOpacity: 0.7});
+				regions.addFeatures([box]);
+			}
+		}
+		document.getElementById('setrcol').style.background=regioncolors[document.getElementById('region-region').value];		
+		if (typeof doc["regions"][co]["missionZones"] != 'undefined')
+		{
+			for (var mr = 0; mr < doc["regions"][co]["missionZones"].length; mr++)
+			{				
+				if (typeof missioncolors[doc["regions"][co]["type"]+":"+mr] == 'undefined')
+					missioncolors[doc["regions"][co]["type"]+":"+mr]=getRandomColor();
+				mcol=missioncolors[doc["regions"][co]["type"]+":"+mr];
+				for (var mmr = 0; mmr < doc["regions"][co]["missionZones"][mr].length; mmr++)
+				{
+					a=doc["regions"][co]["missionZones"][mr][mmr][0];
+					b=doc["regions"][co]["missionZones"][mr][mmr][1];
+					c=doc["regions"][co]["missionZones"][mr][mmr][2];
+					d=doc["regions"][co]["missionZones"][mr][mmr][3];
+					if (a>180)a=a-360;
+					if (b>180)b=b-360;
+					if (a>b)a=-180-(180-a);
+					lr=new OpenLayers.Geometry.LinearRing([
+					new OpenLayers.Geometry.Point(a,-1*d),
+					new OpenLayers.Geometry.Point(a,-1*c),
+					new OpenLayers.Geometry.Point(b,-1*c),
+					new OpenLayers.Geometry.Point(b,-1*d)]);
+					pol = new OpenLayers.Geometry.Polygon([lr]);
+					box=new OpenLayers.Feature.Vector( pol,{mz:mr,region:doc["regions"][co]["type"]},{strokeColor: mcol, strokeOpacity: 1, strokeWidth: 5, fillColor: mcol,fillOpacity: 0.7 });
+					missionzones[mr].addFeatures([box]);
+				}
+			}
+		}
+	}
+
+}
+function exportmap()
+{	
+	
+	out={globe:{polygons:[],polylines:[]},countries:[],regions:[]};
+	for(i=0 ; i<borders.features.length;i++)
+	{
+		out["globe"]["polylines"].push([])
+		vert=borders.features[i].geometry.getVertices()
+		for(g=0 ; g<vert.length;g++)
+		{
+			out["globe"]["polylines"][i].push(mod(360,vert[g].x))
+			out["globe"]["polylines"][i].push(vert[g].y*-1)
+		}
+	}	
+	for(i=0 ; i<textures.features.length;i++)
+	{
+		if (!(typeof textures.features[i].attributes["tn"] == 'undefined'))
+			{
+			out["globe"]["polygons"].push([])
+			out["globe"]["polygons"][i].push(textures.features[i].attributes["tn"]);
+			vert=textures.features[i].geometry.getVertices()
+			for(g=0 ; g<vert.length;g++)
+			{
+				out["globe"]["polygons"][i].push(mod(360,vert[g].x))
+				out["globe"]["polygons"][i].push(vert[g].y*-1)
+			}
+		}
+	}
+
+	select=document.getElementById('countrylist');
+	countrypos=-1
+	for(i=2 ; i<select.options.length;i++)
+	{
+		cn=select.options[i].value;
+		foundcol=false;
+		for(g=0 ; g<countries.features.length;g++)
+		{
+			//console.log(countries.features[g].attributes);
+			if (countries.features[g].attributes["type"]=="countryname")
+			{
+				if (countries.features[g].attributes["country"]!=cn)continue;
+				foundcol=true;
+				out["countries"].push({type:cn,areas:[]});
+				countrypos++;
+				out["countries"][countrypos]["fundingBase"]=parseInt(countries.features[g].attributes["fund"]);
+				out["countries"][countrypos]["fundingCap"]=parseInt(countries.features[g].attributes["funcap"]);
+				out["countries"][countrypos]["labelLon"]=mod(360,countries.features[g].geometry.getCentroid().x);
+				out["countries"][countrypos]["labelLat"]=countries.features[g].geometry.getCentroid().y*-1;
+			}
+		}
+		if (foundcol)
+		{
+			for(g=0 ; g<countries.features.length;g++)
+			{
+				//console.log(countries.features[g].attributes);
+				if (countries.features[g].attributes["type"]=="countrybox")
+				{
+					if (countries.features[g].attributes["country"]!=cn)continue;					
+					bound=countries.features[g].geometry.getBounds();
+					out["countries"][countrypos]["areas"].push([mod(360,bound.left),mod(360,bound.right),bound.top*-1,bound.bottom*-1]);
+				}
+			}
+		}
+	}
+	select=document.getElementById('region-region');
+	regionpos=-1
+	for(i=0 ; i<select.options.length;i++)
+	{
+		rn=select.options[i].value;
+		out["regions"].push({type:rn,cities:[],areas:[],missionZones:[]});
+		foundcity=0;
+		for(g=0 ; g<cities.features.length;g++)
+		{
+			//console.log(countries.features[g].attributes);
+			if (cities.features[g].attributes["type"]=="city")
+			{
+				if (cities.features[g].attributes["region"]!=rn)continue;
+				out["regions"][i]["cities"].push({
+				name:cities.features[g].attributes["name"],
+				lon:mod(360,cities.features[g].geometry.getCentroid().x),
+				lat:cities.features[g].geometry.getCentroid().y*-1
+				})
+				foundcity++;
+			}
+		}
+		if (foundcity==0) delete(out["regions"][i]["cities"]);
+		for(g=0 ; g<regions.features.length;g++)
+		{
+			//console.log(countries.features[g].attributes);
+			if (regions.features[g].attributes["region"]!=rn)continue;					
+			
+			bound=regions.features[g].geometry.getBounds();
+			out["regions"][i]["areas"].push([mod(360,bound.left),mod(360,bound.right),bound.top*-1,bound.bottom*-1]);
+		}
+		foundmz=0;
+		for(m=0 ; m<6;m++)
+		{
+			
+			out["regions"][i]["missionZones"].push([]);
+			for(g=0 ; g<missionzones[m].features.length;g++)
+			{
+				//console.log(countries.features[g].attributes);
+				if (missionzones[m].features[g].attributes["region"]!=rn)continue;					
+				if (missionzones[m].features[g].attributes["mz"]!=m)continue;					
+				foundmz++;
+				bound=missionzones[m].features[g].geometry.getBounds();
+				out["regions"][i]["missionZones"][m].push([mod(360,bound.left),mod(360,bound.right),bound.top*-1,bound.bottom*-1]);
+			}			
+			
+		}
+		if (foundmz==0) delete(out["regions"][i]["missionZones"]);
+	}
+		
+		//a=jsyaml.safeDump(out);
+		editorexport.setValue(jsyaml.safeDump(out)); 
+        exportstring=editorexport.getValue();
+	//document.getElementById("txt2").innerHTML=a;
+}
+function selectextraoption ()
+{
+
+	  
+	for (var i = 0; i < document.getElementById('extraoption').length; i++)
+  	{
+  		$("#"+document.getElementById('extraoption').options[i].value).removeClass("in");			
+  	}	
+	$("#"+document.getElementById('extraoption').value).addClass("in");
+}
+function selectoption()
+{
+
+	for (var i = 0; i < document.getElementById('option').length; i++)
+  	{
+  		$("#header-"+document.getElementById('option').options[i].value).removeClass("in");			
+  	}	
+	$("#header-"+document.getElementById('option').value).addClass("in");
+	//document.getElementById('headertitle').innerHTML=document.getElementById('option').options[document.getElementById('option').selectedIndex].text;
+
+
+	
+
+	cities.setVisibility(false);
+	regions.setVisibility(false);
+	borders.setVisibility(false);
+	countries.setVisibility(false);
+//	textures.setVisibility(false);
+	for (var i =0 ;i<6;i++)		
+		missionzones[i].setVisibility(false);
+	opacitylayer=0;
+	if (document.getElementById('option').value=="city") cities.setVisibility(true);
+	if (document.getElementById('option').value=="region") regions.setVisibility(true);
+	if (document.getElementById('option').value=="border") borders.setVisibility(true);
+	if (document.getElementById('option').value=="country") countries.setVisibility(true);
+	if (document.getElementById('option').value=="texture") textures.setVisibility(true);
+	if (document.getElementById('option').value=="missionszones") 
+		for (var i =0 ;i<6;i++)
+			if (document.getElementById('enable-missionzones').value == i)
+				missionzones[i].setVisibility(true);
+	
+	if (document.getElementById('option').value=="city") opacitylayer=cities;
+	if (document.getElementById('option').value=="region") opacitylayer=regions;
+	if (document.getElementById('option').value=="border") opacitylayer=borders;
+	if (document.getElementById('option').value=="country") opacitylayer=countries;
+	if (document.getElementById('option').value=="texture") opacitylayer=textures;
+	if (document.getElementById('option').value=="missionszones") 
+		for (var i =0 ;i<6;i++)
+			if (document.getElementById('enable-missionzones').value == i)
+				opacitylayer=missionzones[i];	
+	if (opacitylayer!=0){
+		document.getElementById('oprange').value=opacitylayer.opacity*100;
+		document.getElementById('opacname').innerHTML=opacitylayer.name;
+		document.getElementById('opacvis').style.display="inline";	
+		document.getElementById('oprange').style.display="inline";			
+	}else{
+		document.getElementById('opacvis').style.display="none";	
+		document.getElementById('oprange').style.display="none";					
+	}
+	
+	$(window).trigger('resize');
+}
+function addmoremaps()
+{
+	map.addLayer(citylights);
+	map.addLayer(phobos);
+	map.addLayer(moon);
+	map.addLayer(mercury);
+	map.addLayer(venus1);
+	map.addLayer(venus2);
+	map.addLayer(io);
+	map.addLayer(europa);
+	map.addLayer(marsheights);
+	map.addLayer(marsgeo);
+	map.addLayer(marsterra);
+
+
+	fillnewmapselect();
+
+	//document.getElementById('moremapsbutton').style.display="none";
+	return false;
+}
+/*function togglebackground_texture(){
+	newtextures_control.deactivate();
+	$("#enablenewtexture").removeClass( "btn-warning" ).addclass("hidden"); 
+	for (i=0;i<textures.features.length;i++)
+	{
+		
+		if (textures.features[i].hasOwnProperty("style")) 
+			if (textures.features[i].style.hasOwnProperty("graphicZIndex"))
+				console.log(i,textures.features[i].style.graphicZIndex)
+		textures.features[i].style.graphicZIndex=-1*textures.features[i].style.graphicZIndex;
+		
+	}
+	textures.redraw();
+}
+*/
+function enable_edit_texturesnap(){
+	if (document.getElementById('enable-texturesnap').checked){
+		snap.activate();
+	}else{
+		snap.deactivate();
+	}	
+
+
+}
+function enable_edit_texture(){
+	if (document.getElementById('enable-texture').checked){
+		texture_control.activate();
+		enable_edit_texturesnap();
+	}else{
+		texture_control.deactivate();
+		snap.deactivate();
+	}
+	newtextures_control.deactivate();
+	$("#enablenewtexture").removeClass( "btn-warning" ); 
+}
+function enable_edit_city(){
+	if (document.getElementById('enable-city').checked)
+		cities_control.activate();
+	else
+		cities_control.deactivate();
+	newcities_control.deactivate();
+		$("#enablenewcity").removeClass( "btn-warning" );
+		$("#cityregcollapse").addClass( "hidden" ); 		
+}
+function enable_edit_countries(){
+	if (document.getElementById('enable-countries').checked)
+		countries_control.activate();
+	else
+		countries_control.deactivate();
+	newcountries_control.deactivate();
+	$("#enablenewcountries").removeClass( "btn-warning" ); 
+}
+function enable_edit_region(){
+	if (document.getElementById('enable-region').checked)
+		regions_control.activate();
+	else
+		regions_control.deactivate();
+	newregions_control.deactivate();
+	$("#enablenewregion").removeClass( "btn-warning" ); 
+}
+function enable_edit_border(){
+	if (document.getElementById('enable-border').checked)
+		borders_control.activate();
+	else
+		borders_control.deactivate();
+	newborders_control.deactivate();
+	$("#enablenewborder").removeClass( "btn-warning" ); 
+	
+}
+function enable_new_texture()
+{
+	document.getElementById('enable-texture').checked=false;
+	texture_control.deactivate();
+	newtextures_control.activate();
+	$("#enablenewtexture").addClass( "btn-warning" ); 	
+	$("#enable-texturebutton").removeClass( "btn-warning" ); 	
+}	
+function enable_new_countries()
+{
+	document.getElementById('enable-countries').checked=false;
+	countries_control.deactivate();
+	newcountries_control.activate();
+	$("#enablenewcountries").addClass( "btn-warning" ); 	
+	$("#enable-countriesbutton").removeClass( "btn-warning" ); 	
+	
+}	
+function enable_new_border()
+{
+	document.getElementById('enable-border').checked=false;
+	borders_control.deactivate();
+	newborders_control.activate();
+	$("#enablenewborder").addClass( "btn-warning" ); 	
+	$("#enable-borderbutton").removeClass( "btn-warning" ); 	
+}	
+function enable_new_region()
+{
+	document.getElementById('enable-region').checked=false;
+	regions_control.deactivate();
+	newregions_control.activate();
+	$("#enablenewregion").addClass( "btn-warning" ); 	
+	$("#enable-regionbutton").removeClass( "btn-warning" ); 	
+}	
+function enable_new_city()
+{
+	document.getElementById('enable-city').checked=false;
+	cities_control.deactivate();
+	newcities_control.activate();
+	$("#enablenewcity").addClass( "btn-warning" ); 	
+	$("#enable-citybutton").removeClass( "btn-warning" ); 	
+}
+function enable_edit_missionzones()
+{
+	$("#enable-missionzonebutton").prop('disabled', true);
+	$("#enablenewmissionzone").prop('disabled', true);
+	document.getElementById('enable-missionzone').checked=false;
+	for (var i =0 ;i<6;i++)
+	{
+		if (document.getElementById('enable-missionzones').value == i ){
+			missionzones_control[i].deactivate();
+			missionzones[i].setVisibility(true);
+
+		}else{
+			missionzones_control[i].deactivate();
+			missionzones[i].setVisibility(false);
+		}
+		newmissions_control[i].deactivate();
+		if (document.getElementById('enable-missionzones').value == i)
+		{
+			opacitylayer=missionzones[i];	
+			document.getElementById('oprange').value=opacitylayer.opacity*100;
+			document.getElementById('opacname').innerHTML=opacitylayer.name;
+			document.getElementById('opacvis').style.display="inline";	
+			document.getElementById('oprange').style.display="inline";	
+			$("#enable-missionzonebutton").prop('disabled', false);
+			$("#enablenewmissionzone").prop('disabled', false);
+		}
+	}
+	missionchangecolbutton();
+}
+function enable_edit_missionzone()
+{
+	for (var i =0 ;i<6;i++)
+	{
+		if (document.getElementById('enable-missionzones').value == i && document.getElementById('enable-missionzone').checked){
+			missionzones_control[i].activate();
+		}else{
+			missionzones_control[i].deactivate();
+		}
+		newmissions_control[i].deactivate();
+
+	}
+	$("#enablenewmissionzone").removeClass( "btn-warning" ); 
+}
+function enable_new_missionzones()
+{
+	document.getElementById('enable-missionzone').checked=false;
+	for (var i =0 ;i<6;i++)
+	{
+		missionzones_control[i].deactivate();
+		if (document.getElementById('enable-missionzones').value == i)
+			newmissions_control[i].activate();
+		else
+			newmissions_control[i].deactivate();
+	}
+	$("#enablenewmissionzone").addClass( "btn-warning" ); 
+	$("#enable-missionzonebutton").removeClass( "btn-warning" ); 	
+}
+function opchange()
+{
+	//last=-1;
+	//for (var i =0 ;i<map.layers.length;i++)
+	//	if (map.layers[i].visibility)last=map.layers[i];
+	//if (last!=-1)
+	opacitylayer.setOpacity(document.getElementById('oprange').value/100.0);
+}
+function countrychange()
+{
+
+	
+	
+	$("#enable-countriesbutton").prop('disabled', false);
+	$("#enablenewcountries").prop('disabled', false);
+	$("#setccol").prop('disabled', false);
+	$("#countriesregcollapse").addClass( "hidden" ); 
+	document.getElementById('setccol').style.display="none";
+
+	if (document.getElementById('countrylist').value == -1){
+		//document.getElementById('countrynewstuff').style.display="inline";
+		$("#countriesregcollapse").removeClass( "hidden" ); 		
+		$("#newcountryname").val( "STR_NEWCOUNTRYNAME_"+countrycounter ); 		
+	}else
+	{
+		if (document.getElementById('countrylist').value == -2){
+			$("#enable-countriesbutton").prop('disabled', true);
+			$("#enablenewcountries").prop('disabled', true);
+			$("#setccol").prop('disabled', true);
+		}else
+		{
+			//document.getElementById('countrynewstuff').style.display="none";
+			if (document.getElementById('countrylist').value != -2)
+			{
+
+				document.getElementById('setccol').style.display="inline";
+				document.getElementById('setccol').style.background=countrycolors[document.getElementById('countrylist').value];
+			}
+		}
+	}
+}
+function setcolc()
+{
+	cn=document.getElementById('countrylist').value;
+	countrycolors[cn]=getRandomColor();						
+	document.getElementById('setccol').style.background=countrycolors[document.getElementById('countrylist').value];		
+	for (fi=0; fi<countries.features.length;fi++)
+	{
+		if (countries.features[fi].attributes.country==cn)
+		{
+			countries.features[fi].style["strokeColor"]=countrycolors[cn];
+			countries.features[fi].style["fillColor"]=countrycolors[cn];			
+		}
+	}
+	countries.redraw();
+}
+function setcolr()
+{
+	rn=document.getElementById('region-region').value;
+	regioncolors[rn]=getRandomColor();						
+	document.getElementById('setrcol').style.background=regioncolors[document.getElementById('region-region').value];		
+	for (fi=0; fi<regions.features.length;fi++)
+	{
+		if (regions.features[fi].attributes.region==rn)
+		{
+			regions.features[fi].style["strokeColor"]=regioncolors[rn];
+			regions.features[fi].style["fillColor"]=regioncolors[rn];			
+		}
+	}
+	regions.redraw();
+	for (fi=0; fi<cities.features.length;fi++)
+	{
+		if (cities.features[fi].attributes.region==rn)
+		{
+			cities.features[fi].style["strokeColor"]=regioncolors[rn];
+			cities.features[fi].style["fillColor"]=regioncolors[rn];			
+		}
+	}
+	cities.redraw();
+}
+function setcolm()
+{
+	if (document.getElementById('enable-missionzones').value>=0)
+	{
+		rn=document.getElementById('region-mission').value
+		mnr=document.getElementById('enable-missionzones').value
+		missioncolors[rn+":"+mnr]=getRandomColor();						
+		document.getElementById('setmcol').style.background=missioncolors[rn+":"+mnr];		
+		for (fi=0; fi<missionzones[mnr].features.length;fi++)
+		{
+			if (missionzones[mnr].features[fi].attributes.region==rn && missionzones[mnr].features[fi].attributes.mz==mnr )
+			{
+				missionzones[mnr].features[fi].style["strokeColor"]=missioncolors[rn+":"+mnr];
+				missionzones[mnr].features[fi].style["fillColor"]=missioncolors[rn+":"+mnr];			
+			}
+		}
+		missionzones[mnr].redraw();
+	}
+}
+function regionchange()
+{
+	document.getElementById('setrcol').style.background=regioncolors[document.getElementById('region-region').value];		
+}
+function missionchange()
+{
+	missionchangecolbutton();
+}
+function missionchangecolbutton()
+{
+	document.getElementById('setmcol').style.display="none";
+	if (document.getElementById('enable-missionzones').value>=0)
+	{
+		document.getElementById('setmcol').style.display="inline";
+		document.getElementById('setmcol').style.background=missioncolors[document.getElementById('region-mission').value+":"+document.getElementById('enable-missionzones').value];		
+	}
+}
+function checkterror(){
+	$('#testmodal').find("ul").empty();	
+	select=document.getElementById('region-region');
+	regionpos=-1
+	for(i=0 ; i<select.options.length;i++)
+	{
+		rn=select.options[i].value;		
+		$('#testmodal').find("ul").append('<li><b>Region: '+rn+'</b></li>');
+		for(g=0 ; g<cities.features.length;g++)
+		{
+			//console.log(countries.features[g].attributes);
+			if (cities.features[g].attributes["type"]=="city")
+			{
+				if (cities.features[g].attributes["region"]!=rn)continue;
+				x=cities.features[g].geometry.getCentroid().x;
+				y=cities.features[g].geometry.getCentroid().y;
+				foundmz3=false;
+				for(m=3 ; m<4;m++)
+				{
+					for(mz=0 ; mz<missionzones[m].features.length;mz++)
+					{
+						if (missionzones[m].features[mz].attributes["region"]!=rn)continue;					
+						if (missionzones[m].features[mz].attributes["mz"]!=m)continue;					
+						bound=missionzones[m].features[mz].geometry.getBounds();
+						x1=bound.left
+						x2=bound.right;
+						y1=bound.top;
+						y2=bound.bottom;
+						epsilon=0.0001;						
+						if ((Math.abs(x1-x)+Math.abs(x2-x)+Math.abs(y1-y)+Math.abs(y2-y))<epsilon){
+							foundmz3=true;							
+						}
+						
+					}	
+					
+				}
+				if (! foundmz3){
+					$('#testmodal').find("ul").append('<li>city: '+cities.features[g].attributes["name"]+', '+x+', '+y+' </li>');
+
+					lr=new OpenLayers.Geometry.LinearRing([
+					new OpenLayers.Geometry.Point(x,y),
+					new OpenLayers.Geometry.Point(x,y),
+					new OpenLayers.Geometry.Point(x,y),
+					new OpenLayers.Geometry.Point(x,y)]);
+					pol = new OpenLayers.Geometry.Polygon([lr]);
+					mcol=missioncolors[rn+":"+3];
+					console.log(lr,mcol,rn,x,y);
+					box=new OpenLayers.Feature.Vector( pol,{mz:3,region:rn},{strokeColor: mcol, strokeOpacity: 1, strokeWidth: 5, fillColor: mcol,fillOpacity: 0.7});
+					missionzones[3].addFeatures([box]);
+					missionzones[3].redraw();
+					
+
+				}
+
+			}
+		}
+	}		
+	$('#testmodal').modal('show');
+}
+
+
+		</script>
+
+{% endblock %}
+
+{% block content %}
+
+{% for acekey in yamleditors %}
+ 	{{ modal_ace_edit_body(yamleditors[acekey]) }}
+{% endfor %}
+
+<textarea id="optionstext" style="display:none">texturecolors:
+  - "#0d7"
+  - "#3c0"
+  - "#5e0"
+  - "#8f0"
+  - "#cf0"
+  - "#ccc"
+  - "#0f5"
+  - "#ff6"
+  - "#ec4"
+  - "#eee"
+  - "#0e7"
+  - "#0da"
+  - "#aaf"</textarea>
+<textarea id="exporttext" style="display:none"></textarea>
+<textarea id="importtext" style="display:none">
+{% include 'globedata.yaml' %}
+</textarea>
+
+
+        <div class="row mapheader" style="padding-left:30px;">
+            <div class="col-sm-1">
+		        <div class="row">
+	
+		            
+						<select id="option"  onchange="selectoption();">  
+						  <option value="start">I want to edit ..</option>
+						  <option value="texture">terrain</option>
+						  <option value="border">borders</option>
+						  <option value="region">regions</option>
+						  <option value="city">cities</option>
+						  <option value="country">countries</option>
+						  <option value="missionszones">missionzones</option>
+						  <!--<option value="checks">Checks and Fixes</option>-->
+						  <option value="stuff">Optionals</option>
+						  <option value="ruleset">Ex/Import</option>
+						</select>
+					
+				</div>
+	            <div class="row">
+
+	            	
+	            		<span style="font-size:small;"><span id="opacvis" style="display:none"><span id="opacname">no</span> layer: </span><input style="display:none;" title="changes the Opacity" type="range" id="oprange"  onchange="opchange();" min="10" max="100" step="5"/></span>
+	            	
+	         
+	            </div>
+			
+			</div>
+	   		<div class="col-sm-11">
+		        <div id="header-start" class="row collapse in" >
+
+		            <div class="col-sm-12">
+						<div class="input-group">
+							How to change the world?<br />
+							You can change/create landmasses and change their terrain, draw new borders, change the reach of regions or missionzones or add new countries and cities
+					    </div>
+				    </div>
+			    </div>
+		        <div id="header-texture" class="row collapse">
+		        	<div class="controls form-inline">
+		            <!--<div class="col-sm-2" >//-->
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input name="checkboxes" disabled="disabled" id="enable-texture"   value="0" type="checkbox">
+							</span>
+							<button type="button" title="enable Texture Edit Mode" id="enable-texturebutton" class="btn btn-default" >no edit</button>
+					    </div>
+				    <!--</div>//-->
+		            	<div id="snapcollapse" style="display:inline-block;" class="hidden" >
+		            <!--<div id="snapcollapse" class="col-sm-2 collapse" >//-->
+							<div class="input-group">
+			  					<span class="input-group-addon">
+			    					<input name="checkboxes" disabled="disabled" id="enable-texturesnap" value="0" type="checkbox">
+			  					</span>
+			  					<button type="button" id="enable-texturesnapbutton" title="Nodes snap to the nearest line" class="btn btn-default" >no snap</button>
+						    </div>
+					<!--</div>//-->
+		    			</div>      
+		    			<div id="texselcollapse" style="display:inline-block;" class="hidden" >
+		            <!--<div id="texselcollapse" class="col-sm-2 collapse" >
+						<div class="input-group text-center">//-->
+		  					<select id="texturesel" ><option value="-4">change tile:</option><option value="-3">split polygon to triangle</option><option value="-2">split polygon to connected triangle</option><option value="-1">change terrain:</option></select><!--<button onclick="enable_new_texture();return false;">new</button>//-->
+					    <!--</div>
+		    		</div>//-->      
+		    			</div>
+		            <!--<div class="col-sm-2" >
+						<div class="input-group">//-->
+							<button type="button" title="add one new Polygon" id="enablenewtexture" class="btn btn-default" >new</button>
+							<div class="input-group">
+							<span class="input-group-addon">
+								<input name="checkboxes" disabled="disabled" id="enable-texturebackgroundtoggle"   value="0" type="checkbox">
+							</span>							
+					    </div>
+					    <!--</div>
+				    </div>//-->
+					</div>
+				</div>
+		        <div id="header-border" class="row collapse">
+		        	<div class="controls form-inline">
+		            <!--<div class="col-sm-2">//-->
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input name="checkboxes" disabled="disabled" id="enable-border"   value="0" type="checkbox">
+							</span>
+							<button type="button" title="enable Border Edit Mode" id="enable-borderbutton" class="btn btn-default" >no edit</button>
+					    </div>
+				    <!--</div>
+		            <div class="col-sm-2" >
+						<div class="input-group">//-->
+							<button type="button" title="add one new Border" id="enablenewborder" class="btn btn-default" >new</button>
+					    <!--</div>
+				    </div>//-->
+		    		
+					</div>
+				</div>
+		        <div id="header-region" class="row collapse">
+		        	<div class="controls form-inline">
+		            <!--<div class="col-sm-2" >//-->
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input name="checkboxes" disabled="disabled" id="enable-region"   value="0" type="checkbox">
+							</span>
+							<button type="button" title="enable Region Edit Mode" id="enable-regionbutton" class="btn btn-default" >no edit</button>
+					    </div>
+				    <!--</div>
+		            <div class="col-sm-4" >
+			            <div class="input-group text-center">//-->
+							<select onchange="regionchange();" id="region-region" ></select><button id="setrcol" onclick="setcolr();return false;">color</button>
+						<!--</div>
+
+				    </div>
+		            <div class="col-sm-2" >
+						<div class="input-group">//-->
+							<button type="button" title="add one new Regionbox" id="enablenewregion" class="btn btn-default" >new</button>
+					    <!--</div>
+				    </div>//-->         	    
+					</div>
+				</div>
+		        <div id="header-city" class="row collapse">
+		        	<div class="controls form-inline">
+		            <!--<div class="col-sm-2" >//-->
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input name="checkboxes" disabled="disabled" id="enable-city"   value="0" type="checkbox">
+							</span>
+							<button type="button" title="enable City Edit Mode" id="enable-citybutton" class="btn btn-default" >no edit</button>
+					    </div>
+				    <!--</div>
+		            <div class="col-sm-2" >
+						<div class="input-group">//-->
+							<button type="button" title="add a new City" id="enablenewcity" class="btn btn-default" >new</button>
+					    <!--</div>
+				    </div>          	    //-->
+		          	  	<div class="hidden" style="display:inline-block;" id="cityregcollapse">
+		            <!--<div class="col-sm-6 collapse" id="cityregcollapse">
+			            <div class="input-group text-center">//-->
+							<select id="region-city" ></select><input id="newcityname" size="25" value="STR_NEWCITYNAME">
+						<!--</div>
+				    </div>//-->
+						</div>
+					</div>
+				</div>
+		        <div id="header-country" class="row collapse">
+		        	<div class="controls form-inline">
+		            <!--<div class="col-sm-2" >//-->
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input name="checkboxes" disabled="disabled" id="enable-countries"   value="0" type="checkbox">
+							</span>
+							<button type="button" disabled="disabled" title="enable Country Edit Mode" id="enable-countriesbutton" class="btn btn-default" >no edit</button>
+					    </div>
+				    <!--</div>
+		            <div class="col-sm-2 " >
+			            <div class="input-group text-center">//-->
+			            	<select onchange="countrychange()" id="countrylist" ><option value="-2" selected="selected">--&gt;</option><option value="-1">new</option></select><button disabled="disabled" id="setccol" style="display:hidden;" onclick="setcolc();return false;">color</button>
+						<!--</div>
+				    </div>//-->
+		            <div id="countriesregcollapse" class="hidden" style="display:inline-block;">
+		            <!--<div class="col-sm-5 collapse " id="countriesregcollapse">
+			            <div class="input-group text-center">//-->
+			            	name: <input id="newcountryname" size="29" value="STR_NEWCOUNTRYNAME"> funding-Base: <input id="newcountryfund" size="4" value="10"> -Cap: <input size="4" id="newcountrycap" value="100">
+						<!--</div>//-->
+				    </div>
+		            <!--<div class="col-sm-2" >
+						<div class="input-group">//-->
+							<button type="button" disabled="disabled" title="add a new Country(Box)" id="enablenewcountries" class="btn btn-default" >new</button>
+					    <!--</div>
+				    </div>//-->
+					</div>
+				</div>
+		        <div id="header-missionszones" class="row collapse">       	
+		        	<div class="controls form-inline">
+		            <!--<div class="col-sm-2 " >
+			            <div class="input-group text-center">//-->
+			            	<select id="enable-missionzones" onchange="enable_edit_missionzones();">  
+	  <option value="-1">No editing</option>
+	  <option value="0">Edit Missionzone 0</option>
+	  <option value="1">Edit Missionzone 1</option>
+	  <option value="2">Edit Missionzone 2</option>
+	  <option value="3">Edit Missionzone 3</option>
+	  <option value="4">Edit Missionzone 4</option>
+	  <option value="5">Edit Missionzone 5</option>
+	</select>
+						<!--</div>
+				    </div>    
+		            <div class="col-sm-1" >//-->
+						<div class="input-group">
+							<span class="input-group-addon">
+								<input name="checkboxes" disabled="disabled" id="enable-missionzone"  value="0" type="checkbox">
+							</span>
+							<button type="button" disabled="disabled" title="enable Missionzone Edit Mode" id="enable-missionzonebutton" class="btn btn-default" >no edit</button>
+					    </div>
+				    <!--</div>
+		            <div class="col-sm-3 " >
+			            <div class="input-group text-center">//-->
+			            	<select id="region-mission" onchange="missionchange();"></select><button id="setmcol" style="display:none;" onclick="setcolm();return false;">color</button>
+						<!--</div>
+				    </div>
+		            <div class="col-sm-1" >
+						<div class="input-group">//-->
+							<button type="button" disabled="disabled" title="add a new missionzone box" id="enablenewmissionzone" class="btn btn-default" >new</button>
+					    <!--</div>
+				    </div>//-->
+					</div>
+				</div>
+		        <div id="header-checks" class="row collapse">
+		            <div class="col-sm-1">
+		            	checks
+		    		</div>            	    
+				</div>
+		        <div id="header-stuff" class="row collapse">
+
+		            <div class="col-sm-1" style="padding-right:140px;"><select id="extraoption" onchange="selectextraoption();">  
+						  <option value="omaps">More Maps!</option>
+						  <option value="ozone">Check Terrorzone</option>
+						  <option value="ooptions">Set options</option>
+						  <option value="ofillplanet">Fill the Planet</option>
+						  <option value="omapselector">Small Display?</option>
+
+						  <option value="omore">More?</option>
+						</select>
+							
+			            
+		            </div>
+		            <div id="omaps" class="col-sm-7 collapse in"><button type="button" title="More Maps" id="moremapsbutton" class="btn btn-warning" >more maps</button>
+							this adds more background maps you can enable them by clicking on <img src="/static/lib/OpenLayers-2.13.1/img/layer-switcher-maximize.png" style="display=inline"/> be aware that these maps are big and you need a fast internet connection to use these 
+	you get night lights and a bunch of planets other than earth 
+		    		</div>
+		    		<div id="omapselector" class="col-sm-7 collapse ">   
+		    			<div class="controls form-inline"><input type="hidden" id="mapselect" /> - <input type="hidden" id="layerselect" />
+			    			This is an alternative method to select Maps and visible Layers - using this form and this <img src="/static/lib/OpenLayers-2.13.1/img/layer-switcher-maximize.png" style="display=inline"/> form at the same time can lead to confusing / inconsistent visualisation
+						</div>
+					</div>
+		    		<div id="ofillplanet" class="col-sm-7 collapse ">   
+		    			<div class="controls form-inline">
+			    			<button type="button" title="FillUpPlanet" id="FillUpPlanet" class="btn btn-success span" >FillUpPlanet</button>
+								<div class="input-group span">
+								<span class="input-group-addon">
+									<input name="checkboxes" disabled="disabled" checked="checked" id="FillUpPlanet-pole"   value="0" type="checkbox">
+								</span>
+								<button type="button" title="enable Texture Edit Mode" id="enable-FillUpPlanet-pole" class="btn btn-default" >Pole region as triangles</button>
+						    </div>
+						    <select id="FillUpPlanet-col" ><option value="-1">randomcolor</option></select>
+						    lon resolution<select id="FillUpPlanet-lon" >
+						    	<option >2</option>
+						    	<option >4</option>
+						    	<option >5</option>
+						    	<option >8</option>
+						    	<option selected="selected">10</option>
+						    	<option >12</option>
+						    	<option >15</option>
+						    	<option >18</option>
+						    	<option >20</option>
+						    	<option >24</option>
+						    	<option >30</option>
+						    </select>lat resolution
+						    <select id="FillUpPlanet-lat" >
+						    	<option >2</option>
+						    	<option >4</option>
+						    	<option >5</option>
+						    	<option >8</option>
+						    	<option selected="selected">10</option>
+						    	<option >12</option>
+						    	<option >15</option>
+						    	<option >18</option>
+						    	<option >20</option>
+						    	<option >24</option>
+						    	<option >30</option>
+						    </select>
+						</div>
+					</div>
+		    		<div id="ozone" class="col-sm-7 collapse">
+			    		<button type="button" title="More Maps" id="checkterrorbutton" class="btn btn-warning" >Zone3Fix</button> This Function creates 1-point landing zones (missionzone3) for terror missions in all cities that do not already have these
+			    		
+						<div class="modal fade" id="testmodal">
+					      <div class="modal-dialog">
+					        <div class="modal-content">
+					          <div class="modal-header">
+					            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
+					            <h4 class="modal-title">This is the list of cities that got a missionzone3 entry added</h4>
+					          </div>
+					          <div class="modal-body">
+					            <ul>
+					            	
+					            </ul>
+					          </div>
+					          <div class="modal-footer">
+					            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					          </div>
+					        </div><!-- /.modal-content -->
+					      </div><!-- /.modal-dialog -->
+					    </div><!-- /.modal -->
+						</div>
+		    		<div id="ooptions" class="col-sm-7 collapse">{{ modal_ace_edit_button(yamleditors["options"]) }} you can change the color and number of textures here</div>
+		    		<div id="omore" class="col-sm-7 collapse">more to come ..?! </div>
+				</div>
+		        <div id="header-ruleset" class="row collapse">
+		        	<div class="controls form-inline">
+		            <!--<div class="col-sm-10">//-->
+		            	
+		            		<input type=file  title="Select a .rul file" data-filename-placement="inside" class="btn btn-success" id="uploadfile" ></input> or 
+							{{ modal_ace_edit_button(yamleditors["importrul"]) }}
+							<button type="button" title="Resets and imports the worlddata" id="importbutton" class="btn btn-success" >Import</button>
+							<button type="button" title="export the worlddata to the ruleset" id="exportbutton" class="btn btn-success" >Export</button>
+							{{ modal_ace_edit_button(yamleditors["exportrul"]) }}or
+							<button type="button" title="export the worlddata to the ruleset" id="downloadfile" class="btn btn-success" ><span class="glyphicon glyphicon-save"> Download</button>
+						
+		    		<!--</div>            	    //-->
+		    		</div>            	    
+				</div>
+
+			</div>
+
+		</div>
+
+
+
+    <!--<label><input type="radio" name="colour" value="blue"> Blue </label>
+    <label><input type="radio" name="colour" value="red"> Red </label>
+    <label><input type="radio" name="colour" value="green"> Green </label>-->
+		
+ <div id='map'></div> 
+
+
+
+{% endblock %}
+{% block jsfooter %}
+$(document).ready(function() { $("#option").select2({width: "90px", dropdownAutoWidth: 'false',minimumResultsForSearch: -1}); });
+$(document).ready(function() { $("#extraoption").select2({dropdownAutoWidth: 'true',minimumResultsForSearch: -1}); });
+
+//$(document).ready(function() { $("#region-region").select2({dropdownAutoWidth: 'true',minimumResultsForSearch: -1}); });
+//$(document).ready(function() { $("#region-city").select2({dropdownAutoWidth: 'true',minimumResultsForSearch: -1}); });
+
+
+
+function togglebutton(string,s1,s2){
+	$("#"+string).prop('checked',!  $("#"+string).prop('checked'));
+	
+	if ($("#"+string).prop('checked')){
+		$("#"+string+"button").addClass( "btn-warning" ); 	
+		$("#"+string+"button").html( s1);		
+	}else{
+		$("#"+string+"button").removeClass( "btn-warning" ); 	
+		$("#"+string+"button").html( s2);
+	}
+	
+}
+
+
+$(document ).on('click','#enable-texturebutton' ,function() {
+togglebutton("enable-texture","edit","no edit");
+enable_edit_texture();
+if ($("#enable-texture").prop('checked')){
+	$("#snapcollapse").removeClass( "hidden" ); 		
+	$("#texselcollapse").removeClass( "hidden" ); 		
+
+}else{
+	$("#snapcollapse").addClass( "hidden" ); 			
+	$("#texselcollapse").addClass( "hidden" ); 			
+}
+
+
+});
+$(document ).on('click','#enable-texturesnapbutton' ,function() {
+togglebutton("enable-texturesnap","snap","no snap");
+enable_edit_texturesnap();
+});
+
+$(document ).on('click','#enablenewtexture' ,function() {
+enable_new_texture();
+});
+
+$(document ).on('click','#enable-borderbutton' ,function() {
+togglebutton("enable-border","edit","no edit");
+enable_edit_border();
+});
+$(document ).on('click','#enablenewborder' ,function() {
+enable_new_border();
+});
+
+
+$(document ).on('click','#enable-regionbutton' ,function() {
+togglebutton("enable-region","edit","no edit");
+enable_edit_region();
+});
+$(document ).on('click','#enablenewregion' ,function() {
+enable_new_region();
+});
+
+$(document ).on('click','#enable-citybutton' ,function() {
+togglebutton("enable-city","edit","no edit");
+enable_edit_city();
+});
+$(document ).on('click','#enablenewcity' ,function() {
+enable_new_city();
+$("#newcityname").val( "STR_NEWCITYNAME_"+citycounter ); 		
+citycounter++;
+$("#cityregcollapse").removeClass( "hidden" ); 		
+});
+
+
+$(document ).on('click','#enable-countriesbutton' ,function() {
+togglebutton("enable-countries","edit","no edit");
+enable_edit_countries();
+});
+$(document ).on('click','#enablenewcountries' ,function() {
+enable_new_countries();
+countrycounter++;
+//$("#countriesregcollapse").addClass( "in" ); 		
+});
+
+$(document ).on('click','#enable-missionzonebutton' ,function() {
+togglebutton("enable-missionzone","edit","no edit");
+enable_edit_missionzone();
+});
+$(document ).on('click','#enablenewmissionzone' ,function() {
+enable_new_missionzones();
+});
+$(document ).on('click','#moremapsbutton', function() {
+	$("#moremapsbutton").removeClass( "btn-warning" ); 
+	$("#moremapsbutton").addClass( "btn-success" ); 
+	$("#moremapsbutton").prop('disabled', true);
+	$("#moremapsbutton").html('more maps <span class="glyphicon glyphicon-ok"></span>');
+
+addmoremaps();
+});
+
+ $(function () { $(".btn").tooltip(); });
+ $(function () { $("range").tooltip(); });
+
+
+$(document ).on('click','#importbutton' ,fillmap);
+$(document ).on('click','#exportbutton' ,exportmap);
+$(document ).on('click','#downloadfile' ,function() {
+	saveAs(new Blob([exportstring], {
+    type: "text/plain;charset=utf-8;",
+}), "newworld.rul");
+});
+
+
+
+
+
+$('#uploadfile').bootstrapFileInput();
+$(document ).on('change','#uploadfile' ,function(event) {
+	var files = event.target.files; //FileList object
+    for (var i = 0; i < files.length; i++) {
+	    var file = files[i];
+	    var picReader = new FileReader();
+	    picReader.addEventListener("load", function(event) {
+	        var textFile = event.target;
+	        console.log(textFile);
+	        editorimport.setValue(textFile.result); 
+        	importstring=editorimport.getValue();
+	
+	    });
+	   picReader.readAsText(file);
+        }
+});
+$(document ).on('click','#checkterrorbutton' ,checkterror);
+
+$(document).on('click','#FillUpPlanet' ,function(){
+	textures.destroyFeatures();	
+	texgraphicZIndex=0;
+	latinc=parseInt($("#FillUpPlanet-lat").val());
+	loninc=parseInt($("#FillUpPlanet-lon").val());
+	trianglepole=$("#FillUpPlanet-pole").prop('checked');
+	col=$("#FillUpPlanet-col").val();
+	if (trianglepole){
+		redrawlon=-180;	
+		while(redrawlon<180){
+			points=[];
+			points.push(new OpenLayers.Geometry.Point(0,90));
+			points.push(new OpenLayers.Geometry.Point(redrawlon,90-latinc));
+			points.push(new OpenLayers.Geometry.Point(redrawlon+loninc,90-latinc));
+			c=col;
+			if (col<0)c=Math.floor(Math.random() * textcolors.length)
+			tmp=new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(points)]),{tn:c},{fillColor: textcolors[c],strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillOpacity: 0.7,graphicZIndex:texgraphicZIndex})
+			texgraphicZIndex++;
+			if (! testtex(tmp)){
+				tmp.style.strokeColor="red";
+			}
+			textures.addFeatures([tmp]);			
+			points=[];
+			points.push(new OpenLayers.Geometry.Point(0,-90));
+			points.push(new OpenLayers.Geometry.Point(redrawlon,-90+latinc));
+			points.push(new OpenLayers.Geometry.Point(redrawlon+loninc,-90+latinc));
+			c=col;
+			if (col<0)c=Math.floor(Math.random() * textcolors.length)
+			tmp=new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(points)]),{tn:c},{fillColor: textcolors[c],strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillOpacity: 0.7,graphicZIndex:texgraphicZIndex})
+			texgraphicZIndex++;
+			if (! testtex(tmp)){
+				tmp.style.strokeColor="red";
+			}
+			textures.addFeatures([tmp]);			
+
+			redrawlon=redrawlon+loninc;
+			
+		}	
+	}
+	redrawlat=90;
+	redrawlatlimit=-90
+	if (trianglepole){
+		redrawlat=redrawlat-latinc;
+		redrawlatlimit=redrawlatlimit+latinc;
+	} 	
+	while(redrawlat>redrawlatlimit){
+		redrawlon=-180;
+		while(redrawlon<180){
+			points=[];
+			points.push(new OpenLayers.Geometry.Point(redrawlon,redrawlat));
+			points.push(new OpenLayers.Geometry.Point(redrawlon+loninc,redrawlat));
+			points.push(new OpenLayers.Geometry.Point(redrawlon+loninc,redrawlat-latinc));
+			points.push(new OpenLayers.Geometry.Point(redrawlon,redrawlat-latinc));
+			c=col;
+			if (col<0)c=Math.floor(Math.random() * textcolors.length)
+			tmp=new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Polygon([new OpenLayers.Geometry.LinearRing(points)]),{tn:c},{fillColor: textcolors[c],strokeColor: "#777777",strokeOpacity: 1,strokeWidth: "2",fillOpacity: 0.7,graphicZIndex:texgraphicZIndex})
+			texgraphicZIndex++;
+			if (! testtex(tmp)){
+				tmp.style.strokeColor="red";
+			}
+			textures.addFeatures([tmp]);			
+			redrawlon=redrawlon+loninc;
+			
+		}
+		redrawlat=redrawlat-latinc;
+	}
+	
+});
+
+$(document ).on('click','#enable-FillUpPlanet-pole' ,function() {
+	$("#FillUpPlanet-pole").prop('checked',!  $("#FillUpPlanet-pole").prop('checked'));
+	if ($("#FillUpPlanet-pole").prop('checked')){		
+		$("#enable-FillUpPlanet-pole").text( "Pole region as triangles");		
+	}else{		
+		$("#enable-FillUpPlanet-pole").text("Pole region as blocks");
+	}
+});
+
+
+function fillnewmapselect(){
+	a=[]
+	b=[]
+	llist=map.getLayersByName(/./)
+	for (li=0;li<llist.length;li++) {
+		
+		if (llist[li].isBaseLayer) a.push({text: llist[li].name,id:llist[li].name})
+		if (! llist[li].isBaseLayer) b.push({text: llist[li].name,id:llist[li].name})
+	}
+	$("#mapselect").select2({
+	dropdownAutoWidth: 'false',
+	width: "140px",
+	minimumResultsForSearch: -1,
+	data: a
+	});
+
+	$("#layerselect").select2({
+	dropdownAutoWidth: 'false',
+	width: "140px",
+	multiple: true,
+	placeholder:"select layers",
+	minimumResultsForSearch: -1,
+	data: b
+	});
+}
+
+$("#mapselect").on("change",function(){
+	thenewbase = map.getLayersByName($("#mapselect").select2("val"))[0]; 
+	map.setBaseLayer(thenewbase);
+})
+$("#layerselect").on("change",function(){
+	llist=map.getLayersByName(/./)
+	lsellist=$("#layerselect").select2("val")
+	for (li=0;li<llist.length;li++) {		
+		if (! llist[li].isBaseLayer ) 
+		{
+			llist[li].setVisibility(lsellist.indexOf(llist[li].name)>=0)
+		}
+	}
+})
+
+
+
+{{ modal_ace_edit_jsfooter(yamleditors) }}
+
+$(document).ready(doit);
+{% endblock %}
+
+{% block help %}
+<div class="row">
+    <!--Nav Bar -->
+    <nav class="col-xs-3 bs-docs-sidebar oxchelpmenu" id="oxchelpmenuid">
+        <ul id="sidebar" class="nav nav-stacked fixed">
+            <li>
+                <a href="#GroupA">Group A</a>
+                <ul class="nav nav-stacked">
+                    <li><a href="#GroupASub1">Sub-Group 1</a></li>
+                    <li><a href="#GroupASub2">Sub-Group 2</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#GroupB">Group B</a>
+                <ul class="nav nav-stacked">
+                    <li><a href="#GroupBSub1">Sub-Group 1</a></li>
+                    <li><a href="#GroupBSub2">Sub-Group 2</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#GroupC">Group C</a>
+                <ul class="nav nav-stacked">
+                    <li><a href="#GroupCSub1">Sub-Group 1</a></li>
+                    <li><a href="#GroupCSub2">Sub-Group 2</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <!--Main Content -->
+    <div class="col-xs-9 oxchelpcontent" data-spy="scroll" data-target="#oxchelpmenuid">
+        <section id="GroupA" class="group">
+            <h3>Group A</h3>
+            <div id="GroupASub1" class="subgroup">
+                <h4>Group A Sub 1</h4>
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+            </div>
+            <div id="GroupASub2" class="subgroup">
+                <h4>Group A Sub 2</h4>
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+            </div>
+        </section>
+        <section id="GroupB" class="group">
+            <h3>Group B</h3>
+            <div id="GroupBSub1" class="subgroup">
+                <h4>Group B Sub 1</h4>
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+            </div>
+            <div id="GroupBSub2" class="subgroup">
+                <h4>Group B Sub 2</h4>
+                ddkfjg dflgj dfkjghdzjkldhfg djkflghkfjg dflgj dfkjghdzjkldhfg djkflghdkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+            </div>
+        </section>
+        <section id="GroupC" class="group">
+            <h3>Group C</h3>
+            <div id="GroupCSub1" class="subgroup">
+                <h4>Group C Sub 1</h4>
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+            </div>
+            <div id="GroupCSub2" class="subgroup">
+                <h4>Group C Sub 2</h4>
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+                dkfjg dflgj dfkjghdzjkldhfg djkflgh<br/>                
+            </div>
+        </section>    
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+extraSprites:
+  - type: Pathfinding
+    files:
+      0: Resources/Pathfinding/Pathfinding.png1
+  - type: XCOM_0.PCK
+  - type: XCOM_1.PCK
+  - type: XCOM_2.PCK
+  - type: SECTOID.PCK
+  - type: FLOATER.PCK
+  - type: X_REAP.PCK
+  - type: X_ROB.PCK
+  - type: TANKS.PCK
+  - type: CIVM.PCK
+  - type: CIVF.PCK
+  - type: SNAKEMAN.PCK
+  - type: MUTON.PCK
+  - type: ETHEREAL.PCK
+  - type: CHRYS.PCK
+  - type: ZOMBIE.PCK
+  - type: SILACOID.PCK
+  - type: CELATID.PCK
+  - type: CYBER.PCK
+  - type: MAN_0M0.SPK
+  - type: MAN_0M1.SPK
+  - type: MAN_0M2.SPK
+  - type: MAN_0M3.SPK
+  - type: MAN_0F0.SPK
+  - type: MAN_0F1.SPK
+  - type: MAN_0F2.SPK
+  - type: MAN_0F3.SPK
+  - type: MAN_1M0.SPK
+  - type: MAN_1M1.SPK
+  - type: MAN_1M2.SPK
+  - type: MAN_1M3.SPK
+  - type: MAN_1F0.SPK
+  - type: MAN_1F1.SPK
+  - type: MAN_1F2.SPK
+  - type: MAN_1F3.SPK
+  - type: MAN_2.SPK
+  - type: MAN_3.SPK
+  - type: HANDOB.PCK
+    subX: 32
+    subY: 40
+    height: 4160
+    width: 32
+    
+    files:
+      0: default
+      8: default
+      16: default
+      24: default
+      32: default
+      40: default
+      48: default
+      56: default
+      64: default
+      72: default
+      80: default
+      88: default
+      96: default
+      104: default
+      201: more
+  - type: Projectiles
+    width: 105
+    height: 33
+    subX: 3
+    subY: 3
+    files:
+      630: Resources/BulletSprites/BulletSprites.png
+items:
+  - type: STR_PISTOL
+    bigSprite: 180
+    bulletSprite: 18
+  - type: STR_NONE
+  - type: STR_ZOMBIE_CORPSE
+research:
+  - name: STR_ZOMBIE_AUTOPSY
+  - name: STR_ALIEN_ONLY

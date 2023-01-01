@@ -1,0 +1,622 @@
+{% extends "layout.html" %}
+{% from 'pallist.html' import pallist  %}
+{% from 'modalaceedit.html' import modal_ace_edit_head  %}
+{% from 'modalaceedit.html' import modal_ace_edit_body  %}
+{% from 'modalaceedit.html' import modal_ace_edit_button  %}
+{% from 'modalaceedit.html' import modal_ace_edit_jsfooter %}
+{%
+  set yamleditors={
+  "options":{
+    "textidstring":"yamloptions",
+    "varstring":"optionsstring",
+    "modalidstring":"modaloptionsid",
+    "title":"Set Conversion Options",
+    "editorvar":"editoroptions",
+    "buttontext":"Open options",
+    "buttonidstring":"yamloptionsbuttonid",
+    "contentid":"optionstext"
+    }
+  }
+%}
+{% block title %}Palette converter{% endblock %}
+{% block head %}
+<script type="text/javascript" src="/static/lib/FileSaver.js"></script>
+<script type="text/javascript"  src="/static/js/dropzone.js"></script>
+<script src="/static/lib/js-yaml.min.js"></script>
+    <script src="static/lib/select2-3.5.1/select2.js" type="text/javascript" ></script>
+    <link href="static/lib/select2-3.5.1/select2.css" rel="stylesheet">
+<style>
+#dropzone {
+    //background-color:red;
+    border:solid red;
+    font-size: 200%;
+    text-align: center;
+    vertical-align: middle;
+    min-height:150px;
+    line-height: 150px;
+    margin-bottom: 25px;
+
+  }
+.badge-success {
+  background-color: #468847;
+}
+.badge-success:hover {
+  background-color: #356635;
+}
+
+.palimg {
+  background-repeat: no-repeat;
+  height: 128px;
+  min-width: 128px;
+  overflow: hidden;
+  background-position: 0px 0px;
+}
+#basepalimg   {background-image: url(static/img/pal/ufo-battlescape.act.p.png)}
+#targetpalimg {background-image: url(static/img/pal/ufo-battlescape.act.p.png)}
+#transpalimg  {background-image: url(static/img/pal/ufo-battlescape.act.p.png)}
+#transpalimgblock  {background-image: url(static/img/pal/ufo-battlescape.act.p.png);background-position: 1000px 1000px; }
+.sptransformborder {
+  background-image: url(static/img/pal/ufo-battlescape.act.p.png);
+  border: solid black;
+  border-width: 1px;
+  min-height: 8px;
+  min-width: 8px;
+  opacity: 0.99;
+  display:inline-block;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  //background-position: 1000px 1000px;
+}
+.spimgdivborder {
+  border: solid white;
+  border-width: 1px;
+  min-height: 8px;
+  min-width: 8px;
+  opacity: 0;
+  display:inline-block;
+}
+</style>
+<script type="text/javascript">
+var files={};
+var readers={};
+
+
+</script>
+{{ modal_ace_edit_head(yamleditors) }}
+{% endblock %}
+
+{% block content %}
+{% for acekey in yamleditors %}
+  {{ modal_ace_edit_body(yamleditors[acekey]) }}
+{% endfor %}
+<textarea id="optionstext" style="display:none">
+{% include 'palconfoptions.yaml' %}
+</textarea>
+
+    <div class="modal fade" id="sptransformer" style="max-height:90%;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">Add new Transformation</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row ">
+              <div class="col-sm-4 center-block text-center"  >
+                <input type="hidden" value="ufo-battlescape" id="basepal">
+              </div>
+              <div class="col-sm-4 center-block text-center"  id="transpal">
+                name: <input style="border-color: black" id="sp-transformsavename" size="12" value="transform_NEW"><br/>
+                blocksize: <select id="transpalblock">
+                  <option>16</option>
+                  <option>8</option>
+                  <option>4</option>
+                  <option>2</option>
+                  <option>1</option>
+                  <option>256</option>
+                </select>
+                <div  style="background-repeat: no-repeat;min-height: 8px;min-width: 8px;" id="transpalimgblock"></div>
+              </div>
+              <div class="col-sm-4 center-block text-center" >
+                <input type="hidden" value="ufo-battlescape" id="targetpal">
+              </div>
+            </div>
+            <div class="row ">
+              <div class="col-sm-12 center-block text-center"  >             <hr />
+              </div>
+            </div>
+            <div class="row ">
+              <div class="col-sm-4 center-block text-center"  >
+                <div>
+                  <div class="palimg" style="float:left;" id="basepalimg"></div>
+                  <div class="palimg" style="position: absolute;top:-8px;min-height:136px;" id="basepaldivs"></div>
+                </div>
+              </div>
+              <div class="col-sm-4 center-block text-center"  >
+                <div>
+                  <div class="palimg" style="opacity:0.3;float:left;" id="transpalimg"></div>
+                  <div class="palimg" style="position: absolute;top:-8px;min-height:136px;" id="transpaldivs"></div>
+                </div>
+              </div>
+              <div class="col-sm-4 center-block text-center" >
+                <div>
+                  <div class="palimg" style="float:left;" id="targetpalimg"></div>
+                  <div class="palimg" style="position: absolute;top:-8px;min-height:136px;" id="targetpaldivs"></div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <span id="sp-transformsaveoverwritespan" style="display:none;">
+                <input name="checkboxes" notdisabled="disabled" id="sp-transformsaveoverwrite"   value="0" type="checkbox">
+              <button type="button" title="enable City Edit Mode" id="sp-transformsaveoverwritebutton" class="btn btn-default" >overwrite</button>
+              </span>
+            <!--<div>overwrite: <input type="checkbox" id="sp-transformsaveoverwrite" /></div>//-->
+            <button type="button" id="sp-transformsave" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+<div id="sp-rows">
+<div class="row ">
+  <div class="col-sm-1">
+  </div>
+  <div class="col-sm-9">
+    <form action="/file-upload"  data-bg-text="text" id="dropzone">Drop files here or Click to upload multiple images</form>
+  </div>
+  <div class="col-sm-2">
+    {{ modal_ace_edit_button(yamleditors["options"]) }}<br />
+    <button type="button"  data-toggle="modal" data-target="#sptransformer" class="btn btn-success sp-download" style="margin-top:15px;" >Add new transform</button>    <br/>
+    <button type="button"   class="btn btn-success sp-showimages" style="margin-top:15px;" ><span class="glyphicon glyphicon-eye-open">  Show images</span></button>
+  </div>
+</div>
+<div class="row collapse">
+  <div class="col-sm-12">
+    <div id="imgout" class="dropzone-previews"></div>
+  </div>
+</div>
+<div class="row sp-row collapse" style="border-top: solid lightgrey" id="spcomptemplate">
+  <div class="col-sm-2">
+    <div class="label label-default"><span class="sp-idval">TEMPLATE</span> <span class="badge hidden alert-warning">1234</span></div>
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+        Show
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+        <li><a sp-show="conv" href="#">Convert</a></li><!-- rowcount,download,clear,delete//-->
+        <!--<li><a sp-show="image" href="#">Show Result</a></li>          //-->
+        <li><a sp-show="images" href="#">Images</a></li>
+        <!-- <li><a sp-show="filenames" href="#">Show FileList</a></li>//-->
+        <!--<li><a sp-show="errors" href="#">Show Errors</a></li>//-->
+      </ul>
+    </div>
+  </div>
+  <div class="col-sm-8 sp-show  sp-conv">
+    <div class="input-group">
+      <input type="text" value="fix-palette(ufo-battlescape)" class="sp-func">
+      <button type="button" class="btn btn-primary sp-convert"  style="margin-left:25px;" disabled="disabled" ><span class="glyphicon glyphicon-play"> Convert</button>
+
+      Set name: <input type="text" class="sp-rename" value="TEMPLATE">.png<!--<button type="button" class="btn btn-secondary" >Rename</button>//-->
+      <button type="button" class="btn btn-success sp-download" style="margin-left:45px;" disabled="disabled" ><span class="glyphicon glyphicon-download-alt"> Download</button>
+      <button type="button" class="btn btn-primary sp-switch hidden" style="margin-left:45px;" disabled="disabled" ><span class="glyphicon glyphicon-retweet"> Switch</button>
+      <button type="button" class="btn btn-warning sp-delete" style="margin-left:45px;"><span class="glyphicon glyphicon-remove"> Delete</button>
+    </div>
+  </div>
+  <div class="col-sm-10 sp-show collapse sp-image">
+    <span>no result image yet click show - convert - convert</span><img />
+  </div>
+  <div class="col-sm-10 sp-show collapse sp-images"><span class="sp-inputimg"></span> <span class="glyphicon glyphicon-arrow-right"> <span class="sp-outputimg">no result image yet click show - convert - convert</span></div>
+  <div class="col-sm-10 sp-show collapse sp-filenames"></div>
+  <div class="col-sm-10 sp-show collapse sp-errors"></div>
+</div>
+
+
+
+</div >
+{% endblock %}
+
+
+
+{% block jsfooter %}
+
+{{ modal_ace_edit_jsfooter(yamleditors) }}
+
+$('.sp-showimages').click(function(e) {
+  if ($(".sp-showimages span").first().hasClass("glyphicon-eye-open")){
+    $(".sp-showimages span").removeClass("glyphicon-eye-open" ).addClass("glyphicon-eye-close" )
+    $(".sp-showimages span").text(" Hide images")
+    $(".sp-images").addClass("in")
+  }else{
+    $(".sp-showimages span").removeClass("glyphicon-eye-close" ).addClass("glyphicon-eye-open" )
+    $(".sp-showimages span").text(" Show images")
+    $(".sp-images").removeClass("in")
+  }
+});
+
+var imgy=0;
+var imgx=0;
+var newtrans={};
+var oldblocksize=16;
+var funcselect2_ary;
+var funclist=[];
+var tdoc;
+
+function formatsel2(state) {
+return  '<span style="background: url(\'static/img/pal/'+state.text+'.mini.png\');min-height=16px;min-width=16px">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + state.text;
+}
+
+paldata={
+        width: "140px",
+        placeholder: "test",
+        data: [
+    {% for pal in pallist %}
+      {text: '{{pal}}',id:'{{pal}}'},
+    {% endfor %}
+        ],
+        formatResult: formatsel2,
+        formatSelection: formatsel2,
+        escapeMarkup: function(m) { return m; }
+      }
+$("#basepal").select2(paldata);
+$("#basepal").on("change",function(){
+  $("#basepalimg").css({"background-image": "url(static/img/pal/"+$("#basepal").val()+".act.p.png)"  })
+  $("#transpalimg").css({"background-image": "url(static/img/pal/"+$("#basepal ").val()+".act.p.png)"  })
+//  $("#transpalimgblock").css({"background-image": "url(static/img/pal/"+$("#basepal").val()+".act.p.png)"  })
+//  $(".sptransformborder").css({"background-image": "url(static/img/pal/"+$("#basepal").val()+".act.p.png)"  })
+})
+
+$("#targetpal").select2(paldata);
+$("#targetpal").on("change",function(){
+  $("#targetpalimg").css({"background-image": "url(static/img/pal/"+$("#targetpal ").val()+".act.p.png)"  })
+//  $("#transpalimg").css({"background-image": "url(static/img/pal/"+$("#targetpal ").val()+".act.p.png)"  })
+  $("#transpalimgblock").css({"background-image": "url(static/img/pal/"+$("#targetpal").val()+".act.p.png)"  })
+  $(".sptransformborder").css({"background-image": "url(static/img/pal/"+$("#targetpal").val()+".act.p.png)"  })
+
+
+
+})
+
+function resetpaldivs(){
+  bsize=parseInt($("#transpalblock").val())
+  thtml=""
+  bhtml=""
+  if (oldblocksize>bsize){
+    ntrans={}
+    for (x in newtrans){
+//      console.log(x,newtrans[x],-1*newtrans[x]/2)
+      for(ni=0;ni<oldblocksize;ni+=(oldblocksize/(oldblocksize/bsize))) {
+//        console.log(parseInt(x)+ni,"=",parseInt(newtrans[x][0])+ni,bsize)
+        ntrans[parseInt(x)+ni]=[parseInt(newtrans[x][0])+ni,bsize]
+      }
+    }
+    newtrans=ntrans;
+  }else{
+    newtrans={};
+  }
+  for (i=0;i<16;i++){
+    thtml+="<div style='height:8px'>";
+    bhtml+="<div style='height:8px'>";
+    for (g=0;g<(16/bsize);g++) {
+      addposstring="background-position:1001px 1001px;"
+      if (newtrans.hasOwnProperty(g*bsize+i*16)){
+        //console.log(99,g,i,newtrans[g*bsize+i*16],-8*bsize*g,i*16+g*bsize*-1,16*Math.floor(newtrans[g*bsize+i*16][0]/16)/-2 )
+        addposstring="border-style:none;background-position: "+-8*bsize*g+"px "+16*Math.floor(newtrans[g*bsize+i*16][0]/16)/-2+"px;"
+      }
+      thtml+="<div class='sptransformborder' style='"+addposstring+"width: "+bsize*8+"px' valx='"+g+"' valy='"+i+"' valxy='"+g+"-"+i+"' ></div>";
+      bhtml+="<div style='width: "+bsize*8+"px' valx='"+g+"' valy='"+i+"' valxy='"+g+"-"+i+"' class='spimgdivborder'></div>";
+    }
+    thtml+="</div>";
+    bhtml+="</div>";
+
+
+  }
+  $("#transpaldivs").html(thtml)
+  $("#targetpaldivs").html(bhtml)
+  $("#basepaldivs").html(bhtml)
+  //$("#transpaldivs div[reset=1]").css("opacity","0.99")
+  //$("#transpalimgblock").css({"width":bsize*8+"px","background-position":"1000px 1000px"})
+  $("#transpalimgblock").css({"width":bsize*8+"px"})
+  oldblocksize=bsize;
+
+}
+resetpaldivs();
+$("#transpalblock").on("change",resetpaldivs);
+
+$(document).on("click",'.spimgdivborder',function(e) {
+    $("div.spimgdivborder[valxy="+imgx+"-"+imgy+"]").css("opacity","0")
+    $("div.sptransformborder[valxy="+imgx+"-"+imgy+"]").css("border-color","black")
+    bsize=parseInt($("#transpalblock").val());
+    imgx=$(e.target).attr("valx")
+    imgy=$(e.target).attr("valy")
+    //console.log($(".spimgdivborder [valxy="+imgx+"-"+imgy+"]"))
+    $("div.spimgdivborder[valxy="+imgx+"-"+imgy+"]").css("opacity","1")
+    $("div.sptransformborder[valxy="+imgx+"-"+imgy+"]").css("border-color","red")
+    $("#transpalimgblock").css({"background-position": -1*imgx*bsize*8+"px "+-1*imgy*8+"px"   })
+    //"background-position": 0+"px "+0+"px"
+
+    //var posX = $(this).offset().left, posY = $(this).offset().top;
+    //console.log( Math.floor((e.pageY - posY)/8)*16+ Math.floor((e.pageX - posX)/(8*bsize))*bsize, (e.pageX - posX) , (e.pageY - posY),e.pageX , posX , e.pageY , posY);
+
+});
+
+$(document).on("click",'.sptransformborder',function(e) {
+    bsize=parseInt($("#transpalblock").val());
+    timgx=$(e.target).attr("valx")
+    timgy=$(e.target).attr("valy")
+
+    $(e.target).css("border-style","none")
+    $(e.target).css("background-position",$("#transpalimgblock").css("background-position"))
+    //console.log(timgx*bsize+timgy*16,imgx*bsize+imgy*16,bsize,$("#transpalimgblock").css("background-position"))
+    newtrans[timgx*bsize+timgy*16]=[imgx*bsize+imgy*16,bsize];
+});
+$(document).on("click",'#sp-transformsave',function(e) {
+  tname=$("#sp-transformsavename").val()+"("+$("#targetpal").val()+")"
+  tfuncpos=testtransname()
+  addttxt="\r\n";
+  addttxt+="- name: "+tname+"\r\n"
+  addttxt+="  op: transform\r\n"
+  addttxt+="  pal: "+$("#targetpal").val()+"\r\n"
+  addttxt+="  maketrans: false\r\n"
+  addttxt+="  cols:\r\n"
+  for (k in  newtrans){
+    addttxt+="    "+k+": ["+newtrans[k][0]+", "+newtrans[k][1]+"]\r\n"
+  }
+  if (tfuncpos[0]>=0 && $("#sp-transformsaveoverwrite").prop('checked')){
+    $("#sp-transformsaveoverwrite").prop('checked',false)
+    tnamelines = optionsstring.split('\n');
+    newostr=""
+    for (linenr=0; linenr<tnamelines.length;linenr++){
+      if (linenr<tfuncpos[0] || linenr>(tfuncpos[0]+tfuncpos[1])) {
+        newostr+=tnamelines[linenr]+"\n"
+      }
+    }
+    optionsstring=newostr
+    editoroptions.setValue(optionsstring,1)
+    tfuncpos=[-1,0]
+  }
+  if ( tfuncpos[0]<0){
+    optionsstring+=addttxt
+    editoroptions.setValue(optionsstring);
+    resetfuncarr();
+    resetfuncoptions();
+    testtransname();
+    $('#sptransformer').modal('hide');
+  }
+});
+function testtransname(){
+  tname=$("#sp-transformsavename").val()+"("+$("#targetpal").val()+")"
+  $("#sp-transformsavename").css("border-color","black")
+  $("#sp-transformsaveoverwritespan").css({"display":"none"})
+  tnamelines = optionsstring.split('\n');
+  tnamefound=-1
+  tnamefoundlines=0
+  for (linenr=0; linenr<tnamelines.length;linenr++){
+    if (tnamelines[linenr].trim()=="- name: "+tname){
+      tnamefoundlines=1
+      tnamefound=linenr
+    }else{
+      if (tnamefoundlines>0){
+        if (tnamelines[linenr][0]=="-") {
+          break;
+        }else{
+          tnamefoundlines++;
+        }
+      }
+    }
+  }
+  if ( funclist.indexOf(tname)>=0){
+    $("#sp-transformsavename").css({"border-color":"red"})
+    $("#sp-transformsaveoverwritespan").css({"display":"inline"})
+  }
+  return [tnamefound,tnamefoundlines];
+}
+$("#sp-transformsavename").on("keyup",testtransname)
+$("#sp-transformsaveoverwritebutton").on("click",function(){
+
+  $("#sp-transformsaveoverwrite").prop('checked',!  $("#sp-transformsaveoverwrite").prop('checked'));
+})
+
+
+$("#sp-transformsaveoverwrite").prop('checked',false)
+
+//.push()
+
+function resetfuncoptions() {
+  resetfuncarr();
+  $("input.sp-func").each(function(index){
+    resetselect($($(this).parent()));
+  });
+}
+$("body").on("ace-yamloptions-post-save", resetfuncoptions);
+
+function resetfuncarr(){
+  funcselect2_ary=[];
+  funclist=[];
+  {% for pal in pallist %}
+    funcselect2_ary.push({text: '{{pal}}',children: []});
+  {% endfor %}
+  tdoc = jsyaml.load(optionsstring);
+  for (i=0; i < tdoc.length;i++){
+    for (g=0; g < funcselect2_ary.length;g++){
+      if (funcselect2_ary[g].text==tdoc[i].pal){
+        funcselect2_ary[g].children.push({"id":tdoc[i].name, "text":tdoc[i].name});
+        funclist.push(tdoc[i].name);
+      }
+    }
+  }
+
+}
+resetfuncarr();
+
+function formatsel(state) {
+if (state.id) return state.text;
+return  '<span style="background: url(\'static/img/pal/'+state.text+'.mini.png\');min-height=16px;min-width=16px">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'  + state.text;
+}
+
+
+function resetselect(hobj){
+  //tdoc = jsyaml.load(optionsstring);
+  hobj.find('input.sp-func').each(function(index){
+    idstring=hobj.closest( "div.sp-row" ).attr("id")
+    if (idstring!="spcomptemplate"){
+      //$(this).select2("destroy");
+      $(this).select2({
+        //dropdownAutoWidth: 'true',
+        width: "220px",
+        placeholder: "test",
+        data: funcselect2_ary,
+        formatResult: formatsel,
+        formatSelection: formatsel,
+        escapeMarkup: function(m) { return m; }
+      });
+    }
+  });
+
+}
+
+
+
+//resetselect();
+//{dropdownAutoWidth: 'true',minimumResultsForSearch: -1}
+
+$('.sp-row  ul.dropdown-menu  a').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")
+    $('#'+idstring+'   div.sp-show').removeClass("in");
+    showdiv=$(e.target).attr("sp-show");
+    $('#'+idstring+'   div.sp-'+showdiv).addClass("in");
+    //e.preventDefault();// prevent the default anchor functionality
+});
+
+$('.sp-row  button.sp-delete').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")
+    delete files[idstring.substr(5)];
+    $("#"+idstring).remove();
+});
+
+$('.sp-row  button.sp-download').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")
+
+blob = dataURItoBlob($("#"+idstring).find(".sp-resultimg").first().attr("src"),"image/png;");
+saveAs(blob, $("#"+idstring).find(".sp-rename").first().val()+".png");
+
+});
+
+function dataURItoBlob(dataURI, dataTYPE) {
+        var binary = atob(dataURI.split(',')[1]), array = [];
+        for(var i = 0; i < binary.length; i++) array.push(binary.charCodeAt(i));
+        return new Blob([new Uint8Array(array)], {type: dataTYPE});
+    }
+
+$('.sp-row  button.sp-convert').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")
+    $("#"+idstring+" button.sp-download").prop('disabled', true);
+    $("#"+idstring+" button.sp-convert").addClass("btn-info").prop('disabled', true);
+    $("#"+idstring+" button.sp-convert span").addClass("glyphicon-cog").removeClass("glyphicon-play");
+    getfunc=$("#"+idstring+" input.sp-func" ).first().val()
+    func={}
+    for (i=0; i<tdoc.length;i++){
+      if (tdoc[i]["name"]==getfunc)func=tdoc[i]
+    }
+    //console.log(idstring,$("#"+idstring+" input.sp-func" ).first().val(),files[idstring.substr(5)]["fobj"])
+     $.ajax({
+                    url:'/_spritepalette',
+                    type: "POST",
+                    contentType:"application/json",
+                    dataType:"json",
+                    data: JSON.stringify({
+        name: $("#"+idstring).find(".sp-rename").first().val(),
+        op: func,
+        idstring: idstring,
+        files: files[idstring.substr(5)]["fobj"]
+      })
+
+      }).done(function(data) {
+        $("#"+data["idstring"]+" span.sp-outputimg").html("<img class='sp-resultimg' src='"+data["resimg"]+"' />")
+        $("#"+data["idstring"]+" button.sp-download").prop('disabled', false);
+        $("#"+data["idstring"]+" button.sp-convert").removeClass("btn-info").prop('disabled', false);;
+        $("#"+data["idstring"]+" button.sp-convert span").removeClass("btn-info").removeClass("glyphicon-cog").addClass("glyphicon-play");
+      }).fail(new function(spid){
+        return function(data) {
+
+
+          $("#"+spid+" span.sp-outputimg").html("<img class='sp-resultimg' src='"+spid+"' />")
+          $("#"+spid+" button.sp-convert").removeClass("btn-info").addClass("btn-danger")
+          $("#"+spid+" button.sp-convert span").removeClass("btn-info").removeClass("glyphicon-cog").addClass("glyphicon-fire").text(" Error");
+
+
+        }
+      }(idstring));
+
+});
+
+
+function copysprow(idstring){
+  t=$("#spcomptemplate").clone( withDataAndEvents=true, deepWithDataAndEvents =true );
+  t.removeClass("collapse");
+  t.find(".sp-idval").text(n)
+  t.find(".sp-rename").val(n.replace(/....$/,""))
+  t.prop("id",idstring);
+  resetselect(t);
+  $("#sp-rows").append(t);
+
+}
+
+
+var myDropzone = new Dropzone("#dropzone", { url: "/file/post",previewsContainer:document.getElementById("imgout"),
+createImageThumbnails:false,
+thumbnailWidth:32,
+thumbnailHeight:40,
+fallback: function(){
+messageElement = Dropzone.createElement("<div class='dz-message'><span>Your browser does not support drag'n'drop file uploads. There is no fallback :( use a more recent browser.</span></div>");
+          return this.element.appendChild(messageElement);
+        }
+});
+myDropzone.options.autoProcessQueue=false;
+//myDropzone.options.previewTemplate='<div class="dz-preview dz-file-preview" style="display:inline;">  <div  style="display:inline;" class="dz-details">   <img  style="display:inline;" data-dz-thumbnail />  </div>     </div>';
+
+
+
+myDropzone.on("addedfile", function(file) {
+  console.log(file.type)
+  if ((file.type=="image/gif" || file.type=="image/png" || file.type=="image/bmp") && file.size<400000 ){
+    n=file.name.replace(/[^A-Za-z0-9-_]/g, "_");
+    if(! files.hasOwnProperty(n)){
+      files[n]={fnlist:[],fobj:[],recreatethumb:true};
+      copysprow("spid-"+n);
+      files[n]["fnlist"].push(file.name);
+      //files[n]["fobj"].push(file);
+      $("#spid-"+n+" span.badge").text(files[n]["fobj"].length+"/"+files[n]["fnlist"].length).removeClass("badge-success").addClass("alert-warning");
+      $("#spid-"+n+" button.sp-convert").prop('disabled', true);
+      //$("#spid-"+n+" div.sp-filenames").append("<div>"+file.name+"</div>");
+      readers[file.name]=new FileReader();
+      readers[file.name].onload=function(spid,fname){
+        return function(event) {
+          dataURL = readers[fname].result;
+          $("#spid-"+spid+" span.sp-inputimg").append("<img alt='"+fname+"' title='"+fname+"' src='"+dataURL+"' />")
+          files[spid]["fobj"].push({"fn":fname,"cont":dataURL})
+          if (files[spid]["fobj"].length==files[spid]["fnlist"].length){
+            $("#spid-"+spid+" span.badge").text(files[spid]["fnlist"].length).addClass("badge-success").removeClass("alert-warning");
+            $("#spid-"+spid+" button.sp-convert").prop('disabled', false);
+          }else{
+            $("#spid-"+spid+" span.badge").text(files[spid]["fobj"].length+"/"+files[spid]["fnlist"].length).removeClass("badge-success").addClass("alert-warning");
+          }
+
+          //console.log(spid,event,files);
+        }
+      }(n,file.name);
+      readers[file.name].readAsDataURL(file);
+    }
+  }
+});
+
+
+
+{% endblock %}
+{% block help %}
+you can drop files here...
+{% endblock %}

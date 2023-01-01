@@ -1,0 +1,162 @@
+<!doctype html>
+<title>OpenXCOM Mod Tester 0.1</title>
+<style type="text/css">
+<!--
+.warning {color:#9BA013;}
+.error {color:red;}
+.info {color:gray;}
+
+#animation{
+    background-image: url(static/units/x_rob.png);
+    background-repeat: no-repeat;
+    height: 56px;
+    width: 65px;
+    overflow:hidden;
+	background-position: 0px 0px;
+}
+
+-->
+</style>
+<script type="text/javascript">
+    function showoptions(a)
+{
+    if(a==1){
+    document.getElementById("errorlist").style.display="none";
+    document.getElementById("showb").style.display="block";
+
+    }else{
+    document.getElementById("errorlist").style.display="block";
+    document.getElementById("showb").style.display="none";
+    }
+    return false;
+}
+    function lshowoptions(a)
+{
+    if(a==1){
+    document.getElementById("langlist").style.display="none";
+    document.getElementById("lshowb").style.display="block";
+
+    }else{
+    document.getElementById("langlist").style.display="block";
+    document.getElementById("lshowb").style.display="none";
+    }
+    return false;
+}
+
+var frames = 4;
+
+var awidth=325;
+var aheight=456;
+function imgchange(arg){
+    awidth=parseInt(arg.split(",")[2]);
+    aheight=parseInt(arg.split(",")[2]);
+    frames=parseInt(arg.split(",")[3]);
+    e=document.getElementById("newgif");
+    e.src="static/units/"+arg.split(",")[0];
+    e=document.getElementById("animation");
+    e.style.backgroundImage = 'url(static/units/'+arg.split(",")[0]+')';
+    e=document.getElementById("drawtxt");
+    e.innerHTML="drawingRoutine: "+arg.split(",")[4];
+    document.getElementById('dr').value=arg.split(",")[4];
+    if(arg.split(",")[6].length>0){
+        e.innerHTML=e.innerHTML+'<br /> <a href="/static/units/'+arg.split(",")[6]+'.png">TEMPLATE</a> ';
+        document.getElementById('showform').style.display="block";
+    }else{
+        document.getElementById('showform').style.display="none";
+    }
+}
+
+var rpos=0;
+var walking=1;
+
+function wbutton() {
+    e=document.getElementById("wbutton")
+    if (walking==1)
+        e.innerHTML="walk";
+    else
+        e.innerHTML="stop";
+
+    walking=Math.abs(walking-1);
+    return false;
+}
+var frameHeight = 65;
+var frame = 0;
+onload = function startAnimation() {
+    var div = document.getElementById("animation");
+    setInterval(function () {
+        var frameOffset = (++frame % frames) * -frameHeight;
+        rpos=0
+        if (aheight>57){
+            for(i=0; i<document.theForm["direction"].length; i++)
+                if(document.theForm["direction"][i].checked == true)
+                    rpos=document.theForm["direction"][i].value;
+        }
+        if (walking==1){
+            div.style.backgroundPosition =  frameOffset-65 + "px" + " " + rpos*-57  + "px ";
+        }else{
+            div.style.backgroundPosition =  0 + "px" + " " + rpos*-57  + "px ";
+        }
+    }, 100);
+
+}
+
+</script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>OpenXcom-Sprite Maker</h1>
+      <form action="/gifcutter" name="theForm" method=post class=add-entry enctype="multipart/form-data">
+<table><tr><td><image src="static/units/x_rob.png" id="newgif" /></td><td>
+<select id="imgchoice" onchange="imgchange(this.value);return false;" >
+<option value="x_rob.png,325,456,4,5,0,temp5b" selected="selected" >x_rob</option>
+<option value="x_reap.png,325,456,4,5,0,temp5a">x_reap</option>
+<option value="tanksa.png,585,456,8,2,0,templ2">tanksa</option>
+<option value="tanksb.png,585,456,8,2,0,templ2">tanksb</option>
+<option value="cyber.png,585,456,8,3,0,temp3">cyber</option>
+<option value="tank01a.png,585,456,8,11,0,templ11">tank01a</option>
+<option value="tank01b.png,585,456,8,11,0,templ11">tank01b</option>
+<option value="triscen.png,325,456,4,19,0,templ19">triscen</option>
+<option value="xarquid.png,325,456,4,20,0,templ20">xarquid</option>
+<option value="hallucin.png,585,57,8,12,0,templ12">hallucin</option>
+<option value="silacoid.png,585,57,8,8,0,">silacoid</option>
+<option value="celatid.png,585,57,8,9,0,">celatid</option>
+<option value="civf.png,585,456,8,4,0,">civf</option>
+<option value="civm.png,585,456,8,4,0,">civm</option>
+<option value="ethereal.png,585,456,8,4,0,">ethereal</option>
+<option value="zombie.png,585,456,8,4,0,">zombie</option>
+<option value="biodron.png,585,57,8,15,0,">biodron</option>
+<option value="civil_1a.png,585,456,8,17,0,">civil_1a</option>
+<option value="civil_2a.png,585,456,8,17,0,">civil_2a</option>
+<option value="civil_1b.png,585,456,8,16,0,">civil_1b</option>
+<option value="civil_2b.png,585,456,8,16,0,">civil_2b</option>
+<option value="tftdzombie.png,585,456,8,16,0,">tftdzombie</option>
+<option value="tentac.png,130,456,1,18,0,">tentac</option>
+
+</select><br />
+
+<image  src="static/cut.png"  /><div style="font-size:60%" id=drawtxt>drawingRoutine: 5<br /> <a href="/static/units/temp5b.png">TEMPLATE</a> </div>
+<div id=showform style="border-style:solid;border-width:3px;border-color:red;"><input name=gfile type=file /><br /><input type=hidden id=dr name=dr value=5><input type=submit value=splitme></div>
+<ul >
+        <li ><input type="radio" name="direction" value="0"/>NE</li>
+        <li ><input type="radio" name="direction" value="1"/>E</li>
+        <li ><input type="radio" name="direction" checked="checked" value="2"/>SE</li>
+        <li ><input type="radio" name="direction" value="3"/>S</li>
+        <li ><input type="radio" name="direction" value="4"/>SW</li>
+        <li ><input type="radio" name="direction" value="5"/>W</li>
+        <li ><input type="radio" name="direction" value="6"/>NW</li>
+        <li ><input type="radio" name="direction" value="7"/>N</li>
+      </ul>
+
+      <dl>
+<button id="wbutton" onclick="walking=Math.abs(walking-1);document.getElementById('wbutton').innerHTML=['walk','stop'][walking]; return false;">stop</button>
+<div id="animation"></div>
+</td><!--<td><image src="static/cutme.gif" id="cutgif" /></td>//-->
+</tr></table>
+      </dl>
+    </form>
+
+  <div class=metanav>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</div>

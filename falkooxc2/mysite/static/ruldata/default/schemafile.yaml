@@ -1,0 +1,1488 @@
+#precheck = is yaml, double-map-keys, delete XOR type/id/name
+#apply T
+#datatype check, apply V
+#(mergewithvanilla), appply ML
+#connectioncheck, apply GL
+#stuff outside jsonschema
+#files?
+#output/fix, apply F
+#oxcD_DataforSchema
+#oxcT_DatatoTransformYAML2Schema
+#oxcV_DataforValidation
+#oxcML_DataforMergeLogic
+#oxcGL_DataforGameLogic
+#oxcF_DataforFormatting/Output
+#oxcML_mtype=[prop_add_or_rec,elem_add_or_rec,"replaceobject"]
+"$schema": "http://json-schema.org/draft-04/schema#"
+type: object
+additionalProperties: false
+oxcD_date: 2014-10-10
+oxcD_file: src/Ruleset/
+oxcML_mtype: {action: prop_add_or_rec}
+oxcT_properties:
+  - countries:          {type: array, items: { "$ref": "#/definitions/country" },         oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - regions:            {type: array, items: { "$ref": "#/definitions/region" },          oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - facilities:         {type: array, items: { "$ref": "#/definitions/facility" },        oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - crafts:             {type: array, items: { "$ref": "#/definitions/craft" },           oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - craftWeapons:       {type: array, items: { "$ref": "#/definitions/craftWeapon" },     oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - items:              {type: array, items: { "$ref": "#/definitions/item" },            oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - ufos:               {type: array, items: { "$ref": "#/definitions/ufo" },             oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - invs:               {type: array, items: { "$ref": "#/definitions/inv" },             oxcV_key: id,   oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - terrains:           {type: array, items: { "$ref": "#/definitions/terrain" },         oxcV_key: name, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - armors:             {type: array, items: { "$ref": "#/definitions/armor" },           oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - soldiers:           {type: array, items: { "$ref": "#/definitions/soldier" },         oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - units:              {type: array, items: { "$ref": "#/definitions/unit" },            oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - alienRaces:         {type: array, items: { "$ref": "#/definitions/alienRace" },       oxcV_key: id,   oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - alienDeployments:   {type: array, items: { "$ref": "#/definitions/alienDeployment" }, oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - research:           {type: array, items: { "$ref": "#/definitions/research" },        oxcV_key: name, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - manufacture:        {type: array, items: { "$ref": "#/definitions/manufacture" },     oxcV_key: name, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - alienFuel:          {type: string, oxcGL_lookupVal: [items, [], type ]}
+  - ufopaedia:          {type: array, items: { "$ref": "#/definitions/ufopaedia" },       oxcV_key: id,   oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - startingTime:       { "$ref": "#/definitions/GameTime" }
+  - startingBase:       { "$ref": "#/definitions/StartingBase" }
+  - costSoldier:        {type: integer}
+  - costEngineer:       {type: integer}
+  - costScientist:      {type: integer}
+  - timePersonnel:      {type: integer}
+  - initialFunding:     {type: integer}
+  - ufoTrajectories:    {type: array, items: { "$ref": "#/definitions/ufoTrajectory" },   oxcV_key: id,   oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - alienMissions:      {type: array, items: { "$ref": "#/definitions/alienMission" },    oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - alienItemLevels:    {type: array, items: {type: array, maxItems: 10, minItems: 10, items: {type: integer}}}
+  - extraSprites:       {type: array, items: { "$ref": "#/definitions/extraSprite" },     oxcV_key: type, oxcML_mtype: {action: nomerge}}  #merge of extrasprites handled in different function
+  - extraSounds:        {type: array, items: { "$ref": "#/definitions/extraSound" },      oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}}
+  - extraStrings:       {type: array, items: { "$ref": "#/definitions/extraString" },     oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}}
+  - statStrings:        {type: array, items: { "$ref": "#/definitions/statString" },   oxcML_mtype: {action: elem_add}}
+  - interfaces:         {type: array, items: { "$ref": "#/definitions/interface" },       oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - MCDPatches:         {type: array, items: { "$ref": "#/definitions/MCDPatch" },        oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}}
+  - soundDefs:          {type: array, items: { "$ref": "#/definitions/soundDef" },        oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - constants:          {type: array, items: { "$ref": "#/definitions/constant" }} #replace != mod list TODO merge?
+  - globe:              { "$ref": "#/definitions/Globe" }
+  - transparencyLUTs:   {type: array, items: { "$ref": "#/definitions/transparencyLUT" },   oxcML_mtype: {action: elem_add}}
+  - mapScripts:         {type: array, items: { "$ref": "#/definitions/mapScript" },       oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+  - cutscenes:          {type: array, items: { "$ref": "#/definitions/cutscene" },       oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}}
+  - musics:             {type: array, items: { "$ref": "#/definitions/music" },          oxcV_key: type, oxcML_mtype: {action: elem_add_or_rec}, oxcV_deletable: true}
+definitions:
+  oxcSTR:
+    type: string
+    pattern: "^[A-Z_][0-9A-Z_]*[0-9A-Z]$"
+  oxcString: #this allows more letters: lowerscase, ".", "-"
+    type: string
+    pattern: "^[A-Za-z_][0-9a-zA-Z_\\.-]*[0-9a-zA-Z]$"
+  oxcLon:
+    type: number
+    minimum: 0
+    maximum: 720
+  oxcLat:
+    type: number
+    minimum: -90
+    maximum: 90
+  oxcLOFT:
+    type: integer #0-111=ufo, 0-113=tftd not in yamlcode
+    minimum: 0
+    maximum: 113
+  area:
+    type: array
+    maxItems: 4
+    minItems: 4
+    items:
+      - {"$ref": "#/definitions/oxcLon"}
+      - {"$ref": "#/definitions/oxcLon"}
+      - {"$ref": "#/definitions/oxcLat"}
+      - {"$ref": "#/definitions/oxcLat"}
+      
+  country:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleCountry
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:        {"$ref": "#/definitions/oxcSTR", oxclang: true, oxcV_iskey: true}  
+      - fundingBase: {type: integer}
+      - fundingCap:  {type: integer}
+      - labelLon:    {"$ref": "#/definitions/oxcLon"}
+      - labelLat:    {"$ref": "#/definitions/oxcLat"}
+      - areas:       {type: array, items: {"$ref": "#/definitions/area"}}
+           
+  city:
+    type: object
+    required: [name, lon, lat]
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/City
+    oxcT_properties:
+      - name:   {type: string, oxclang: true} 
+      - lon:    {"$ref": "#/definitions/oxcLon"}
+      - lat:    {"$ref": "#/definitions/oxcLat"}
+      - zoom:   {type: integer, default: 3}
+  region:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleRegion
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:            {"$ref": "#/definitions/oxcSTR", oxclang: true,  oxcV_iskey: true}  
+      - cost:            {type: integer}
+      - labelLon:        {"$ref": "#/definitions/oxcLon"}
+      - labelLat:        {"$ref": "#/definitions/oxcLat"}
+      - areas:           {type: array, items: {"$ref": "#/definitions/area"}}
+      - cities:          {type: array, items: {"$ref": "#/definitions/city"}}
+      - missionRegion:   {type: string, oxcGL_lookupVal: [region, [], type ]}
+      - regionWeight:    {type: integer} 
+      - missionZones: 
+          type: array
+          items:           {type: array, items: {"$ref": "#/definitions/area"}}
+      - missionWeights:
+          type: object
+          oxcML_mtype: {action: prop_add_or_rec} # TODO test?
+          additionalProperties: false
+          patternProperties:
+            "^.+$" :       {type: integer, oxcGL_lookupKey: [alienMissions, [], type ]}
+  facility:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleBaseFacility
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:             {"$ref": "#/definitions/oxcSTR", oxclang: true,  oxcV_iskey: true}  
+      - requires:
+          type: array
+          items:            {type: string, oxcGL_lookupVal: [research, [], name ]}
+      - spriteShape:      {type: integer, default: -1, oxcML_fileaddmax: 33, oxcGL_refFileId: [["BASEBITS.PCK", 1, 0, 1]]}
+      - spriteFacility:   {type: integer, default: -1, oxcML_fileaddmax: 33, oxcGL_refFileId: [["BASEBITS.PCK", 1, 0, 1]]}
+      - lift:             {type: boolean}
+      - hyper:            {type: boolean}
+      - mind:             {type: boolean}
+      - grav:             {type: boolean}
+      - size:             {type: integer, default: 1}
+      - buildCost:        {type: integer}
+      - buildTime:        {type: integer}
+      - monthlyCost:      {type: integer}
+      - storage:          {type: integer}
+      - personnel:        {type: integer}
+      - aliens:           {type: integer}
+      - crafts:           {type: integer}
+      - labs:             {type: integer}
+      - workshops:        {type: integer}
+      - psiLabs:          {type: integer}
+      - radarRange:       {type: integer}
+      - radarChance:      {type: integer}
+      - defense:          {type: integer}
+      - hitRatio:         {type: integer}
+      - fireSound:        {type: integer}
+      - hitSound:         {type: integer}
+      - mapName:          {type: string} #TODO reference mapname in terrain?
+      - listOrder:        {type: integer}
+        
+        
+        
+  craft:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleCraft
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:                     {"$ref": "#/definitions/oxcSTR", oxclang: true,  oxcV_iskey: true}  
+      - requires:
+          type: array
+          items:                    {type: string, oxcGL_lookupVal: [research, [], name ]}
+      - sprite:                   {type: integer, default: -1, oxcML_fileaddmax: 4, oxcGL_refFileId: [["BASEBITS.PCK", 1, 33, 1],["INTICON.PCK", 1, 11, 1],["INTICON.PCK", 1, 0, 1]]}
+      - fuelMax:                  {type: integer}
+      - damageMax:                {type: integer}
+      - speedMax:                 {type: integer}
+      - accel:                    {type: integer}
+      - weapons:                  {type: integer}
+      - soldiers:                 {type: integer}
+      - vehicles:                 {type: integer}
+      - costBuy:                  {type: integer}
+      - costRent:                 {type: integer}
+      - costSell:                 {type: integer}
+      - refuelItem:               {type: string, oxcGL_lookupVal: [items, [], type ]}
+      - repairRate:               {type: integer, default: 1}
+      - refuelRate:               {type: integer, default: 1}
+      - radarRange:               {type: integer, default: 672}
+      - sightRange:               {type: integer, default: 1696}
+      - transferTime:             {type: integer}
+      - score:                    {type: integer}
+      - spacecraft:               {type: boolean}
+      - maxItems:                 {type: integer}
+      - listOrder:                {type: integer}
+      - battlescapeTerrainData:   {"$ref": "#/definitions/terrain" ,oxcT_makenomerge: true}
+      - deployment:
+          type: array
+          items:                    {type: array, maxItems: 4, minItems: 4, items: {type: integer}}
+    
+  craftWeapon:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleCraftWeapon
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:                 {"$ref": "#/definitions/oxcSTR", oxclang: true,  oxcV_iskey: true}  
+      - sprite:               {type: integer, default: -1, oxcML_fileaddmax: 5,  oxcGL_refFileId: [["BASEBITS.PCK", 1, 48, 1],["INTICON.PCK", 1, 5, 1]]}
+      - sound:                {type: integer, default: -1, oxcML_fileaddmax: 13, oxcGL_refFileId: [["GEO.CAT", 1, 0, 1]]}
+      - damage:               {type: integer}
+      - range:                {type: integer}
+      - accuracy:             {type: integer}
+      - reloadCautious:       {type: integer}
+      - reloadStandard:       {type: integer}
+      - reloadAggressive:     {type: integer}
+      - ammoMax:              {type: integer}
+      - rearmRate:            {type: integer, default: 1}
+      - projectileSpeed:      {type: integer, default: 1}
+      - launcher:             {type: string, oxcGL_lookupVal: [items, [], type ]}
+      - clip:                 {type: string, oxcGL_lookupVal: [items, [], type ]}
+      - projectileType:           
+          type: integer 
+          default: 2 
+          minimum: 0
+          maximum: 5
+          oxcF_enum:           
+            - CWPT_STINGRAY_MISSILE
+            - CWPT_AVALANCHE_MISSILE
+            - CWPT_CANNON_ROUND
+            - CWPT_FUSION_BALL
+            - CWPT_LASER_BEAM
+            - CWPT_PLASMA_BEAM
+  item:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-12-04
+    oxcD_file: src/Ruleset/RuleItem
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:                
+         "$ref": "#/definitions/oxcSTR"
+         oxclang: 
+           - [type, endswith, NOTBCORPSE , "_CORPSE_1"]
+           - [type, endswith, NOTBCORPSE , "_CORPSE_2"]
+           - [type, endswith, NOTBCORPSE , "_CORPSE_3"]
+           - [type, endswith, NOTBCORPSE , "_CORPSE_4"]
+           - [fixedWeapon, eq, false , true]
+           - [name, hasprop]
+         oxcV_iskey: true
+      - name:                   {type: string, oxclang: [[recover, eq, true, false]]}
+      - requires:
+          type: array
+          items:                  {type: string, oxcGL_lookupVal: [research, [], name ]}
+      - damageType: 
+          type: integer 
+          minimum: 0
+          maximum: 9
+          oxcF_enum:           
+            - DT_NONE
+            - DT_AP
+            - DT_IN
+            - DT_HE
+            - DT_LASER
+            - DT_PLASMA
+            - DT_STUN
+            - DT_MELEE
+            - DT_ACID
+            - DT_SMOKE
+      - battleType: 
+          type: integer 
+          minimum: 0
+          maximum: 11
+          oxcF_enum:           
+            - BT_NONE
+            - BT_FIREARM
+            - BT_AMMO
+            - BT_MELEE
+            - BT_GRENADE
+            - BT_PROXIMITYGRENADE
+            - BT_MEDIKIT
+            - BT_SCANNER
+            - BT_MINDPROBE
+            - BT_PSIAMP
+            - BT_FLARE
+            - BT_CORPSE
+      - size:                   {type: number}
+      - costBuy:                {type: integer}
+      - costSell:               {type: integer}
+      - transferTime:           {type: integer, default: 24}
+      - weight:                 {type: integer, default: 3, minimum: 1}#weight0=crash
+      - bigSprite:              {type: integer               , oxcML_fileaddmax: 56,  oxcGL_refFileId: [["BIGOBS.PCK", 1, 0, 1]]}
+      - floorSprite:            {type: integer, default: -1  , oxcML_fileaddmax: 72,  oxcGL_refFileId: [["FLOOROB.PCK", 1, 0, 1]]}
+      - handSprite:             {type: integer, default: 120 , oxcML_fileaddmax: 127, oxcGL_refFileId: [["HANDOB.PCK", 8, 0, 1]]}
+      - bulletSprite:           {type: integer, default: -1  , oxcML_fileaddmax: 11,  oxcGL_refFileId: [["Projectiles", 1, 0, 35]]}
+      - fireSound:              {type: integer, default: -1  , oxcML_fileaddmax: 54,  oxcGL_refFileId: [["BATTLE.CAT", 1, 0, 1]]}
+      - hitSound:               {type: integer, default: -1  , oxcML_fileaddmax: 54,  oxcGL_refFileId: [["BATTLE.CAT", 1, 0, 1]]}
+      - meleeSound:             {type: integer, default: 39  , oxcML_fileaddmax: 54,  oxcGL_refFileId: [["BATTLE.CAT", 1, 0, 1]]}
+      - hitAnimation:           {type: integer               , oxcML_fileaddmax: 55,  oxcGL_refFileId: [["SMOKE.PCK", 10, 0, 1]]}
+      - meleeAnimation:         {type: integer               , oxcML_fileaddmax: 3,   oxcGL_refFileId: [["HIT.PCK", 4, 0, 1]]}
+      - meleeHitSound:          {type: integer, default: -1  , oxcML_fileaddmax: 54,  oxcGL_refFileId: [["BATTLE.CAT", 1, 0, 1]]}
+      - power:                  {type: integer}
+      - compatibleAmmo: 
+          type: array
+          items:                  {type: string, oxcGL_lookupVal: [items, [], type ]}
+      - accuracyAuto:           {type: integer}
+      - accuracySnap:           {type: integer}
+      - accuracyAimed:          {type: integer}
+      - tuAuto:                 {type: integer}
+      - tuSnap:                 {type: integer}
+      - tuAimed:                {type: integer}
+      - clipSize:               {type: integer}
+      - accuracyMelee:          {type: integer}
+      - tuMelee:                {type: integer}
+      - twoHanded:              {type: boolean}
+      - waypoint:               {type: boolean}
+      - fixedWeapon:            {type: boolean}
+      - invWidth:               {type: integer, default: 1}
+      - invHeight:              {type: integer, default: 1}
+      - painKiller:             {type: integer}
+      - heal:                   {type: integer}
+      - stimulant:              {type: integer}
+      - woundRecovery:          {type: integer}
+      - healthRecovery:         {type: integer}
+      - stunRecovery:           {type: integer}
+      - energyRecovery:         {type: integer}
+      - tuUse:                  {type: integer}
+      - recoveryPoints:         {type: integer}
+      - armor:                  {type: integer, default: 20}
+      - turretType:             {type: integer, default: -1}
+      - recover:                {type: boolean, default: true}
+      - liveAlien:              {type: boolean}
+      - blastRadius:            {type: integer, default: -1}
+      - attraction:             {type: integer}
+      - flatRate:               {type: boolean}
+      - arcingShot:             {type: boolean}
+      - listOrder:              {type: integer}
+      - maxRange:               {type: integer, default: 200}
+      - aimRange:               {type: integer, default: 200}
+      - snapRange:              {type: integer, default: 15}
+      - autoRange:              {type: integer, default: 7}
+      - minRange:               {type: integer}
+      - dropoff:                {type: integer, default: 2}
+      - bulletSpeed:            {type: integer}
+      - explosionSpeed:         {type: integer}
+      - autoShots:              {type: integer, default: 3}
+      - shotgunPellets:         {type: integer, default: 0}
+      - zombieUnit:             {type: string, oxcGL_lookupVal: [units, [], type ]}
+      - strengthApplied:        {type: boolean}
+      - skillApplied:           {type: boolean, default: true}
+      - LOSRequired:            {type: boolean}
+      - underwaterOnly:         {type: boolean}
+      - meleePower:             {type: integer}
+      - specialType: 
+          type: integer 
+          minimum: -1
+          maximum: 11
+          oxcF_enum:           
+            - ST_DEFAULT
+            - ST_UNUSED
+            - ST_UNUSED
+            - STR_UFO_POWER_SOURCE
+            - STR_UFO_NAVIGATION
+            - STR_UFO_CONSTRUCTION
+            - STR_ALIEN_FOOD
+            - STR_ALIEN_REPRODUCTION
+            - STR_ALIEN_ENTERTAINMENT
+            - STR_ALIEN_SURGERY
+            - STR_EXAMINATION_ROOM
+            - STR_ALIEN_ALLOYS
+            - STR_ALIEN_HABITAT
+          default: -1
+      - vaporColor:             {type: integer, default: -1}
+      - vaporDensity:           {type: integer}
+      - vaporProbability:       {type: integer, default: 15}
+  ufo:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleUfo
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:                       {type: string, oxcGL_lookupVal: [alienDeployments, [], type ],  oxcV_iskey: true}  
+      - size:                       {type: string, default: "STR_VERY_SMALL", oxclang: true}
+      - sprite:                     {type: integer, default: -1}
+      - damageMax:                  {type: integer}
+      - speedMax:                   {type: integer}
+      - accel:                      {type: integer}
+      - power:                      {type: integer}
+      - range:                      {type: integer}
+      - score:                      {type: integer}
+      - reload:                     {type: integer}
+      - breakOffTime:               {type: integer}
+      - sightRange:                 {type: integer, default: 268}
+      - modSprite:                  {type: string}#XXX
+      - battlescapeTerrainData:     {"$ref": "#/definitions/terrain" ,oxcT_makenomerge: true}
+      
+  inv:
+    type: object
+    required: [id]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleInventory
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - id:                  {type: string, oxcV_iskey: true, oxclang: true}
+      - x:                   {type: integer}
+      - y:                   {type: integer}
+      - type: 
+          type: integer 
+          minimum: 0
+          maximum: 2
+          oxcF_enum:           
+            - INV_SLOT
+            - INV_HAND
+            - INV_GROUND
+      - slots:
+          type: array
+          items:
+            type: array
+            items: [ {type: integer}, {type: integer} ]
+            minItems: 2
+            maxItems: 2
+      - costs:
+          type: object
+          additionalProperties: false      
+          patternProperties:
+            "^.+$" : {type:  integer, oxcGL_lookupKey: [invs, [], id ] }
+      - listOrder: {type: integer}
+##mapscript makes mapBlockTypes obsolete
+#  mapBlockTypes:
+#    type: integer
+#    minimum: -1 
+#    #TODO remove UNDEFINED for error ?
+#    maximum: 4
+#    oxcF_enum:           
+#      - MT_UNDEFINED
+#      - MT_DEFAULT
+#      - MT_LANDINGZONE
+#      - MT_EWROAD
+#      - MT_NSROAD
+#      - MT_CROSSING
+#      #mapscript makes the 4 here obsolete
+##      - MT_DIRT
+##      - MT_XCOMSPAWN
+##      - MT_UBASECOMM
+##      - MT_FINALCOMM
+  mapblock:
+    type: object
+    required: [name] #TODO +width/length ? 
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/MapBlock
+    oxcT_properties:
+      - name:           {"$ref": "#/definitions/oxcSTR"}  
+      - width:          {type: integer, default: 10, multipleOf: 10, minimum: 10} 
+      - length:         {type: integer, default: 10, multipleOf: 10, minimum: 10} 
+      - height:         {type: integer, default: 4}
+      #mapscript makes the 4 here obsolete
+      #- type:           {"$ref": "#/definitions/mapBlockTypes", default: -1}
+      #- subType:        {"$ref": "#/definitions/mapBlockTypes", default: -1}
+      #- frequency:      {type: integer, default: -1}
+      #- maxCount:       {type: integer, default: -1}
+      - groups:
+          oneOf:
+            - {type: integer, minimum: 0}
+            - {type: array, minItems: 1, items: {type: integer, minimum: 0}}
+      - revealedFloors:
+          oneOf:
+            - {type: integer}
+            - {type: array, minItems: 1, items: {type: integer}} #TODO wiki explanation
+      - items: 
+          type: object
+#          additionalProperties: 
+          additionalProperties: false      
+          patternProperties:
+            "^((?!__internal_line_number__).)*$": #weird regexp needed because __internal_line_number__ is int and not an array
+#            "^.+$" :
+              type: array
+              items:
+                type: array
+                minItems: 3
+                maxItems: 3
+                items:
+                  - {type: integer} 
+                  - {type: integer} 
+                  - {type: integer} 
+              oxcGL_lookupKey: [items, [1], type ]
+  terrain:
+    type: object
+    required: [name] 
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-09-30
+    oxcD_file: src/Ruleset/RuleTerrain
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - name:              {"$ref": "#/definitions/oxcSTR",  oxcV_iskey: true}  
+      #- largeBlockLimit:   {type: integer}
+      - textures:          {type: array,  items: {type: integer}}
+      - hemisphere:        
+          type: integer 
+          minimum: -1
+          maximum: 1
+          oxcF_enum:           
+            - HEM_NORTH
+            - HEM_BOTH
+            - HEM_SOUTH
+      #- roadTypeOdds:      {type: array,  items: {type: integer},  minItems: 2, maxItems: 2}
+      #- ufoPositions:      {type: array,  items: {type: integer},  minItems: 4, maxItems: 4}
+      #- craftPositions:    {type: array,  items: {type: integer},  minItems: 4, maxItems: 4}
+      - minDepth:          {type: integer}
+      - maxDepth:          {type: integer}
+      - ambience:          {type: integer, default: -1}
+      - civilianTypes:     {type: array,  items: {type: string, oxcGL_lookupVal: [units, [], type ]}, default: [MALE_CIVILIAN,FEMALE_CIVILIAN]}
+      - mapDataSets:       {type: array,  items: {type: string}} #MCD/MAP name re check?
+      - mapBlocks:         {type: array, items: {"$ref": "#/definitions/mapblock"}}
+      - script:            {type: string, oxcGL_lookupVal: [mapScripts, [], type ]}
+  stats:
+    type: object
+    additionalProperties: false
+    oxcD_date: 2014-08-30
+    oxcD_file: src/Ruleset/Unit
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:    
+      - tu:          {type: integer}
+      - stamina:     {type: integer}
+      - health:      {type: integer}
+      - bravery:     {type: integer}
+      - reactions:   {type: integer}
+      - firing:      {type: integer}
+      - throwing:    {type: integer}
+      - strength:    {type: integer}
+      - psiStrength: {type: integer}
+      - psiSkill:    {type: integer}
+      - melee:       {type: integer}
+  armor:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-12-04
+    oxcD_file: src/Ruleset/Armor
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcGL_lookupArmorInv: [extraSprites, [], type ,spriteInv]
+    oxcT_properties:
+      - type:                {"$ref": "#/definitions/oxcSTR", oxcV_iskey: true}  
+      - spriteSheet:         {type: string, oxcGL_lookupVal: [extraSprites, [], type ]}
+      - spriteInv:           {type: string}#XXX
+      #TODO corpseItem deprecated
+      - corpseBattle:        {type: array, items: {type: string, oxcGL_lookupVal: [items, [], type ]}}
+      - corpseGeo:           {type: string, oxcGL_lookupVal: [items, [], type ]}
+      - storeItem:           {type: string, oxcGL_lookupVal: [items, [], type ]}
+      - specialWeapon:       {type: string, oxcGL_lookupVal: [items, [], type ]}
+      - frontArmor:          {type: integer}
+      - sideArmor:           {type: integer}
+      - rearArmor:           {type: integer}
+      - underArmor:          {type: integer}
+      - drawingRoutine:      #{type: integer, minimum: 0, maximum: 21} #TODO 0-21 is in unitsprite not yaml-load still checken?
+          type: integer 
+          minimum: 0
+          maximum: 21
+          oxcF_enum:           
+            - DRAW_XCOM_EU_SOLDIER_AND_SECTOIDS
+            - DRAW_FLOATERS
+            - DRAW_XCOM_EU_TANK
+            - DRAW_CYBERDISK
+            - DRAW_CIVILIANS_ETHEREALS_ZOMBIES
+            - DRAW_SECTOPODS_REAPERS
+            - DRAW_SNAKEMEN
+            - DRAW_CHRYSSALID
+            - DRAW_SILACOIDS
+            - DRAW_CELATIDS
+            - DRAW_MUTONS
+            - DRAW_XCOM_TFTD_TANK
+            - DRAW_HALLUCINOIDS
+            - DRAW_XCOM_AQUANAUTS
+            - DRAW_CALCINITES_DEEP_ONES_GILL_MEN_LOBSTER_MEN_TASOTHS
+            - DRAW_AQUATOIDS
+            - DRAW_BIODRONES
+            - DRAW_TFTD_CIVILIANS_VER1_TFTD_ZOMBIES
+            - DRAW_TFTD_CIVILIANS_VER2
+            - DRAW_TENTACULATS
+            - DRAW_TRISCENES
+            - DRAW_XARQUIDS
+      - size:                {type: integer, default: 1}
+      - weight:              {type: integer}
+      #TODO loftemps deprecated
+      - loftempsSet: 
+          oneOf:
+            - {type: array, minItems: 1, maxItems: 1, items: {"$ref": "#/definitions/oxcLOFT"}}#TODO no 3x3 units possible? 
+            - {type: array, minItems: 4, maxItems: 4, items: {"$ref": "#/definitions/oxcLOFT"}}
+      - deathFrames:         {type: integer, default: 3}
+      - constantAnimation:   {type: boolean}
+      - forcedTorso:
+          type: integer 
+          minimum: 0
+          maximum: 2
+          oxcF_enum:           
+            - TORSO_USE_GENDER
+            - TORSO_ALWAYS_MALE
+            - TORSO_ALWAYS_FEMALE
+      - stats:               {"$ref": "#/definitions/stats"} 
+      - damageModifier:      {type: array, minItems: 10, maxItems: 10, items: {type: number}, oxcF_expandnumlist: true}
+      - movementType:
+          type: integer 
+          minimum: 0
+          maximum: 3
+          oxcF_enum:           
+            - MT_WALK
+            - MT_FLY
+            - MT_SLIDE
+            - MT_FLOAT
+  soldier:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleSoldier
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:        {"$ref": "#/definitions/oxcSTR", oxcV_iskey: true}      
+      - armor:       {type: string, oxcGL_lookupVal: [armors, [], type ]}
+      - standHeight: {type: integer}
+      - kneelHeight: {type: integer}
+      - floatHeight: {type: integer}
+      - femaleFrequency: {type: integer, default: 50}
+      - minStats:    {"$ref": "#/definitions/stats"} 
+      - maxStats:    {"$ref": "#/definitions/stats"} 
+      - statCaps:    {"$ref": "#/definitions/stats"} 
+  unit:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-09-10
+    oxcD_file: src/Ruleset/Unit
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:                {"$ref": "#/definitions/oxcSTR", oxclang: [[type, endswith, NOTCIVILIAN, "_CIVILIAN"]],  oxcV_iskey: true, oxcGL_lookupVal: [items, [], type ]}      
+      - race:                {type: string}#TODO ref/lang/relevant?
+      - rank:                {type: string}#TODO check for 8 ranks - ref/lang/relevant? 
+      - stats:               {"$ref": "#/definitions/stats"} 
+      - armor:               {type: string, oxcGL_lookupVal: [armors, [], type ]}
+      - standHeight:         {type: integer, minimum: 1, maximum: 24}
+      - kneelHeight:         {type: integer, minimum: 1, maximum: 24}
+      - floatHeight:         {type: integer, minimum: 1, maximum: 24}
+      - value:               {type: integer}
+      - intelligence:        {type: integer}
+      - aggression:          {type: integer}
+      - energyRecovery:      {type: integer, default: 30}
+      - specab: 
+          type: integer 
+          minimum: 0
+          maximum: 3
+          oxcF_enum:           
+            - SPECAB_NONE
+            - SPECAB_EXPLODEONDEATH
+            - SPECAB_BURNFLOOR
+#            - SPECAB_RESPAWN 
+            - SPECAB_BURN_AND_EXPLODE
+      - spawnUnit:           {type: string, oxcGL_lookupVal: [units, [], type ]}
+      - livingWeapon:        {type: boolean}
+      - meleeWeapon:         {type: string, oxcGL_lookupVal: [items, [], type ]}  
+      - builtInWeapons:      {type: array, items: {type: string, oxcGL_lookupVal: [items, [], type ]}}
+      - deathSound:          {type: integer             , oxcML_fileaddmax: 54, oxcGL_refFileId: [["BATTLE.CAT", 1, 0, 1]]}
+      - aggroSound:          {type: integer, default: -1, oxcML_fileaddmax: 54, oxcGL_refFileId: [["BATTLE.CAT", 1, 0, 1]]}
+      - moveSound:           {type: integer, default: -1, oxcML_fileaddmax: 54, oxcGL_refFileId: [["BATTLE.CAT", 1, 0, 1]]}
+      - female:              {type: boolean}
+      
+  alienRace:
+    type: object
+    required: [id]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/AlienRace
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - id:             {"$ref": "#/definitions/oxcSTR", oxclang: true,  oxcV_iskey: true}      
+      - retaliation:    {type: boolean, default: true}
+      - members:        
+          type: array
+          minItems: 8
+          maxItems: 8
+          items:          {type: string, oxcGL_lookupVal: [units, [], type ]}
+  deploymentData:
+    type: object
+    #required: [] #TODO wgats required all?
+    additionalProperties: false
+    oxcD_date: 2014-12-04
+    oxcD_file: src/Ruleset/AlienDeployment
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - alienRank:              {type: integer}
+      - lowQty:                 {type: integer}
+      - highQty:                {type: integer}
+      - dQty:                   {type: integer}
+      - extraQty:               {type: integer}
+      - percentageOutsideUfo:   {type: integer}
+      - itemSets: 
+          type: array
+          minItems: 3 #TODO use for less than 3?
+          items:
+            type: array
+            items:                {type: string, oxcGL_lookupVal: [items, [], type ]}
+  briefingData:
+    type: object
+    #required: [] #TODO wgats required all?
+    additionalProperties: false
+    oxcD_date: 2014-12-04
+    oxcD_file: src/Ruleset/AlienDeployment
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - palette:      {type: integer}
+      - textOffset:   {type: integer}
+      - music:        {type: string}
+      - background:   {type: string}
+      - showCraft:    {type: boolean}
+      - showTarget:   {type: boolean}
+  alienDeployment:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-12-04
+    oxcD_file: src/Ruleset/AlienDeployment
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:             {"$ref": "#/definitions/oxcSTR", oxclang: true,  oxcV_iskey: true}      
+      - width:          {type: integer}
+      - length:         {type: integer}
+      - height:         {type: integer}
+      - civilians:      {type: integer}
+      - data: 
+          type: array
+          items:          {"$ref": "#/definitions/deploymentData"}
+      - terrains: 
+          type: array
+          items:          {type: string, oxcGL_lookupVal: [terrains, [], name ]}
+      - shade:            {type: integer, default: -1}
+      - nextStage:        {type: string}#XXX
+      - noRetreat:        {type: boolean}
+      - finalDestination: {type: boolean}
+      - finalMission:     {type: boolean}
+      - race:             {type: string, oxcGL_lookupVal: [alienRaces, [], id ]}
+      - script:           {type: string, oxcGL_lookupVal: [mapScripts, [], type ]}
+      - briefing:         {"$ref": "#/definitions/briefingData"}
+    
+  research:
+    type: object
+    required: [name]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleResearch
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - name:             {"$ref": "#/definitions/oxcSTR", oxclang: [[cost, eq, 0, 0]],  oxcV_iskey: true}      
+      - lookup:           {type: string, oxcGL_lookupVal: [research, [], name ]}
+      - cost:             {type: integer}
+      - points:           {type: integer}
+      - dependencies:     {type: array, items: {type: string, oxcGL_lookupVal: [research, [], name ]}}
+      - unlocks:          {type: array, items: {type: string, oxcGL_lookupVal: [research, [], name ]}}
+      - getOneFree:       {type: array, items: {type: string, oxcGL_lookupVal: [research, [], name ]}}
+      - requires:         {type: array, items: {type: string, oxcGL_lookupVal: [research, [], name ]}}
+      - needItem:         {type: boolean}
+      - listOrder:        {type: integer}
+  manufacture:
+    type: object
+    required: [name]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleManufacture
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - name:             {"$ref": "#/definitions/oxcSTR", oxclang: true,  oxcV_iskey: true}      
+      - category:          {type: string, oxclang: true}
+      - requires:
+          type: array
+          items:             {type: string, oxcGL_lookupVal: [research, [], name ]}
+      - space:             {type: integer}
+      - time:              {type: integer}
+      - cost:              {type: integer}
+      - requiredItems:
+          type: object
+          additionalProperties: false      
+          patternProperties:
+            "^.+$" : {type:  integer, oxcGL_lookupKey: [items, [2], type ] }
+      - producedItems: #TODO can you produce multiple/diferent crafts (+items) with one manufacture step - different/multiple lookups?
+          type: object
+          additionalProperties: false      
+          patternProperties:
+            "^.+$" : 
+              {type:  integer, oxcGL_lookupKey: [items, [3], type ] }
+      - listOrder:         {type: integer}
+  ArticleDefinitionRect:
+    type: object
+    #required: [id]#TODO all required?
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/ArticleDefinition
+    oxcT_properties:
+      - x:      {type: integer}
+      - y:      {type: integer}
+      - width:  {type: integer}
+      - height: {type: integer}
+  ufopaedia:
+    type: object
+    required: [id, type_id]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/ArticleDefinition
+    oxcML_mtype: {action: prop_add_or_rec} #TODO test
+    oxcT_properties:
+      - id:           {"$ref": "#/definitions/oxcSTR", oxclang: true,  oxcV_iskey: true}      
+      - type_id: 
+          type: integer 
+          minimum: 0
+          maximum: 17
+          oxcF_enum:           
+            - UFOPAEDIA_TYPE_UNKNOWN
+            - UFOPAEDIA_TYPE_CRAFT
+            - UFOPAEDIA_TYPE_CRAFT_WEAPON
+            - UFOPAEDIA_TYPE_VEHICLE
+            - UFOPAEDIA_TYPE_ITEM
+            - UFOPAEDIA_TYPE_ARMOR
+            - UFOPAEDIA_TYPE_BASE_FACILITY
+            - UFOPAEDIA_TYPE_TEXTIMAGE
+            - UFOPAEDIA_TYPE_TEXT
+            - UFOPAEDIA_TYPE_UFO
+            - UFOPAEDIA_TYPE_TFTD
+            - UFOPAEDIA_TYPE_TFTD_CRAFT
+            - UFOPAEDIA_TYPE_TFTD_CRAFT_WEAPON
+            - UFOPAEDIA_TYPE_TFTD_VEHICLE
+            - UFOPAEDIA_TYPE_TFTD_ITEM
+            - UFOPAEDIA_TYPE_TFTD_ARMOR
+            - UFOPAEDIA_TYPE_TFTD_BASE_FACILITY
+            - UFOPAEDIA_TYPE_TFTD_USO
+      - section:
+          type: string
+          enum:
+            - STR_XCOM_CRAFT_ARMAMENT
+            - STR_HEAVY_WEAPONS_PLATFORMS
+            - STR_WEAPONS_AND_EQUIPMENT
+            - STR_ALIEN_ARTIFACTS
+            - STR_BASE_FACILITIES
+            - STR_ALIEN_LIFE_FORMS
+            - STR_ALIEN_RESEARCH_UC
+            - STR_UFO_COMPONENTS
+            - STR_UFOS
+            - STR_NOT_AVAILABLE
+      - requires:
+          type: array
+          items:      {type: string, oxcGL_lookupVal: [research, [], name ]}
+      - title:        {type: string, oxclang: true}
+      #TODO weird - only some of the properties are used dependfing on type_id testing in json schema is complex and currently not done+tftd not clear what goes where
+      - image_id:     {type: string} #craft,craftweapon,textimage,tftd #XXX
+      - rect_stats:   {"$ref": "#/definitions/ArticleDefinitionRect"} #craft
+      - rect_text:    {"$ref": "#/definitions/ArticleDefinitionRect"} #craft
+      - text:         {type: string, oxclang: true} #all
+      - text_width:   {type: integer, default: 150} #textimage,tftd
+      - weapon:       {type: string, oxclang: true} #vehicle 
+      - listOrder:    {type: integer}
+  
+  GameTime:
+    type: object
+    required: [second, minute, hour, weekday, day, month, year]
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Savegame/GameTime
+    oxcT_properties:
+      - second:    {type: integer}
+      - minute:    {type: integer}
+      - hour:      {type: integer}
+      - weekday:   {type: integer}
+      - day:       {type: integer}
+      - month:     {type: integer}
+      - year:      {type: integer}
+      
+  
+  BaseFacility:
+    type: object
+    required: [x,y]
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Savegame/BaseFacility
+    oxcT_properties:
+      - type:       {type: string, oxcGL_lookupVal: [facilities, [], type ]}
+      - x:          {type: integer}
+      - y:          {type: integer}
+      - buildTime:  {type: integer}
+  RealCraftWeapon:
+    type: object
+    required: [type]#TODO ammo needed?
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Savegame/CraftWeapon
+    oxcT_properties:
+      - type:      {type: string, oxcGL_lookupVal: [craftWeapons, [], type ]}
+      - ammo:      {type: integer}
+      - rearming:  {type: boolean}
+      
+  RealCraft:
+    type: object
+    required: [type,id]# TODO more needed?
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Savegame/Craft
+    oxcT_properties:
+      - type:             {type: string, oxcGL_lookupVal: [crafts, [], type ]}
+      - id:               {type: integer}
+      - fuel:             {type: integer}
+      - damage:           {type: integer}
+      - status:           {type: string, oxclang: true}
+      - items:            {"$ref": "#/definitions/ItemContainer"}
+      - weapons:          {type: array, items: {"$ref": "#/definitions/RealCraftWeapon"}}
+      #TODO other stuff possible?
+      #lowFuel: {type: boolean}
+      #mission: {type: boolean}
+      #interceptionOrder: {type: integer}
+      #name: {type: string}
+      #takeoff: {type: integer}
+      #inBattlescape: {type: boolean}
+      #[vehicles]
+      #destination
+  ItemContainer: #trivial map but its used multiple times
+    type: object
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Savegame/ItemContainer
+    patternProperties:
+      "^.+$" :        {type: integer, oxcGL_lookupKey: [items, [4], type ]}
+  
+  StartingBase: #TODO code allows for more option like name,soldiers,transfers,research,productions,retaliationTarget,inBattlescape (see save?)
+    type: object
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Savegame/Base
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - scientists:       {type: integer}
+      - engineers:        {type: integer}
+      - randomSoldiers:   {type: integer}
+      - facilities:       {type: array, items: {"$ref": "#/definitions/BaseFacility"}}
+      - items:            {"$ref": "#/definitions/ItemContainer"}
+      - crafts:           {type: array, items: {"$ref": "#/definitions/RealCraft"}}
+        
+  ufoTrajectory:
+    type: object
+    required: [id]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/UfoTrajectory
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - id:             {"$ref": "#/definitions/oxcSTR", oxcV_iskey: true}      
+      - groundTimer:    {type: integer, default: 5}
+      - waypoints: #zone altitude,speed
+          type: array
+          items:
+            type: array
+            maxItems: 3
+            minItems: 3
+            items:
+              - {type: integer}
+              - type: integer 
+                minimum: 0
+                maximum: 4
+                oxcF_enum:           
+                  - STR_GROUND
+                  - STR_VERY_LOW
+                  - STR_LOW_UC
+                  - STR_HIGH_UC
+                  - STR_VERY_HIGH
+              - {type: integer}
+  
+  MissionWave:
+    type: object
+    #required: [type]#all required?
+    additionalProperties: false
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleAlienMission
+    oxcT_properties:
+      - ufo:          {type: string, oxcGL_lookupVal: [ufos, [], type ] }
+      - count:        {type: integer}
+      - trajectory:   {type: string, oxcGL_lookupVal: [ufoTrajectories, [], id ] }
+      - timer:        {type: integer}
+    
+  alienMission:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleAlienMission
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:             {"$ref": "#/definitions/oxcSTR", oxclang: true, oxcV_iskey: true}      
+      - points:           {type: integer}
+      - waves:            {type: array, items: {"$ref": "#/definitions/MissionWave"}}
+      - raceWeights: 
+          type: object
+          oxcML_mtype: {action: prop_add_or_rec} # TODO test?
+          additionalProperties: #TODO check for integer in key patternProperties-regex does not work on numbers
+            type: object
+            oxcML_mtype: {action: prop_add_or_rec} # TODO test?
+            additionalProperties: false      
+            patternProperties:
+              "^.+$" :      {type:  integer, oxcGL_lookupKey: [alienRaces, [], id ] }
+              
+  extraSprite:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/ExtraSprites    
+    #oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:         {"$ref": "#/definitions/oxcString", oxcV_iskey: true} 
+      - width:        {type: integer, default: 320}
+      - height:       {type: integer, default: 200}
+      - singleImage:  {type: boolean}
+      - subX:         {type: integer}
+      - subY:         {type: integer}
+      - files: #TODO mergeoptions
+          type: object
+          oxcML_mtype: {action: prop_add_or_rec, inc_key: true}
+          additionalProperties: {type:  string} #TODO check for integer in key patternProperties-regex does not work on numbers, check file extension?
+  extraSound:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/ExtraSounds
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:                   {"$ref": "#/definitions/oxcString", oxcV_iskey: true} 
+      - files: #TODO mergeoptions
+          type: object
+          oxcML_mtype: {action: prop_add_or_rec, inc_key: true,}
+          additionalProperties: {type:  string} #TODO check for integer in key patternProperties-regex does not work on numbers, check file extension?
+  extraString:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/ExtraStrings
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:         {"$ref": "#/definitions/oxcString", oxcV_iskey: true} 
+      - strings: #TODO mergeoptions
+          type: object
+          oxcML_mtype: {action: prop_add_or_rec}
+          additionalProperties: false
+          patternProperties:
+            "^[A-Z_][0-9A-Z_]*[0-9A-Z_]$" :      {type:  string} #TODO only allow UPPERCASE_0-9 letters (oxcSTR) in keys?
+  
+  statcondition:    
+    type: array
+    maxItems: 2
+    minItems: 2
+    items: 
+      oneOf:
+        - {type: integer}
+        - {type: "null"}
+  statString:
+    type: object
+    required: [string]
+    additionalProperties: false    
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/StatString
+    #oxcML_mtype: {action: prop_add_or_rec} # TODO test
+    oxcT_properties:
+      - string:        {type: string} 
+      - psiStrength:   {"$ref": "#/definitions/statcondition"}
+      - psiSkill:      {"$ref": "#/definitions/statcondition"}
+      - bravery:       {"$ref": "#/definitions/statcondition"}
+      - strength:      {"$ref": "#/definitions/statcondition"}
+      - firing:        {"$ref": "#/definitions/statcondition"}
+      - reactions:     {"$ref": "#/definitions/statcondition"}
+      - stamina:       {"$ref": "#/definitions/statcondition"}
+      - tu:            {"$ref": "#/definitions/statcondition"}
+      - health:        {"$ref": "#/definitions/statcondition"}
+      - throwing:      {"$ref": "#/definitions/statcondition"}
+  InterfaceElement:
+    type: object
+    required: [id] 
+    additionalProperties: false    
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleInterface
+    oxcT_properties:
+      - id:         {"$ref": "#/definitions/oxcString"} 
+      - size:       {type: array, maxItems: 2, minItems: 2, items: {type: integer}}
+      - pos:        {type: array, maxItems: 2, minItems: 2, items: {type: integer}}
+      - color:      {type: integer, default: 32767}
+      - color2:     {type: integer, default: 32767}
+      - border:     {type: integer, default: 32767}
+      - TFTDMode:   {type: boolean}
+  interface:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/RuleInterface
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:         {"$ref": "#/definitions/oxcString", oxcV_iskey: true} 
+      - elements:     {type: array, items: {"$ref": "#/definitions/InterfaceElement"}}
+  MCDPatchData:
+    type: object
+    required: [MCDIndex]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-10-20
+    oxcD_file: src/Ruleset/MCDPatch    
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - MCDIndex:       {type: integer}
+      - bigWall:        {type: integer}
+      - TUWalk:         {type: integer}
+      - TUFly:          {type: integer}
+      - TUSlide:        {type: integer}
+      - deathTile:      {type: integer}
+      - terrainHeight:  {type: integer}
+      - specialType:    {type: integer}
+      - explosive:      {type: integer}
+      - armor:          {type: integer}
+      - flammability:   {type: integer}
+      - fuel:           {type: integer}
+      - footstepSounds: {type: integer}
+      - HEBlock:        {type: integer}
+      - noFloor:        {type: boolean}
+      - LOFTS:          {type: array, maxItems: 12, minItems: 12 , items: {"$ref": "#/definitions/oxcLOFT"}}
+      - stopLOS:        {type: boolean}
+  MCDPatch:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-23
+    oxcD_file: src/Ruleset/MCDPatch
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:     {"$ref": "#/definitions/oxcSTR", oxcV_iskey: true} 
+      - data:     {type: array, items: {"$ref": "#/definitions/MCDPatchData"}, oxcV_key: MCDIndex, oxcML_mtype: {action: elem_add_or_rec}}
+  constant:
+    type: object
+    additionalProperties: false
+    #minProperties: 1 #TODO the example is one property per list entry but code shows no need for that
+    #maxProperties: 1    
+    oxcD_date: 2014-10-10
+    oxcD_file: src/Ruleset/Ruleset
+    #oxcML_mtype: {action: prop_add_or_rec} # TODO test
+    oxcT_properties:
+      - doorSound:             {type: integer, default: 3}
+      - slidingDoorSound:      {type: integer, default: 20}
+      - slidingDoorClose:      {type: integer, default: 21}
+      - smallExplosion:        {type: integer, default: 2}
+      - largeExplosion:        {type: integer, default: 5}
+      - explosionOffset:       {type: integer, default: 0}
+      - smokeOffset:           {type: integer, default: 8}
+      - underwaterSmokeOffset: {type: integer, default: 0}
+      - itemDrop:              {type: integer, default: 38}
+      - itemThrow:             {type: integer, default: 39}
+      - itemReload:            {type: integer, default: 17}
+      - walkOffset:            {type: integer, default: 22}
+      - flyingSound:           {type: integer, default: 15}
+      - maleScream:           
+          type: array
+          maxItems: 3
+          minItems: 3
+          items: 
+            - {type: integer, default: 41}
+            - {type: integer, default: 42}
+            - {type: integer, default: 43}
+      - femaleScream:         
+          type: array
+          maxItems: 3
+          minItems: 3
+          items: 
+            - {type: integer, default: 44}
+            - {type: integer, default: 45}
+            - {type: integer, default: 46}
+      - windowPopup:          
+          type: array
+          maxItems: 3
+          minItems: 3
+          items: 
+            - {type: integer, default: 1}
+            - {type: integer, default: 2}
+            - {type: integer, default: 3}
+      - buttonPress:           {type: integer, default: 0}
+      - ufoFire:               {type: integer, default: 8}
+      - ufoHit:                {type: integer, default: 12}
+      - ufoCrash:              {type: integer, default: 10}
+      - ufoExplode:            {type: integer, default: 11}
+      - intterceptorHit:       {type: integer, default: 10}
+      - interceptorExplode:    {type: integer, default: 13}
+      - geoscapeCursor:        {type: integer, default: 252}
+      - basescapeCursor:       {type: integer, default: 252}
+      - battlescapeCursor:     {type: integer, default: 144}
+      - ufopaediaCursor:       {type: integer, default: 252}
+      - graphsCursor:          {type: integer, default: 252}
+  soundDef:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2014-08-30
+    oxcD_file: src/Ruleset/SoundDefinition
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:           {"$ref": "#/definitions/oxcString", oxcV_iskey: true} 
+      - soundRanges:
+          type: array
+          items:          {type: array, maxItems: 2, minItems: 2 , items: {type: integer}}
+      - sounds:         {type: array,  items: {type: integer}}
+      - file:           {type: string}
+  Globe: #TODO mergeoptions
+    type: object
+    additionalProperties: false
+    oxcD_date: 2014-08-30
+    oxcD_file: src/Ruleset/RuleGlobe
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - countryColor:   {type: integer, default: 239} 
+      - cityColor:      {type: integer, default: 138} 
+      - baseColor:      {type: integer, default: 133} 
+      - lineColor:      {type: integer, default: 162} 
+      - oceanPalette:   {type: integer, default: 12} 
+      - data:           {type: string} 
+      - polylines:  
+          type: array
+          items:        {type: array, items: {type: number}} 
+          #TODO no way to check for integer/lon/lat/lon/.... with variable length in json schema
+      - polygons:
+          type: array
+          items:
+            oneOf:
+              - type: array
+                maxItems: 9
+                minItems: 9
+                items: 
+                  - {type: integer}
+                  - {"$ref": "#/definitions/oxcLon"}
+                  - {"$ref": "#/definitions/oxcLat"}
+                  - {"$ref": "#/definitions/oxcLon"}
+                  - {"$ref": "#/definitions/oxcLat"}
+                  - {"$ref": "#/definitions/oxcLon"}
+                  - {"$ref": "#/definitions/oxcLat"}
+                  - {"$ref": "#/definitions/oxcLon"}
+                  - {"$ref": "#/definitions/oxcLat"}
+              - type: array
+                maxItems: 7
+                minItems: 7
+                items: 
+                  - {type: integer}
+                  - {"$ref": "#/definitions/oxcLon"}
+                  - {"$ref": "#/definitions/oxcLat"}
+                  - {"$ref": "#/definitions/oxcLon"}
+                  - {"$ref": "#/definitions/oxcLat"}
+                  - {"$ref": "#/definitions/oxcLon"}
+                  - {"$ref": "#/definitions/oxcLat"}
+  transparencyLUT: 
+    type: object
+    additionalProperties: false
+    oxcD_date: 2014-08-30
+    oxcD_file: src/Ruleset/Ruleset
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - colors:
+          type: array
+          items:
+            - type: array
+              maxItems: 4
+              minItems: 4
+              items: 
+                - {type: integer, default: 0}
+                - {type: integer, default: 0}
+                - {type: integer, default: 0}
+                - {type: integer, default: 2}
+  mapscripttunnelmcdData:
+    type: object
+    additionalProperties: false
+    oxcD_date: 2015-01-20
+    oxcD_file: src/Ruleset/MapScript    
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:
+          type: string
+          enum:
+            - westWall
+            - northWall
+            - corner
+            - floor
+      - entry:    {type: integer, default: -1}
+      - set:      {type: integer, default: -1}
+  mapscripttunnelData:
+    type: object
+    additionalProperties: false
+    oxcD_date: 2015-01-20
+    oxcD_file: src/Ruleset/MapScript    
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - level:      {type: integer, default: 0, minimum: 0}
+      - MCDReplacements:
+          type: array
+          items: {"$ref": "#/definitions/mapscripttunnelmcdData"}
+  mapScriptCommand:
+    type: object
+    required: [type]
+    additionalProperties: false
+#    oxcT_deletable: true
+    oxcD_date: 2015-01-20
+    oxcD_file: src/Ruleset/MapScript    
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:
+          type: string
+          enum:
+            - addBlock
+            - addLine
+            - addCraft
+            - addUFO
+            - digTunnel
+            - fillArea
+            - checkBlock
+            - removeBlock
+            - resize
+      - size:
+          oneOf:
+          - {type: integer, default: 1, minimum: 1}
+          - {type: array, minItems: 2, maxItems: 2, items: {type: integer, minimum: 1}} 
+      - rects:
+          type: array
+          items:
+            type: array
+            items: {type: integer, minimum: 0}
+            minItems: 4
+            maxItems: 4
+      - tunnelData: {"$ref": "#/definitions/mapscripttunnelData"}
+      - conditionals:
+          oneOf:
+          - {type: integer}
+          - {type: array, minItems: 1, items: {type: integer}} 
+      - groups:
+          oneOf:
+          - {type: integer}
+          - {type: array, minItems: 1, items: {type: integer, minimum: 0}} 
+      - blocks:
+          oneOf:
+          - {type: integer}
+          - {type: array, minItems: 1, items: {type: integer, minimum: 0}} 
+      - freqs:
+          oneOf:
+          - {type: integer, default: 1}
+          - {type: array, minItems: 1, items: {type: integer, default: 1, minimum: 0}} 
+      - maxUses:
+          oneOf:
+          - {type: integer, default: -1}
+          - {type: array, minItems: 1, items: {type: integer, default: -1, minimum: -1}} 
+      - direction:
+          type: string
+          enum:
+            - both
+            - horizontal
+            - vertical
+      - executionChances:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 100
+      - executions:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 1
+      - label: {type: integer, minimum: 0 }
+#rects [[1,2,3,4]]
+#tunnelData {
+#  level 0
+#  MCDReplacements [
+#    { type westWall, northWall, corner, floor
+#      set  -1
+#      entry  -1 
+#  ]
+#conditionals
+#  oneof
+#    0
+#    [0]  
+#size
+#  oneof
+#    1
+#    [1,1,0] #default 0 or 1 or what?
+#groups
+#  oneof
+#    0
+#    [0]
+#blocks
+#  oneof
+#    0
+#    [0]
+#freqs #check length freqs <= len mapblocks
+#  oneof
+#    1
+#    [1]
+#maxUses #check length maxUses <= len mapblocks
+#  oneof
+#    -1
+#    [-1]
+#direction both, horizontal, vertical
+#executionChances 100
+#executions 1
+#label 0 #TEST UNIQUE
+  mapScript: 
+    type: object
+    required: [type]
+    additionalProperties: false
+    oxcD_date: 2014-12-04
+    oxcD_file: src/Ruleset/Ruleset
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:     {"$ref": "#/definitions/oxcSTR", oxcV_iskey: true} 
+      - commands: {type: array, items: {"$ref": "#/definitions/mapScriptCommand"}}
+  cutscene: 
+    type: object
+    required: [type]
+    additionalProperties: false
+    oxcD_date: 2015-01-19
+    oxcD_file: src/Ruleset/RuleVideo
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:   {"$ref": "#/definitions/oxcSTR", oxcV_iskey: true} 
+      - videos: {type: array, items: {type: string}}
+  music: 
+    type: object
+    required: [type]
+    additionalProperties: false
+    oxcD_date: 2014-12-04
+    oxcD_file: src/Ruleset/Ruleset
+    oxcML_mtype: {action: prop_add_or_rec}
+    oxcT_properties:
+      - type:          {"$ref": "#/definitions/oxcSTR", oxcV_iskey: true} 
+      - catPos:        {type: integer, default: 32767}
+      - normalization: {type: number, default: 0.76}
+#STUFF: yaml code in savegame/WeightedOptions.h but no "type"

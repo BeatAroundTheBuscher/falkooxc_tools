@@ -1,0 +1,257 @@
+{% extends "layout.html" %}
+{% block title %}Sprite combiner{% endblock %}
+{% block head %}
+<script type="text/javascript" src="/static/lib/FileSaver.js"></script>
+<script type="text/javascript"  src="/static/js/dropzone.js"></script>
+<style>
+#dropzone {
+    //background-color:red;
+    border:solid red;
+    font-size: 200%;
+    text-align: center;
+    vertical-align: middle;
+    min-height:150px;
+    line-height: 150px;
+    margin-bottom: 25px;
+
+  }
+.badge-success {
+  background-color: #468847;
+}
+.badge-success:hover {
+  background-color: #356635;
+}
+.imgcollection{
+  border: black solid;
+  border-width: 1px;
+  margin: 2px;
+}
+
+.imgresok{
+  border: green solid;
+  border-width: 1px;
+  margin: 3px;
+}
+.imgresfail{
+  border: red solid;
+  border-width: 1px;
+  margin: 3px;
+}
+
+</style>
+<script type="text/javascript">
+var files={};
+var readers={};
+
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="sp-rows">
+<div class="row ">
+  <div class="col-sm-1">             
+    
+  </div>
+  <div class="col-sm-9">             
+    <form action="/file-upload"  data-bg-text="text" id="dropzone">Drop files here or Click to upload multiple images</form>
+  </div>
+  <div class="col-sm-2">             
+        <button type="button"  class="btn btn-success sp-showimages" style="margin-top:15px;" ><span class="glyphicon glyphicon-eye-open">  Show images</span></button>  
+  </div>
+</div>
+<div class="row collapse">
+  <div class="col-sm-12">             
+    <div id="imgout" class="dropzone-previews"></div>
+  </div>
+</div>
+<div class="row sp-row collapse" style="border-top: solid lightgrey" id="spcomptemplate">
+  <div class="col-sm-2">
+    <div class="label label-default"><span class="sp-idval">TEMPLATE</span> <span class="badge alert-warning">1234</span></div>    
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+        Show
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+        <li><a sp-show="conv" href="#">Convert</a></li><!-- rowcount,download,clear,delete//-->
+        <li><a sp-show="image" href="#">Show Image</a></li>          
+        <!--<li><a sp-show="images" href="#">Show Images</a></li>                    //-->
+        <li><a sp-show="filenames" href="#">Show FileList</a></li>
+        <!--<li><a sp-show="errors" href="#">Show Errors</a></li>//-->
+      </ul>
+    </div>
+  </div>
+  <div class="col-sm-10 sp-show  in sp-conv">     
+    <div class="input-group">
+      <button type="button" class="btn btn-primary sp-convert" disabled="disabled" ><span class="glyphicon glyphicon-play"> Convert</button>
+      Rows: <input type="text" size="2" class="sp-nrcols" value="8" >
+      Set name: <input type="text" class="sp-rename" value="TEMPLATE">.png<!--<button type="button" class="btn btn-secondary" >Rename</button>//-->
+      <button type="button" class="btn btn-success sp-download" style="margin-left:45px;" disabled="disabled" ><span class="glyphicon glyphicon-download-alt"> Download</button>
+      <button type="button" class="btn btn-warning sp-delete" style="margin-left:45px;"><span class="glyphicon glyphicon-remove"> Delete</button>
+    </div>
+  </div>
+  <div class="col-sm-10 sp-show collapse sp-image">             
+    <div class="input-group"><div class="sp-putimages"></div><span class="glyphicon glyphicon-arrow-right">no result image yet click show - convert - convert</span><img class="sp-resultimg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAIAAADdWck9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNtCDrVoAAAB4SURBVDhPlZKBDsAwBES3//9os0pvRy1omqYaT3FuEblGSwEl3hMLpl54L4flaq8pcDwSwIHNL4uyAf7nJAkmAMwACPUUKQ265JpaGF6BBum7FACrAdo54VL5APAYfAJxpHD/BUIC9Q9hIhjY89YrmgL1ACpprMMDcmeAnZdVhCQAAAAASUVORK5CYII="/></div>
+  </div>
+  <div class="col-sm-10 sp-show collapse sp-images"></div>
+  <div class="col-sm-10 sp-show collapse sp-filenames"></div>
+  <div class="col-sm-10 sp-show collapse sp-errors"></div>
+</div>
+
+
+      
+</div >
+{% endblock %}
+
+    
+    
+{% block jsfooter %}
+
+$('.sp-showimages').click(function(e) {
+  if ($(".sp-showimages span").first().hasClass("glyphicon-eye-open")){
+    $(".sp-showimages span").removeClass("glyphicon-eye-open" ).addClass("glyphicon-eye-close" )    
+    $(".sp-showimages span").text(" Hide images")
+    $(".sp-image").addClass("in")
+  }else{
+    $(".sp-showimages span").removeClass("glyphicon-eye-close" ).addClass("glyphicon-eye-open" )
+    $(".sp-showimages span").text(" Show images")
+    $(".sp-image").removeClass("in")
+  }
+});
+
+$('.sp-row  ul.dropdown-menu  a').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")     
+    $('#'+idstring+'   div.sp-show').removeClass("in");
+    showdiv=$(e.target).attr("sp-show");
+    $('#'+idstring+'   div.sp-'+showdiv).addClass("in");
+    //e.preventDefault();// prevent the default anchor functionality
+});
+
+$('.sp-row  button.sp-delete').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")    
+    delete files[idstring.substr(5)];
+    $("#"+idstring).remove();
+});
+
+$('.sp-row  button.sp-download').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")    
+
+blob = dataURItoBlob($("#"+idstring).find(".sp-resultimg").first().attr("src"),"image/png;");
+saveAs(blob, $("#"+idstring).find(".sp-rename").first().val()+".png");    
+    
+});
+
+function dataURItoBlob(dataURI, dataTYPE) {
+        var binary = atob(dataURI.split(',')[1]), array = [];
+        for(var i = 0; i < binary.length; i++) array.push(binary.charCodeAt(i));
+        return new Blob([new Uint8Array(array)], {type: dataTYPE});
+    }
+
+$('.sp-row  button.sp-convert').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")   
+    $("#"+idstring+" button.sp-download").prop('disabled', true);
+    $("#"+idstring+" button.sp-convert").addClass("btn-info").prop('disabled', true);
+    $("#"+idstring+" button.sp-convert span").addClass("glyphicon-cog").removeClass("glyphicon-play");
+     $.ajax({
+              url:'/_spritecomb',
+              type: "POST",
+              contentType:"application/json",
+              dataType:"json",
+              data: JSON.stringify({
+  name: $("#"+idstring).find(".sp-rename").first().val(),
+        nrcols: $("#"+idstring).find(".sp-nrcols").first().val(),
+        idstring: idstring,
+        files: files[idstring.substr(5)]["fobj"]
+      })
+         
+      }).done(function(data) {
+        //$("#"+data["idstring"]+" div.sp-image").html("<img class='sp-resultimg' src='"+data["resimg"]+"' />")
+        $("#"+data["idstring"]+" div.sp-image img.sp-resultimg").attr("src",data["resimg"]).addClass("imgresok").removeClass("imgresfail")
+        $("#"+data["idstring"]+" div.sp-image span").text("")
+        $("#"+data["idstring"]+" button.sp-download").prop('disabled', false);
+        $("#"+data["idstring"]+" button.sp-convert").removeClass("btn-info").prop('disabled', false);;
+        $("#"+data["idstring"]+" button.sp-convert span").removeClass("btn-info").removeClass("glyphicon-cog").addClass("glyphicon-play");
+      }).fail(new function(spid){
+        return function(data) {
+
+          //$("#"+spid+" div.sp-image").html("<img class='sp-resultimg' src='"+spid+"' />")
+          $("#"+spid+" div.sp-image img.sp-resultimg").attr("src",$("#spcomptemplate div.sp-image img.sp-resultimg").attr("src")).addClass("imgresfail").removeClass("imgresok")
+          $("#"+spid+" button.sp-convert").removeClass("btn-info").addClass("btn-danger")
+          $("#"+spid+" button.sp-convert span").removeClass("btn-info").removeClass("glyphicon-cog").addClass("glyphicon-fire").text(" Error");
+          
+         
+        }
+      }(idstring));
+  
+});
+
+
+
+
+function copysprow(idstring){
+  t=$("#spcomptemplate").clone( withDataAndEvents=true, deepWithDataAndEvents =true );
+  t.removeClass("collapse");
+  t.find(".sp-idval").text(n)
+  t.find(".sp-rename").val(n.replace(/....$/,""))
+  t.prop("id",idstring);
+  $("#sp-rows").append(t);  
+}
+
+
+var myDropzone = new Dropzone("#dropzone", { url: "/file/post",previewsContainer:document.getElementById("imgout"),
+createImageThumbnails:false,
+thumbnailWidth:32,
+thumbnailHeight:40,
+fallback: function(){
+messageElement = Dropzone.createElement("<div class='dz-message'><span>Your browser does not support drag'n'drop file uploads. There is no fallback :( use a more recent browser.</span></div>");
+          return this.element.appendChild(messageElement);
+        }
+});
+myDropzone.options.autoProcessQueue=false;
+
+myDropzone.options.previewTemplate='<div class="dz-preview dz-file-preview" style="display:inline;">  <div  style="display:inline;" class="dz-details">   <img  style="display:inline;" data-dz-thumbnail />  </div>     </div>';
+
+
+
+myDropzone.on("addedfile", function(file) {
+
+  if ((file.type=="image/gif" || file.type=="image/png") && file.size<20000 ){
+    n=file.name.replace(/[^A-Za-z-_]/g, "_"); 
+    if(! files.hasOwnProperty(n)){  
+      files[n]={fnlist:[],fobj:[],recreatethumb:true};
+      copysprow("spid-"+n);      
+    } 
+    if ( files[n]["fnlist"].indexOf(file.name) <0){
+      files[n]["fnlist"].push(file.name);
+      //files[n]["fobj"].push(file);      
+      $("#spid-"+n+" span.badge").text(files[n]["fobj"].length+"/"+files[n]["fnlist"].length).removeClass("badge-success").addClass("alert-warning");
+      $("#spid-"+n+" button.sp-convert").prop('disabled', true);
+      $("#spid-"+n+" div.sp-filenames").append("<div>"+file.name+"</div>");
+      readers[file.name]=new FileReader();
+      readers[file.name].onload=function(spid,fname){
+        return function(event) {
+          dataURL = readers[fname].result;
+          $("#spid-"+spid+" div.sp-image div.sp-putimages").append("<img class='imgcollection' alt='"+fname+"' title='"+fname+"' src='"+dataURL+"' />")
+          files[spid]["fobj"].push({"fn":fname,"cont":dataURL})
+          if (files[spid]["fobj"].length==files[spid]["fnlist"].length){
+            $("#spid-"+spid+" span.badge").text(files[spid]["fnlist"].length).addClass("badge-success").removeClass("alert-warning");
+            $("#spid-"+spid+" button.sp-convert").prop('disabled', false);
+          }else{
+            $("#spid-"+spid+" span.badge").text(files[spid]["fobj"].length+"/"+files[spid]["fnlist"].length).removeClass("badge-success").addClass("alert-warning");
+          }
+          
+          //console.log(spid,event);
+        }
+      }(n,file.name);
+      readers[file.name].readAsDataURL(file);
+    }
+  }
+});
+
+
+
+{% endblock %}
+{% block help %}
+you can drop files here...
+{% endblock %}

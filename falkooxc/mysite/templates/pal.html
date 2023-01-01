@@ -1,0 +1,236 @@
+<!doctype html>
+<title>OpenXCOM Mod Tester 0.1</title>
+<style type="text/css">
+<!--
+.warning {color:#9BA013;}
+.error {color:red;}
+.info {color:gray;}
+-->
+.npal{
+    background-image: url(static/pal/ufo-battlescape.p.png);
+    background-repeat: no-repeat;
+    height: 8px;
+    width: 128px;
+    overflow:hidden;
+	background-position: 0px 8px;
+}
+.opal{
+    background-image: url(static/pal/ufo-battlescape.p.png);
+    background-repeat: no-repeat;
+    height: 8px;
+    width: 128px;
+    overflow:hidden;
+	background-position: 0px 0px;
+}
+
+#opal15{background-position: 0px -120px;}
+#opal14{background-position: 0px -112px;}
+#opal13{background-position: 0px -104px;}
+#opal12{background-position: 0px -96px;}
+#opal11{background-position: 0px -88px;}
+#opal10{background-position: 0px -80px;}
+#opal9{background-position: 0px -72px;}
+#opal8{background-position: 0px -64px;}
+#opal7{background-position: 0px -56px;}
+#opal6{background-position: 0px -48px;}
+#opal5{background-position: 0px -40px;}
+#opal4{background-position: 0px -32px;}
+#opal3{background-position: 0px -24px;}
+#opal2{background-position: 0px -16px;}
+#opal1{background-position: 0px -8px;}
+
+
+
+
+
+#pal1{
+    background-image: url(static/pal/tftd-depth0.p.png);
+    background-repeat: no-repeat;
+    height: 128px;
+    width: 128px;
+    overflow:hidden;
+	background-position: 0px 0px;
+}
+#pal2{
+    background-image: url(static/pal/ufo-battlescape.p.png);
+    background-repeat: no-repeat;
+    height: 128px;
+    width: 128px;
+    overflow:hidden;
+	background-position: 0px 0px;
+}
+
+-->
+</style>
+<script type="text/javascript">
+var palarr= [];
+function addpal(pv){
+    if (palarr.length<16){
+        palarr[palarr.length]=pv;
+        npos=palarr.length
+        document.getElementById('npal'+npos).style.backgroundPosition =  '0px ' + -8 * pv  + 'px';
+        document.getElementById('palorder').value+=pv + ',';
+
+    }
+    return false;
+}
+
+function resetpal(){
+    palarr= [];
+    for (i = 1; i < 16; i++) {
+       document.getElementById('npal'+i).style.backgroundPosition =  '0px 8px';
+    }
+    document.getElementById('palorder').value="";
+    return false;
+}
+
+
+var palmove=0;
+//
+function palmo(){
+    palmove=Math.abs(palmove-1);
+    document.getElementById('pal1').style.backgroundPosition =  '0px ' + palmove * -128  + 'px ';
+    document.getElementById('pal2').style.backgroundPosition =  '0px ' + palmove * -128  + 'px ';
+    document.getElementById('wbutton').innerHTML=['showdouble','normal'][palmove];
+    return false;
+
+}
+    function fshowoptions(a)
+{
+    document.getElementById("h1").style.display="block";
+    document.getElementById("h2").style.display="block";
+    document.getElementById("h3").style.display="block";
+    document.getElementById("h4").style.display="block";
+    document.getElementById("h5").style.display="block";
+    document.getElementById("h6").style.display="block";
+    document.getElementById("h7").style.display="block";
+    document.getElementById("h8").style.display="block";
+    document.getElementById("lshowb").style.display="none";
+
+    return false;
+}
+    function palchange(v,id)
+{
+    if (id=="pal1" && v=="mixcolours"){
+        document.getElementById("mixcolours").style.display = "";
+        v="pal/ufo-battlescape.png";
+    }else{
+        document.getElementById("mixcolours").style.display = "none";
+    }
+    document.getElementById(id).style.backgroundImage = 'url(static/'+v.replace(".png",".p.png")+')';
+
+    return false;
+}
+</script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<div class=page>
+  <h1>OpenXcom-Palette-Concerter</h1>
+
+      <form action="/convpal" method=post class=add-entry enctype="multipart/form-data">
+      <dl>
+
+        <dt>Upload TFTD file:</dt>
+        <dd><input name=mfile type=file /> </dd>
+        <dt>Palette:</dt>
+        <dd>
+
+
+<table ><tr><td >
+From: <select name="fromchoice" onchange="palchange(this.value,'pal1');return false;">
+<option value="pal/tftd-depth0.png" selected="selected" >tftd-depth0</option>
+<option value="pal/tftd-depth0B.png"  >tftd-depth0B</option>
+<option value="pal/tftd-depth0C.png"  >tftd-depth0C</option>
+<option value="pal/tftd-depth1.png"  >tftd-depth1</option>
+<option value="pal/tftd-depth2.png"  >tftd-depth2</option>
+<option value="pal/tftd-depth3.png"  >tftd-depth3</option>
+<option value="pal/tftd-ufopaedia.png"  >tftd-ufopaedia</option>
+<option value="pal/tftd-geoscape.png"  >tftd-geoscape</option>
+<option value="pal/ufo-basescape.png"  >ufo-basescape</option>
+<option value="pal/ufo-battlescape.png"  >ufo-battlescape</option>
+<option value="pal/ufo-geo.png"  >ufo-geo</option>
+<option value="pal/ufo-research.png"  >ufo-research</option>
+<option value="userdefined"  >userdefined</option>
+<option value="mixcolours"  >mixcolours</option>
+
+
+</select>
+</td><td>&nbsp;</td><td>
+to: <select name="tochoice" onchange="palchange(this.value,'pal2');return false;">
+<option value="pal/tftd-depth0.png" >tftd-depth0</option>
+<option value="pal/tftd-depth0B.png" >tftd-depth0B</option>
+<option value="pal/tftd-depth0C.png" >tftd-depth0C</option>
+<option value="pal/tftd-depth1.png"  >tftd-depth1</option>
+<option value="pal/tftd-depth2.png"  >tftd-depth2</option>
+<option value="pal/tftd-depth3.png"  >tftd-depth3</option>
+<option value="pal/tftd-ufopaedia.png"  >tftd-ufopaedia</option>
+<option value="pal/tftd-geoscape.png"  >tftd-geoscape</option>
+<option value="pal/ufo-basescape.png"  >ufo-basescape</option>
+<option value="pal/ufo-battlescape.png" selected="selected"  >ufo-battlescape</option>
+<option value="pal/ufo-geo.png"  >ufo-geo</option>
+<option value="pal/ufo-research.png"  >ufo-research</option>
+<option value="userdefined"  >userdefined</option>
+</select>
+</td></tr>
+<tr ><td ><div id=pal1 /></td><td>&nbsp;</td><td><div id=pal2 /></td></tr>
+<tr id="mixcolours"  style="display:none;" ><td>
+<div class=opal id=opal1 onclick="addpal(1);"></div>
+<div class=opal id=opal2 onclick="addpal(2);"></div>
+<div class=opal id=opal3 onclick="addpal(3);"></div>
+<div class=opal id=opal4 onclick="addpal(4);"></div>
+<div class=opal id=opal5 onclick="addpal(5);"></div>
+<div class=opal id=opal6 onclick="addpal(6);"></div>
+<div class=opal id=opal7 onclick="addpal(7);"></div>
+<div class=opal id=opal8 onclick="addpal(8);"></div>
+<div class=opal id=opal9 onclick="addpal(9);"></div>
+<div class=opal id=opal10 onclick="addpal(10);"></div>
+<div class=opal id=opal11 onclick="addpal(11);"></div>
+<div class=opal id=opal12 onclick="addpal(12);"></div>
+<div class=opal id=opal13 onclick="addpal(13);"></div>
+<div class=opal id=opal14 onclick="addpal(14);"></div>
+<div class=opal id=opal15 onclick="addpal(15);"></div>
+
+</td><td>==&gt;<br /><button type="button"  onclick="resetpal();return false;">reset</button><input type=hidden name=palorder id=palorder value="" />
+</td><td>
+<div class=npal id=npal1 ></div>
+<div class=npal id=npal2 ></div>
+<div class=npal id=npal3 ></div>
+<div class=npal id=npal4 ></div>
+<div class=npal id=npal5 ></div>
+<div class=npal id=npal6 ></div>
+<div class=npal id=npal7 ></div>
+<div class=npal id=npal8 ></div>
+<div class=npal id=npal9 ></div>
+<div class=npal id=npal10 ></div>
+<div class=npal id=npal11 ></div>
+<div class=npal id=npal12 ></div>
+<div class=npal id=npal13 ></div>
+<div class=npal id=npal14 ></div>
+<div class=npal id=npal15 ></div>
+</td></tr>
+</table>
+        <br /><br /> <div  id="lshowb"><a href="#"  onclick="javascript:fshowoptions(2)">more Details</a></div></dd>
+
+        <dt style="display:none;" id="h1"><hr />Upload Palette-Convert-File:<br />
+        you can replace the <a href="/static/ipconvC2.png" >default</a> and upload your own converter file</dt>
+        <dd style="display:none;"  id="h2">
+        <input name=cfile type=file /></dd>
+        <dt style="display:none;"  id="h3">Upload Target-Palette-File:<br/>
+        you can replace the <a href="/static/pal/ufo-battlescape.png" >default</a> and upload your own target palette file</dt>
+        <dd style="display:none;"  id="h4"><input name=pfile type=file /></dd>
+        <dt style="display:none;" id="h5"><hr />Fix color15 bug:<br />
+        replace color 15 with color 14</dt>
+        <dd style="display:none;"  id="h6"><input name=fixc15 type=checkbox value="doit" /><hr /></dd>
+        <dt style="display:none;" id="h7">try to fix palette colors<br />
+        for images where the palette was 'optimized' </dt>
+        <dd style="display:none;"  id="h8"><input name=fixpal type=checkbox value="doit" /></dd>
+        <dd><input type=submit value=Convert></dd>
+
+      </dl>
+    </form>
+
+  <div class=metanav>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</div>

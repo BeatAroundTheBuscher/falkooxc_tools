@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="full" lang="en">
+<!-- Make sure the <html> tag is set to the .full CSS class. Change the background image in the full.css file. -->
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>OXC-ModTools{% if title!="" %}: {% endif %}{% block title %}{% endblock %}</title>
+    <!--<title>OXC-ModTools</title>//-->
+
+    <!-- jQuery Version 1.11.1 -->
+    <script src="static/lib/jquery-1.11.1.js" type="text/javascript"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/lib/bootstrap-3.2.0-dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- Bootstrap Core CSS -->
+    <link href="static/lib/bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link href="static/css/modsite.css" rel="stylesheet">
+
+    {% block head %}    
+    {% endblock %}
+
+    
+
+
+
+
+
+
+ <style type="text/css" media="screen">
+
+
+.pull-left {
+  float: left !important;
+}
+.pull-right {
+  float: right !important;
+}
+.inactiveLink {
+   pointer-events: none;
+   cursor: default;
+}
+/*css for help begin*/
+.fixed {
+    position: fixed;
+}
+
+/* sidebar */
+.bs-docs-sidebar {
+    padding-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* all links */
+.bs-docs-sidebar .nav>li>a {
+    color: #999;
+    border-left: 2px solid transparent;
+    padding: 4px 20px;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+/* nested links */
+.bs-docs-sidebar .nav .nav>li>a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+}
+
+/* active & hover links */
+.bs-docs-sidebar .nav>.active>a, 
+.bs-docs-sidebar .nav>li>a:hover, 
+.bs-docs-sidebar .nav>li>a:focus {
+    color: #563d7c;                 
+    text-decoration: none;          
+    background-color: transparent;  
+    border-left-color: #563d7c; 
+}
+/* all active links */
+.bs-docs-sidebar .nav>.active>a, 
+.bs-docs-sidebar .nav>.active:hover>a,
+.bs-docs-sidebar .nav>.active:focus>a {
+    font-weight: 700;
+}
+/* nested active links */
+.bs-docs-sidebar .nav .nav>.active>a, 
+.bs-docs-sidebar .nav .nav>.active:hover>a,
+.bs-docs-sidebar .nav .nav>.active:focus>a {
+    font-weight: 500;
+}
+
+/* hide inactive nested list */
+.bs-docs-sidebar .nav ul.nav {
+    display: none;           
+}
+/* show active nested list */
+.bs-docs-sidebar .nav>.active>ul.nav {
+    display: block;           
+}
+
+.oxchelpcontent {
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+}
+/*css for help end*/
+</style>
+</head>
+
+<body>
+    <div class="modal fade" id="oxcabout">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">About</h4>
+          </div>
+          <div class="modal-body">
+            <p>This is stuff for OpenXcom mods
+                some day there will be a forum link
+                and a github link?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <div class="modal fade" id="oxchelp" style="max-height:90%;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">Help</h4>
+          </div>
+          <div class="modal-body">
+            {% block help %}{% endblock %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+
+          <a class="navbar-brand inactiveLink" href="#">OpenXcom Modding tools</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#" class="inactiveLink btn-default">{{ self.title() }}</a></li>
+            <li class=""><a href="#" class="dropdown-toggle" data-toggle="dropdown">Tools<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li class="dropdown-header">Mods</li>
+                <li><a href="/rulcheck">Ruleset Validator</a></li>
+                <!--<li><a href="/rulmerge">Ruleset Merger</a></li>//-->
+                <li><a href="/rulformat">Ruleset Formater</a></li>
+                <!--<li><a href="http://startbootstrap.com/templates/simple-sidebar/#">Ruleset Validator</a></li>//-->
+                <!--<li><a href="/modtester">old Modtester</a></li>
+                <li><a href="/explainrul">.rul Explained</a></li>
+                <li><a href="/rultable">Show me Data</a></li>
+                <li><a href="https://github.com/mbostock/d3/wiki/Gallery">Techtree</a></li>
+                <li><a href="/todo">(Fix Me!-part of validator?)</a></li>
+                <li><a href="/todo">(Merge my mods)</a></li>//-->
+                <li class="divider"></li>
+                <li class="dropdown-header">Sprites</li>
+                <!--<li><a href="/todo">(Check my Sprite)</a></li>//-->
+                <li><a href="/spritecomb">Combine Sprites</a></li>
+                <li><a href="/spritepalette">Palette converter</a></li>
+                <li><a href="/spriteconvert">XcomConverter</a></li>
+                <li><a href="/hwpbuild">HWP Builder</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Worldeditor</li>
+                <li><a href="/worldeditor">Change the world!</a></li>
+                <!--<li class="divider"></li>
+                <li class="dropdown-header">Maps</li>
+                <li><a href="/todo">(Tiled maptool)</a></li>
+                <li><a href="/todo">(MCD Builder)</a></li>//-->
+                <li class="divider"></li>
+                <li class="dropdown-header">Translation</li>
+                <li><a href="/langedit">Language editor</a></li>
+              </ul>
+            </li>   
+            <!--<li class=""><a href="#" class="dropdown-toggle" data-toggle="dropdown">Infos<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="/treerules">Ruleset Tree</a></li>
+              </ul>
+            </li>   //-->
+            <li><a href="#about" data-toggle="modal" data-target="#oxchelp">Help</a></li>
+            <li><a href="#about" data-toggle="modal" data-target="#oxcabout">About</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class=""><a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li class="dropdown-header">OpenXcom</li>
+                <li><a href="http://openxcom.org/" target="_blank" >OpenXcom website</a></li>
+                <li><a href="http://openxcom.org/forum/" target="_blank" >OpenXcom forum</a></li>
+                <li><a href="https://github.com/SupSuper/OpenXcom" target="_blank" >OpenXcom source</a></li>
+                <li><a href="http://ufopaedia.org/index.php?title=OpenXcom" target="_blank" >OpenXcom wiki</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Modding</li>
+                <li><a href="http://openxcom.com/" target="_blank" >download/Search Mods</a></li>
+                <li><a href="http://ufopaedia.org/index.php?title=Ruleset_Reference_%28OpenXcom%29" target="_blank" >Ruleset Reference</a></li>
+                <li><a href="http://openxcom.org/forum/index.php?board=8.0" target="_blank" >Modding forum</a></li>
+                <li><a href="http://openxcom.org/forum/index.php?board=16.0" target="_blank" >CompletedMods forum</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Translation</li>
+                
+                <li><a href="https://www.transifex.com/projects/p/openxcom/" target="_blank" >Translate OpenXcom</a></li>
+                <!-- <li><a href="http://www.getlocalization.com/openxcom/" target="_blank" >Translate OpenXcom</a></li>//-->
+                <li><a href="http://openxcom.org/forum/index.php?board=6.0" target="_blank" >Translation forum</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+{% block content %}{% endblock %}
+
+
+
+
+
+
+    <script>
+
+    $(function () { $("[data-toggle='tooltip']").tooltip(); });
+    $('oxchelpcontent').scrollspy({
+    target: '.bs-docs-sidebar',
+    offset: 40
+});
+  {% block jsfooter %}{% endblock %}
+
+
+
+</script>
+
+</body>
+
+</html>

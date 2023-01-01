@@ -1,0 +1,359 @@
+{% extends "layout.html" %}
+{% block title %}HWP Build helper{% endblock %}
+{% block head %}
+<style>
+#hwppreviewcontainer {position: relative; background: lightgrey; height: 76px;width: 85px;}
+#newhwppreviewcontainer {position: relative; background: lightgrey; height: 76px;width: 85px;}
+  
+.hwppreview {position: absolute; width: 64px; height: 56px; background-color: white; overflow: hidden; top: 10px; left: 10px;background-repeat: no-repeat;}
+  
+.cornerhwp {position: absolute; background: blue; width: 20px; height: 20px;}
+</style>
+    <script src="static/lib/select2-3.5.1/select2.js" type="text/javascript" ></script>
+    <link href="static/lib/select2-3.5.1/select2.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/lib/FileSaver.js"></script>
+    <script src="/static/lib/bootstrap.file-input.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+var hwpval;
+var hwpanimx=1;
+var hwpanimy=3;
+var hwpanimmaxx=4;
+var hwpanimmaxy=8;
+var filename;
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container"> 
+  <div class="row ">
+    <div class="col-sm-12">             
+      <p>Drawing and editing of OpenXcoms 4-Tile units can be cumbersome<br />
+        This little tool helps.
+      </p>
+      <h4>First Step</h4>
+    </div>
+  </div>
+  <div class="row ">
+    <div class="col-sm-4">                   
+      <select id="getimg">
+        <option></option>
+        <optgroup label="Drawingroutine 2">
+          <option value="2~2~tanksb~585~456~Original UFO">UFO Tank</option>          
+          <option value="2~2~tanksa~585~456~Original UFO">UFO Tank (hover)</option>          
+        </optgroup>
+        <optgroup label="Drawingroutine 3">
+          <option value="3~3~cyber~585~456~Original UFO">Cyberdisc</option>          
+        </optgroup>
+        <optgroup label="Drawingroutine 5">
+          <option value="5~5b~x_rob~325~456~Original UFO">Sectopod</option>
+          <option value="5~5a~x_reap~325~456~Original UFO">Reaper</option>
+          <option value="5~5x_1~xa_mechtoid~325~456~made by jackstraw2323">Mechtoid</option>
+          <option value="5~5x_2~xa_jaegermki~325~456~made by jackstraw2323">Jaeger MK I</option>
+        </optgroup>
+        <optgroup label="Drawingroutine 11">
+          <option value="11~11~tank01b~585~456~Original TFTD">Coelacanth</option>
+          <option value="11~11~tank01a~585~456~Original TFTD">Displacer</option>
+        </optgroup>
+        <optgroup label="Drawingroutine 12">
+          <option value="12~12~hallucin~585~57~Original TFTD">Hallucinoid</option>
+        </optgroup>
+        <optgroup label="Drawingroutine 20">
+          <option value="20~20~triscen~260~456~Original TFTD">Triscene</option>
+        </optgroup>
+        <optgroup label="Drawingroutine 21">
+          <option value="21~21~xarquid~325~456~Original TFTD">Xarquid</option>
+          <option value="21~21x_1~xa_ecultist~325~456~made by jackstraw2323">Ethereal Cultist</option>
+          <option value="21~21x_2~xa_jaegermkii~325~456~made by jackstraw2323">Jaeger MK II</option>
+        </optgroup>
+      </select>
+      <br />
+      <span id="desctxt"></span>
+    </div>
+    <div class="col-sm-2">             
+<!--      <div style="height: 76px;width: 85px;background-color:green;  ">
+        <div style="height: 56px;overflow: hidden; width: 65px;background-color:black;position:absolute;top:10;left:10;"></div>
+      </div>//-->
+<div id="hwppreviewcontainer" class="hidden">    
+    <div class="cornerhwp" style="top: 0px; right: 0px;" id="hwpc1"></div>
+    <div class="cornerhwp" style="top: 0px; left: 32px;" id="hwpc8"></div>
+    <div class="cornerhwp" style="top: 0px; left: 0px;" id="hwpc7"></div>
+    <div class="cornerhwp" style="top: 30px; left: 0px;" id="hwpc6"></div>
+    <div class="cornerhwp" style="bottom: 0px; left: 0px;" id="hwpc5"></div>
+    <div class="cornerhwp" style="bottom: 0px; left: 32px;" id="hwpc4"></div>
+    <div class="cornerhwp" style="bottom: 0px; right: 0px;background-color:red;" id="hwpc3"></div>
+    <div class="cornerhwp" style="top: 30px; right: 0px;" id="hwpc2"></div>
+    <div id="hwppreview" class="hwppreview"></div>
+</div>
+    </div>
+    <div class="col-sm-2">             
+<div id="newhwppreviewcontainer" class="hidden">    
+  <div id="newhwppreview" class="hwppreview"></div>
+</div>
+    </div>
+    <div class="col-sm-4">     
+      <a type="button" id="hwpbuttondownload" class="btn btn-success disabled"  ><span class="glyphicon glyphicon-download-alt"> Download Template</span></a>        
+    </div>
+  </div>
+  <div class="row ">
+    <div class="col-sm-12 ">             
+      <h4>Second Step</h4>
+      <p>Edit the template. in your favorite image editor.</p>
+    </div>
+  </div>
+  <div class="row ">
+    <div class="col-sm-12">             
+      <h4>Third Step</h4>
+      <p>Upload the changed template and split the template in a correct spritesheet</p>
+    </div>
+  </div>
+  <div class="row ">
+    <div class="col-sm-4 hwpbuttonuploadcol">   
+      <input type="file" id="hwpbuttonupload" class="btn-success disabled" title='<span class="glyphicon glyphicon-upload"> Upload Template'>  
+      <!--<button type="button" id="hwpbuttonupload" class="btn btn-success btn-sm disabled"  ><span class="glyphicon glyphicon-upload"> Upload Template</button>//-->
+    </div>
+    <div class="col-sm-4">     
+      <button type="button" id="hwptoggletemplview" class="btn btn-success disabled"  ><span class="glyphicon glyphicon-eye-open"> Show edited template</span></button>
+    </div>
+    <div class="col-sm-4">     
+      <button type="button"  id="hwpsplit" class="btn btn-success disabled"  ><span class="glyphicon glyphicon-cog"> Split</span></button>
+    </div>
+  </div>
+  <div id="hwptemplimage" class="row collapse">
+    <div class="col-sm-12 ">  <br />   
+      <img />
+    </div>
+  </div>
+  <div class="row ">
+    <div class="col-sm-12">             
+      <h4>Done</h4>
+      <p>download spritesheet and use it</p>
+    </div>
+  </div>
+  <div class="row ">
+    <div class="col-sm-4">     
+      <button type="button" id="hwpdownload" class="btn btn-success disabled"  ><span class="glyphicon glyphicon-download"> Download spritesheet</span></button>
+    </div>
+    <div class="col-sm-4">     
+      <button type="button" id="hwpshowres" class="btn btn-success disabled"  ><span class="glyphicon glyphicon-eye-open"> Show generated spritesheet</span></button>
+    </div>
+    <div class="col-sm-4">     
+      <button type="button" id="hwpshowtext" class="btn btn-success disabled"  ><span class="glyphicon glyphicon-wrench"> How to use the spritesheet</span></button>
+    </div>
+  </div>
+  <div id="hwpresimage"  class="row collapse">
+    <div class="col-sm-12">     
+      <br />
+      <img />
+    </div>
+  </div>
+  <div id="hwprestext"class="row collapse">
+    <div class="col-sm-12">    
+      <br />
+      <pre>&lt;p&gt;Sample text here...&lt;/p&gt;</pre>
+    </div>
+  </div>  
+
+
+</div>
+
+
+      
+</div >
+{% endblock %}
+
+    
+    
+{% block jsfooter %}
+
+$("#getimg").select2({dropdownAutoWidth: 'true', placeholder:"Select a Unit"})
+
+function hwppreviewdirection(){
+  $(".cornerhwp").css("background-color","blue")
+  if (hwpanimmaxy>1){
+    $("#hwpc"+hwpanimy).css("background-color","red")    
+  }
+}
+
+$(".cornerhwp").on("click",function(e){
+  hwpanimy=Math.min(parseInt($(e.target).prop("id").substr(4,1)),hwpanimmaxy)  
+  hwppreviewdirection()
+})
+
+$("#hwppreview").on("click",function(e){
+
+  hwpanimx=Math.abs(1-Math.min(1,hwpanimx))  
+})
+
+$("#getimg").on("change",function(){
+  hwpval=$("#getimg").val()
+  hwpanimx=1;
+  hwpanimmaxx=parseInt(hwpval.split("~")[3])/65-1;
+  hwpanimmaxy=parseInt(hwpval.split("~")[4])/57;  
+  hwpanimy=Math.min(hwpanimy,hwpanimmaxy)  
+  hwppreviewdirection()
+  $("#hwppreviewcontainer").removeClass("hidden")
+  $("#hwppreview").css({"background-image": 'url("static/img/hwp/'+hwpval.split("~")[2]+'.png")',"background-position":"-65px 0px"})  
+  $("#newhwppreview").css({"background-image": 'url("static/img/hwp/'+hwpval.split("~")[2]+'.png")',"background-position":"-65px 0px"})
+  $("#newhwppreviewcontainer").addClass("hidden") 
+  $("#desctxt").text(hwpval.split("~")[5]) 
+  
+  $("#hwpbuttondownload").removeClass("disabled")
+  $("#hwpbuttondownload").prop("href","/static/img/hwp/templ_"+hwpval.split("~")[1]+".png")
+  $("#hwpbuttondownload").prop("download","hwptemplate_"+hwpval.split("~")[1]+".png")
+
+  $("div.hwpbuttonuploadcol a").removeClass("disabled")
+  if ($("#hwpsplit").hasClass("btn-danger")){
+    $("#hwpsplit").prop('disabled', false).removeClass("btn-danger").removeClass("disabled").addClass("btn-success");
+    $("#hwpsplit span").addClass("glyphicon-play").removeClass("glyphicon-fire").text(" Split");
+  }
+})
+
+setInterval(function () {
+  //console.log(hwpanimx)
+  if (hwpanimx==0){
+    $("#hwppreview").css({"backgroundPosition" :   0 + "px" + " " + (hwpanimy-1)*-57  + "px "});
+    $("#newhwppreview").css({"backgroundPosition" :   0 + "px" + " " + (hwpanimy-1)*-57  + "px "});
+  }else{
+    $("#hwppreview").css({"backgroundPosition" :  hwpanimx*-65 + "px" + " " + (hwpanimy-1)*-57  + "px "});
+    $("#newhwppreview").css({"backgroundPosition" :  hwpanimx*-65 + "px" + " " + (hwpanimy-1)*-57  + "px "});
+    if (hwpanimx==hwpanimmaxx){
+      hwpanimx=1
+    }else{
+      hwpanimx++
+    }
+  }  
+}, 100);
+
+$('#hwpbuttonupload').bootstrapFileInput();
+
+$(document).ready(function() {
+
+  if (window.File && window.FileList && window.FileReader) {
+    $("#hwpbuttonupload").on("change",function(event){
+      var files = event.target.files; //FileList object
+      var output = document.getElementById("importtext");
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var picReader = new FileReader();
+        picReader.addEventListener("load", function(event) {
+          var picFile = event.target;
+          
+          $("#hwptemplimage  img").attr("src",picFile.result);
+          $("#hwptoggletemplview").removeClass("disabled")
+          $("#hwpsplit").prop('disabled', false).removeClass("btn-danger").removeClass("disabled").addClass("btn-success");
+          $("#hwpsplit span").addClass("glyphicon-play").removeClass("glyphicon-fire").text(" Split");
+          filename=file.name;          
+        });
+        picReader.readAsDataURL(file);          
+      }
+
+    });
+  }
+  else {
+    $("#hwpbuttonupload").addClass("btn-error")
+  }
+
+})
+
+$("#hwptoggletemplview").on("click",function(){
+  $("#hwptemplimage").toggleClass("in")  
+  if ($("#hwptemplimage").hasClass("in")){
+    $("#hwptoggletemplview span").removeClass("glyphicon-eye-open" ).addClass("glyphicon-eye-close" )    
+    $("#hwptoggletemplview span").text(" Hide edited template")
+  }else{
+    $("#hwptoggletemplview span").removeClass("glyphicon-eye-close" ).addClass("glyphicon-eye-open" )
+    $("#hwptoggletemplview span").text(" Show edited template")
+  }
+
+})
+
+function resetstep3buttons(){
+  if ($("#hwpresimage").hasClass("in")){
+    $("#hwpshowres span").removeClass("glyphicon-eye-open" ).addClass("glyphicon-eye-close" )    
+    $("#hwpshowres span").text(" Hide generated spritesheet")
+  }else{
+    $("#hwpshowres span").removeClass("glyphicon-eye-close" ).addClass("glyphicon-eye-open" )
+    $("#hwpshowres span").text(" Show generated spritesheet")
+  }
+  if ($("#hwprestext").hasClass("in")){
+    $("#hwpshowtext span").removeClass("glyphicon-eye-open" ).addClass("glyphicon-eye-close" )    
+    $("#hwpshowtext span").text(" Hide usage")
+  }else{
+    $("#hwpshowtext span").removeClass("glyphicon-eye-close" ).addClass("glyphicon-eye-open" )
+    $("#hwpshowtext span").text(" How to use the spritesheet")
+  }
+}
+
+$('#hwpsplit').click(function(e) {
+  $("#hwpsplit").addClass("disabled");
+  $("#hwpsplit span").removeClass("glyphicon-play").addClass("glyphicon-cog");
+  $.ajax({
+    url:'/_hwpbuild',
+    type: "POST",
+    contentType:"application/json",
+    dataType:"json",
+    data: JSON.stringify({
+      fn: filename,
+      drawrout: parseInt(hwpval.split("~")[0]),
+      fdata: $("#hwptemplimage  img").attr("src")
+    })
+  }).done(function(data) {
+    $("#hwpsplit").removeClass("disabled");
+    $("#hwpsplit span").removeClass("glyphicon-cog").addClass("glyphicon-play");
+    $("#hwpresimage  img").attr("src",data["resimg"])
+    $("#newhwppreviewcontainer").removeClass("hidden") 
+    $("#newhwppreview").css({"background-image": 'url('+data["aniimg"]+')',"background-position":"-65px 0px"})
+  $("#hwpbuttondownload").removeClass("disabled")
+
+    $("#hwpdownload").removeClass('disabled');
+    $("#hwpshowres").removeClass('disabled');
+    $("#hwpshowtext").removeClass('disabled');
+    newtext=""
+    newtext+="\r\nextraSprites:"
+    newtext+="\r\n  - type: <span style='color:green;'>MYNEWUNIT.PCK</span>"
+    newtext+="\r\n    subX: 32"
+    newtext+="\r\n    subY: 40"
+    newtext+="\r\n    width: "+data["size"][0]
+    newtext+="\r\n    height: "+data["size"][1]
+    newtext+="\r\n    files:"
+    newtext+="\r\n      0: Resources/<span style='color:green;'>mymod/"+"split_"+filename.substring(0, filename.length - 4)+".png</span>"
+    $("#hwprestext pre").html(newtext)
+  }).fail(function(){    
+    $("#hwpsplit").addClass("btn-danger").addClass("disabled").removeClass("btn-success");
+    $("#hwpsplit span").removeClass("glyphicon-play").addClass("glyphicon-fire").text(" Failed");
+    $("#hwpresimage").removeClass('in');
+    $("#hwprestext").removeClass('in');
+    resetstep3buttons();
+    $("#hwpdownload").addClass('disabled');
+    $("#hwpshowres").addClass('disabled');
+    $("#hwpshowtext").addClass('disabled');
+  });
+});
+
+$("#hwpshowres").on("click",function(){
+  $("#hwpresimage").toggleClass("in") 
+  resetstep3buttons(); 
+});
+
+$("#hwpshowtext").on("click",function(){
+  $("#hwprestext").toggleClass("in") 
+  resetstep3buttons(); 
+});
+
+function dataURItoBlob(dataURI, dataTYPE) {
+  var binary = atob(dataURI.split(',')[1]), array = [];
+  for(var i = 0; i < binary.length; i++) array.push(binary.charCodeAt(i));
+  return new Blob([new Uint8Array(array)], {type: dataTYPE});
+}
+
+$('#hwpdownload').click(function(e) {
+  blob = dataURItoBlob($("#hwpresimage  img").attr("src"),"image/png;");
+  saveAs(blob, "split_"+filename.substring(0, filename.length - 4)+".png");    
+});
+
+{% endblock %}
+{% block help %}
+this tool makes 4 tile unit building easy .. more documentation?
+{% endblock %}

@@ -1,0 +1,529 @@
+{% extends "layout.html" %}
+{% from 'pallist.html' import pallist  %}
+{% from 'modalaceedit.html' import modal_ace_edit_head  %}
+{% from 'modalaceedit.html' import modal_ace_edit_body  %}
+{% from 'modalaceedit.html' import modal_ace_edit_button  %}
+{% from 'modalaceedit.html' import modal_ace_edit_jsfooter %}
+{%
+
+
+  set yamleditors={
+  "options":{
+    "textidstring":"yamloptions",
+    "varstring":"optionsstring",
+    "modalidstring":"modaloptionsid",
+    "title":"Set Conversion Options",
+    "editorvar":"editoroptions",
+    "buttontext":"Open options",
+    "buttonidstring":"yamloptionsbuttonid",
+    "contentid":"optionstext"
+    }
+  }
+%}
+{% block title %}Xcom Converter{% endblock %}
+{% block head %}
+<script type="text/javascript" src="/static/lib/FileSaver.js"></script>
+<script type="text/javascript"  src="/static/js/dropzone.js"></script>
+<script src="/static/lib/js-yaml.min.js"></script>
+    <script src="static/lib/select2-3.5.1/select2.js" type="text/javascript" ></script>
+    <link href="static/lib/select2-3.5.1/select2.css" rel="stylesheet">
+<style>
+#dropzone {
+    //background-color:red;
+    border:solid red;
+    font-size: 200%;
+    text-align: center;
+    vertical-align: middle;
+    min-height:150px;
+    line-height: 150px;
+    margin-bottom: 25px;
+
+  }
+.badge-success {
+  background-color: #468847;
+}
+.badge-success:hover {
+  background-color: #356635;
+}
+
+.palimg {
+  background-repeat: no-repeat;
+  height: 128px;
+  min-width: 128px;
+  overflow: hidden;
+  background-position: 0px 0px;  
+}
+#basepalimg   {background-image: url(static/img/pal/ufo-battlescape.act.p.png)}
+#targetpalimg {background-image: url(static/img/pal/ufo-battlescape.act.p.png)}
+#transpalimg  {background-image: url(static/img/pal/ufo-battlescape.act.p.png)}
+#transpalimgblock  {background-image: url(static/img/pal/ufo-battlescape.act.p.png);background-position: 1000px 1000px; }
+.sptransformborder {
+  background-image: url(static/img/pal/ufo-battlescape.act.p.png);
+  border: solid black;
+  border-width: 1px;
+  min-height: 8px;
+  min-width: 8px;
+  opacity: 0.99;
+  display:inline-block;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  background-position: 1000px 1000px;  
+}
+.spimgdivborder {
+  border: solid white;
+  border-width: 1px;
+  min-height: 8px;
+  min-width: 8px;
+  opacity: 0;
+  display:inline-block;
+}
+</style>
+<script type="text/javascript">
+var files={};
+var readers={};
+
+
+</script>
+{{ modal_ace_edit_head(yamleditors) }}
+{% endblock %}
+
+{% block content %}
+{% for acekey in yamleditors %}
+  {{ modal_ace_edit_body(yamleditors[acekey]) }}
+{% endfor %}
+<textarea id="optionstext" style="display:none">
+{% include 'pckconfoptions.yaml' %}
+</textarea>
+
+
+<div id="sp-rows">
+<div class="row ">
+  <div class="col-sm-1">             
+  </div>
+  <div class="col-sm-9">             
+    <form action="/file-upload"  data-bg-text="text" id="dropzone">Drop files here or Click to upload multiple images</form>
+  </div>
+  <div class="col-sm-2">             
+    {{ modal_ace_edit_button(yamleditors["options"]) }}<br />
+    <button type="button"  class="btn btn-success sp-showimages" style="margin-top:15px;" ><span class="glyphicon glyphicon-eye-open">  Show images</span></button>  
+  </div>
+</div>
+<div class="row collapse">
+  <div class="col-sm-12">             
+    <div id="imgout" class="dropzone-previews"></div>
+  </div>
+</div>
+<div class="row sp-row collapse" style="border-top: solid lightgrey" id="spcomptemplate">
+  <div class="col-sm-2">
+    <div class="label label-default"><span class="sp-idval">TEMPLATE</span> <span class="badge alert-warning">1234</span></div>    
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+        Show
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+        <li><a sp-show="conv" href="#">Convert</a></li><!-- rowcount,download,clear,delete//-->
+        <!--<li><a sp-show="image" href="#">Show Result</a></li>          //-->
+        <li><a sp-show="images" href="#">Images</a></li>                    
+        <!-- <li><a sp-show="filenames" href="#">Show FileList</a></li>//-->
+        <!--<li><a sp-show="errors" href="#">Show Errors</a></li>//-->
+      </ul>
+    </div>
+  </div>
+  <div class="col-sm-8 sp-show sp-conv">     
+    <div class="input-group">
+      <input type="text" value="" class="sp-func">      
+      <input type="text" value="ufo-battlescape" class="sp-pal">      
+      <button type="button" class="btn btn-primary sp-convert"  style="margin-left:25px;" disabled="disabled" ><span class="glyphicon glyphicon-play"> Convert</button>
+    
+      Set name: <input type="text" class="sp-rename" value="TEMPLATE"><!--<button type="button" class="btn btn-secondary" >Rename</button>//-->
+      <button type="button" class="btn btn-success sp-download" style="margin-left:45px;" disabled="disabled" ><span class="glyphicon glyphicon-download-alt"> Download</button>
+      <button type="button" class="btn btn-primary sp-switch hidden" style="margin-left:45px;" disabled="disabled" ><span class="glyphicon glyphicon-retweet"> Switch</button>
+      <button type="button" class="btn btn-warning sp-delete" style="margin-left:45px;"><span class="glyphicon glyphicon-remove"> Delete</button>
+    </div>
+  </div>
+  <div class="col-sm-10 sp-show collapse sp-images">             
+    <span class="sp-imgtext">in:</span><img class="sp-resultimg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAIAAADdWck9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNtCDrVoAAAB4SURBVDhPlZKBDsAwBES3//9os0pvRy1omqYaT3FuEblGSwEl3hMLpl54L4flaq8pcDwSwIHNL4uyAf7nJAkmAMwACPUUKQ265JpaGF6BBum7FACrAdo54VL5APAYfAJxpHD/BUIC9Q9hIhjY89YrmgL1ACpprMMDcmeAnZdVhCQAAAAASUVORK5CYII="/><div class="sp-resultdata hidden" val=""  ></div>
+  </div>
+  <div class="col-sm-10 sp-show collapse sp-imagesold"><span class="glyphicon glyphicon-arrow-right"> <span class="sp-outputimg">in:</span></div>
+  <div class="col-sm-10 sp-show collapse sp-filenames"></div>
+  <div class="col-sm-10 sp-show collapse sp-errors"></div>
+</div>
+
+
+      
+</div >
+{% endblock %}
+
+    
+
+{% block jsfooter %}
+{# <script>    #}
+
+{{ modal_ace_edit_jsfooter(yamleditors) }}
+
+$('.sp-showimages').click(function(e) {
+  if ($(".sp-showimages span").first().hasClass("glyphicon-eye-open")){
+    $(".sp-showimages span").removeClass("glyphicon-eye-open" ).addClass("glyphicon-eye-close" )    
+    $(".sp-showimages span").text(" Hide images")
+    $(".sp-images").addClass("in")
+  }else{
+    $(".sp-showimages span").removeClass("glyphicon-eye-close" ).addClass("glyphicon-eye-open" )
+    $(".sp-showimages span").text(" Show images")
+    $(".sp-images").removeClass("in")
+  }
+});
+
+var imgy=0;
+var imgx=0;
+var newtrans={};
+var funcselect2_ary;
+var funclist=[];
+var tdoc;
+
+function formatsel2(state) {
+return  '<span style="background: url(\'static/img/pal/'+state.text+'.mini.png\');min-height=16px;min-width=16px">&nbsp;&nbsp;&nbsp;&nbsp;</span>'  + state.text;
+}
+
+paldata={        
+        width: "140px",
+        placeholder: "test",
+        data: [
+    {% for pal in pallist %}
+      {text: '{{pal}}',id:'{{pal}}'},    
+    {% endfor %}
+        ],
+        formatResult: formatsel2,
+        formatSelection: formatsel2,
+        escapeMarkup: function(m) { return m; }
+      }
+
+
+
+//$("#transpalblock").on("change",resetpaldivs);
+
+/*$(document).on("click",'.spimgdivborder',function(e) {
+    $("div.spimgdivborder[valxy="+imgx+"-"+imgy+"]").css("opacity","0")
+    $("div.sptransformborder[valxy="+imgx+"-"+imgy+"]").css("border-color","black")
+    bsize=parseInt($("#transpalblock").val());
+    imgx=$(e.target).attr("valx")
+    imgy=$(e.target).attr("valy")
+    //console.log($(".spimgdivborder [valxy="+imgx+"-"+imgy+"]"))
+    $("div.spimgdivborder[valxy="+imgx+"-"+imgy+"]").css("opacity","1")
+    $("div.sptransformborder[valxy="+imgx+"-"+imgy+"]").css("border-color","red")
+    $("#transpalimgblock").css({"background-position": -1*imgx*bsize*8+"px "+-1*imgy*8+"px"   })
+    //"background-position": 0+"px "+0+"px"
+    
+    //var posX = $(this).offset().left, posY = $(this).offset().top;
+    //console.log( Math.floor((e.pageY - posY)/8)*16+ Math.floor((e.pageX - posX)/(8*bsize))*bsize, (e.pageX - posX) , (e.pageY - posY),e.pageX , posX , e.pageY , posY);
+
+});*/
+
+/*$(document).on("click",'.sptransformborder',function(e) {
+    bsize=parseInt($("#transpalblock").val());
+    timgx=$(e.target).attr("valx")
+    timgy=$(e.target).attr("valy")
+
+    $(e.target).css("border-style","none")
+    $(e.target).css("background-position",$("#transpalimgblock").css("background-position"))
+    newtrans[timgx*bsize+timgy*16]=[imgx*bsize+imgy*16,bsize];    
+});*/
+/*$(document).on("click",'#sp-transformsave',function(e) {
+  tname=$("#sp-transformsavename").val()+"("+$("#targetpal").val()+")"
+  testtransname()
+  if ( funclist.indexOf(tname)<0){
+    addttxt="\r\n";
+    addttxt+="- name: "+tname+"\r\n"
+    addttxt+="  op: transform\r\n"
+    addttxt+="  pal: "+$("#targetpal").val()+"\r\n"
+    addttxt+="  cols:\r\n"
+    for (k in  newtrans){
+      addttxt+="    "+k+": ["+newtrans[k][0]+", "+newtrans[k][1]+"]\r\n"
+    }
+    optionsstring+=addttxt
+    editoroptions.setValue(optionsstring);
+    resetfuncarr();
+    resetfuncoptions();  
+    testtransname();
+    $('#sptransformer').modal('hide');
+  }
+});*/
+/*function testtransname(){
+  tname=$("#sp-transformsavename").val()+"("+$("#targetpal").val()+")"
+  $("#sp-transformsavename").css("border-color","black")
+  if ( funclist.indexOf(tname)>=0){
+    $("#sp-transformsavename").css({"border-color":"red"})
+  }
+}
+$("#sp-transformsavename").on("keyup",testtransname)
+*/
+//.push()
+
+function resetfuncoptions() {  
+  resetfuncarr();
+  $("input.sp-func").each(function(index){  
+    resetselect($($(this).parent()));
+  });
+}
+
+$("body").on("ace-yamloptions-post-save", resetfuncoptions);
+
+function resetfuncarr(){  
+  funcselect2_ary=[];
+  funclist=[];
+  {% for pal in ["PCK","SPK","SCR","BDY","DAT","PNG","KNOWN"] %}
+    funcselect2_ary.push({text: '{{pal}}',children: []});    
+  {% endfor %}
+  tdoc = jsyaml.load(optionsstring);
+  for (i=0; i < tdoc.length;i++){  
+    for (g=0; g < funcselect2_ary.length;g++){    
+      tstring="KNOWN"
+      if (tdoc[i].hasOwnProperty("in"))tstring=tdoc[i]["in"]
+      if (funcselect2_ary[g].text==tstring){
+        funcselect2_ary[g].children.push({"id":tdoc[i].name, "text":tdoc[i].name});
+        funclist.push(tdoc[i].name);
+      }
+    }
+  }
+  
+}
+resetfuncarr();
+
+function formatsel(state) {
+if (state.id) return state.text;
+return  '<span style="background: url(\'static/img/pal/'+state.text+'.mini.png\');min-height=16px;min-width=16px">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;'  + state.text;
+}
+
+
+function resetselect(hobj){
+  //tdoc = jsyaml.load(optionsstring);  
+  hobj.find('input.sp-func').each(function(index){
+    idstring=hobj.closest( "div.sp-row" ).attr("id")
+    if (idstring!="spcomptemplate"){
+      //$(this).select2("destroy");
+      $(this).select2({
+        //dropdownAutoWidth: 'true',    
+        width: "150px",
+        placeholder: "select function",
+        data: funcselect2_ary,
+        escapeMarkup: function(m) { return m; }
+      });
+    }
+  });
+
+}
+
+
+
+//resetselect();
+//{dropdownAutoWidth: 'true',minimumResultsForSearch: -1}
+
+$('.sp-row  ul.dropdown-menu  a').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")     
+    $('#'+idstring+'   div.sp-show').removeClass("in");
+    showdiv=$(e.target).attr("sp-show");
+    $('#'+idstring+'   div.sp-'+showdiv).addClass("in");
+    //e.preventDefault();// prevent the default anchor functionality
+});
+
+$('.sp-row  button.sp-delete').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")    
+    delete files[idstring.substr(5)];
+    $("#"+idstring).remove();
+});
+
+$('.sp-row  button.sp-download').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")    
+
+//blob = dataURItoBlob($("#"+idstring).find(".sp-resultdata").first().attr("val"),"application/octet-stream;");
+console.log($("#"+idstring).find("div.sp-resultdata").first().attr("val"))
+if (idstring.substr(idstring.length - 3)=="PNG")
+{
+  blob = dataURItoBlob($("#"+idstring).find(".sp-resultdata").first().attr("val"),"application/octet-stream;");
+  ext="zip"
+}else{
+  blob = dataURItoBlob($("#"+idstring).find(".sp-resultdata").first().attr("val"),"image/png;");
+  ext="png"
+}
+saveAs(blob, $("#"+idstring).find(".sp-rename").first().val()+"."+ext);    
+    
+});
+
+function dataURItoBlob(dataURI, dataTYPE) {
+        var binary = atob(dataURI.split(',')[1]), array = [];
+        for(var i = 0; i < binary.length; i++) array.push(binary.charCodeAt(i));
+        return new Blob([new Uint8Array(array)], {type: dataTYPE});
+    }
+
+$('.sp-row  button.sp-convert').click(function(e) {
+    idstring=$($(e.target).closest( "div.sp-row" )).attr("id")   
+    $("#"+idstring+" button.sp-download").prop('disabled', true);
+    $("#"+idstring+" button.sp-convert").addClass("btn-info").prop('disabled', true);
+    $("#"+idstring+" button.sp-convert span").addClass("glyphicon-cog").removeClass("glyphicon-play");
+    getfunc=$("#"+idstring+" input.sp-func" ).first().val()    
+    func={}
+    for (i=0; i<tdoc.length;i++){
+      if (tdoc[i]["name"]==getfunc)func=tdoc[i]
+    }
+    console.log(idstring, idstring.substr(5,idstring.length))
+    //console.log(idstring,$("#"+idstring+" input.sp-func" ).first().val(),files[idstring.substr(5)]["fobj"])
+     $.ajax({
+                    url:'/_spriteconvert',
+                    type: "POST",
+                    contentType:"application/json",
+                    dataType:"json",
+                    data: JSON.stringify({
+        name: $("#"+idstring).find(".sp-rename").first().val(),        
+        fname: idstring.substr(5,idstring.length),        
+        op: func,
+        pal: $("#"+idstring).find(".sp-pal").first().select2("val"),        
+        idstring: idstring,
+        files: files[idstring.substr(5)]["fobj"]
+      })
+         
+      }).done(function(data) {
+        //data["resimg"]
+        if (data["out"]=="PNG")
+        {
+          //console.log(data["out"],$("#"+data["idstring"]+" img.sp-resultimg"))
+          $("#"+data["idstring"]+" img.sp-resultimg").first().prop("src",data["resdata"])
+          $("#"+data["idstring"]+" span.sp-imgtext").text("out:")
+
+        }
+        $("#"+data["idstring"]+" div.sp-resultdata").attr("val",data["resdata"])
+        //console.log(99,$("#"+data["idstring"]+" div.sp-resultdata"))
+        
+        //$("#"+data["idstring"]+" span.sp-outputimg").html("<img class='sp-resultimg' src='"+data["resimg"]+"' />")
+        $("#"+data["idstring"]+" button.sp-download").prop('disabled', false);
+        $("#"+data["idstring"]+" button.sp-convert").removeClass("btn-info").prop('disabled', false);;
+        $("#"+data["idstring"]+" button.sp-convert span").removeClass("btn-info").removeClass("glyphicon-cog").addClass("glyphicon-play");
+      }).fail(new function(spid){
+        return function(data) {
+
+
+        $("#"+spid+" img.resultimg").attr("src",$("#spcomptemplate div.sp-images img.sp-resultimg").attr("src"))
+        $("#"+spid+" button.sp-convert").removeClass("btn-info").addClass("btn-danger")
+        $("#"+spid+" button.sp-convert span").removeClass("btn-info").removeClass("glyphicon-cog").addClass("glyphicon-fire").text(" Error");
+          
+         
+        }
+      }(idstring));
+  
+});
+
+
+function copysprow(idstring){
+  t=$("#spcomptemplate").clone( withDataAndEvents=true, deepWithDataAndEvents =true );
+  t.removeClass("collapse");
+  t.find(".sp-idval").text(n)
+  t.find(".sp-rename").val(n.replace(/....$/,""))
+  t.prop("id",idstring);  
+  resetselect(t);
+  $("#sp-rows").append(t);  
+
+}
+
+
+var myDropzone = new Dropzone("#dropzone", { url: "/file/post",previewsContainer:document.getElementById("imgout"),
+createImageThumbnails:false,
+thumbnailWidth:32,
+thumbnailHeight:40,
+fallback: function(){
+messageElement = Dropzone.createElement("<div class='dz-message'><span>Your browser does not support drag'n'drop file uploads. There is no fallback :( use a more recent browser.</span></div>");
+          return this.element.appendChild(messageElement);
+        }
+});
+myDropzone.options.autoProcessQueue=false;
+//myDropzone.options.previewTemplate='<div class="dz-preview dz-file-preview" style="display:inline;">  <div  style="display:inline;" class="dz-details">   <img  style="display:inline;" data-dz-thumbnail />  </div>     </div>';
+
+
+
+myDropzone.on("addedfile", function(file) {
+  ftest=file.name.toUpperCase()
+  allowedext=["DAT","PCK","PNG","SPK","SCR","BDY","TAB"/*,"GIF"*/]
+  if(allowedext.indexOf(ftest.substr(ftest.length - 3))>=0 && file.size<400000  ){
+    n=ftest.replace(/[^A-Za-z0-9-_]/g, "_"); 
+    if (ftest.substr(ftest.length - 3)=="TAB")n=n.substr(0,n.length-3)+"PCK"
+    //if (ftest.substr(ftest.length - 3)=="GIF")n=n.substr(0,n.length-3)+"PNG"
+    newline= (! files.hasOwnProperty(n));
+    if(files.hasOwnProperty(n) && ["PCK","TAB"].indexOf(ftest.substr(ftest.length - 3))>=0){
+      if (files[n]["fnlist"].length==1) newline=(files[n]["fnlist"][0].toUpperCase().substr(files[n]["fnlist"][0].length-3) != ftest.substr(ftest.length - 3) ); 
+    }    
+    if (newline){
+      if(! files.hasOwnProperty(n))
+      {  
+        files[n]={fnlist:[],fobj:[],recreatethumb:true};
+        copysprow("spid-"+n);      
+        $("#spid-"+n+" input.sp-pal").first().select2(paldata);
+        nval="";
+        for (i=0; i<tdoc.length;i++)
+        {
+          if(nval!="") break;
+          if (tdoc[i].hasOwnProperty("files"))
+          {
+            for(knownfn in tdoc[i]["files"])
+            {
+              if (knownfn.replace(/[^A-Za-z0-9-_]/g, "_")==n) nval=tdoc[i]["name"];
+            }
+          }
+        }
+        for (i=0; i<tdoc.length;i++)
+        {
+          if(nval!="")break;
+          if (tdoc[i].hasOwnProperty("in"))
+          {
+            if (ftest.substr(ftest.length - 3)==tdoc[i]["in"]) nval=tdoc[i]["name"];            
+          }
+        }
+        $("#spid-"+n+" input.sp-func").first().select2("val", nval)
+        console.log(nval)
+
+      }
+      files[n]["fnlist"].push(file.name);
+      //files[n]["fobj"].push(file);      
+      //$("#spid-"+n+" span.badge").text(files[n]["fobj"].length+"/"+files[n]["fnlist"].length).removeClass("badge-success").addClass("alert-warning");
+      $("#spid-"+n+" button.sp-convert").prop('disabled', true);
+      //$("#spid-"+n+" div.sp-filenames").append("<div>"+file.name+"</div>");
+      readers[file.name]=new FileReader();
+      readers[file.name].onload=function(spid,fname){
+        return function(event) {
+          dataURL = readers[fname].result;
+//          $("#spid-"+spid+" span.sp-inputimg").append("<img alt='"+fname+"' title='"+fname+"' src='"+dataURL+"' />")
+          files[spid]["fobj"].push({"fn":fname,"cont":dataURL})
+          
+          if (spid.substr(spid.length-3)=="PNG")
+          {
+            console.log(98,spid.substr(spid.length-3),$("#"+spid+" img.sp-resultimg"))
+            $("#spid-"+spid+" img.sp-resultimg").attr("src",dataURL)
+     
+          }
+          
+          neededlen=1;
+          if (spid.substr(spid.length-3)=="PCK")neededlen=2;
+          if (neededlen!=files[spid]["fnlist"].length){
+            $("#spid-"+spid+" span.badge").text(files[spid]["fobj"].length+"/"+neededlen).removeClass("badge-success").addClass("alert-warning");
+          }else{
+            $("#spid-"+spid+" span.badge").text(files[spid]["fnlist"].length).addClass("badge-success").removeClass("alert-warning");
+          }
+          if (files[spid]["fobj"].length==files[spid]["fnlist"].length){
+            
+            //if (neededlen==files[spid]["fnlist"].length)
+            $("#spid-"+spid+" button.sp-convert").prop('disabled', false);
+//          }else{
+//            $("#spid-"+spid+" span.badge").text(files[spid]["fobj"].length+"/"+neededlen).removeClass("badge-success").addClass("alert-warning");
+          }
+          
+          //console.log(spid,event,files);
+        }
+      }(n,file.name);
+      readers[file.name].readAsDataURL(file);
+    }
+  }
+});
+
+
+{# </script>    #}
+{% endblock %}
+{% block help %}
+you can drop files here...
+{% endblock %}
