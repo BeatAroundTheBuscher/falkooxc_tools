@@ -18,8 +18,7 @@ The falko tools are flask apps
 
 To get it to run, try the following
 * Register an account @ pythonanywhere.com (free plan is sufficient)
-* Go into your dashboard
-https://eu.pythonanywhere.com/user/{Your_Name}/
+* Go into your dashboard https://eu.pythonanywhere.com/user/{Your_Name}/
 * Click on "Open Web tab"
 * Click on "Add a new web app"
 * Next
@@ -40,3 +39,18 @@ mv start.py app_flask.py
 ```
 * Go back to your Web tab and click on the Reload Button
 * Test your instance (link is above the Reload Button)
+
+## Upgrade from 
+
+
+From [glastonbury](https://blog.pythonanywhere.com/196/) to [innit](https://blog.pythonanywhere.com/219/)
+
+[See the official guide](https://help.pythonanywhere.com/pages/ChangingSystemImage)
+
+* Go into your account page https://eu.pythonanywhere.com/user/{Your_Name}/account
+* Click on "System Image"
+* Next to "Current system image" click on the blue pen and pick "innit" in the listbox left of the blue pen
+* Click "Save"
+* Make sure that the Default Python Versions are 3.9
+* Click on "Web" on the top of the page
+* Click on the "Reload" button
