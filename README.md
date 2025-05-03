@@ -40,10 +40,7 @@ mv start.py app_flask.py
 * Go back to your Web tab and click on the Reload Button
 * Test your instance (link is above the Reload Button)
 
-## Upgrade from 
-
-
-From [glastonbury](https://blog.pythonanywhere.com/196/) to [innit](https://blog.pythonanywhere.com/219/)
+## Upgrade from [glastonbury](https://blog.pythonanywhere.com/196/) to [innit](https://blog.pythonanywhere.com/219/)
 
 [See the official guide](https://help.pythonanywhere.com/pages/ChangingSystemImage)
 
